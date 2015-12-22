@@ -34,6 +34,8 @@ public abstract class BasicScreen implements Screen {
         cam.position.set(CAMERA_WIDTH / 2.0f, CAMERA_HEIGHT / 2.0f, 0);
         cam.update();
         input.setCamera(cam);
+        
+        spriteBatch = new SpriteBatch();
     }
 
     public final void update(float delta) {
@@ -56,7 +58,6 @@ public abstract class BasicScreen implements Screen {
 
         Gdx.input.setInputProcessor(input);
 
-        spriteBatch = new SpriteBatch();
         spriteBatch.setProjectionMatrix(cam.combined);
 
         width = Gdx.graphics.getWidth();

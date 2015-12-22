@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.GL20;
 
 public class SpacePanic extends ApplicationAdapter {
 
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 600;
+	public static final int WIDTH = 1280;
+	public static final int HEIGHT = 720;
 
 	private BasicScreen screen;
 	
@@ -23,8 +23,8 @@ public class SpacePanic extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		//Gdx.gl.glClearColor(0, 0, 0, 1);
+		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (screen != null) {
 			if (screen.getInputData().isBackPressedLast()) {
 				screen.backPressed();
