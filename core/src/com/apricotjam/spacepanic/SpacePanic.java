@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.GL20;
 
 public class SpacePanic extends ApplicationAdapter {
 
-	public static final int WIDTH = 1280;
-	public static final int HEIGHT = 720;
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 600;
 
 	private BasicScreen screen;
 	
