@@ -32,6 +32,8 @@ public abstract class BasicScreen implements Screen {
     public BasicScreen(SpacePanic spacePanic, ScreenInput input) {
         this.spacePanic = spacePanic;
         this.input = input;
+        
+        spriteBatch = new SpriteBatch();
     }
 
     public final void update(float delta) {
@@ -54,7 +56,6 @@ public abstract class BasicScreen implements Screen {
 
         Gdx.input.setInputProcessor(input);
 
-        spriteBatch = new SpriteBatch();
         spriteBatch.setProjectionMatrix(cam.combined);
 
         width = Gdx.graphics.getWidth();
