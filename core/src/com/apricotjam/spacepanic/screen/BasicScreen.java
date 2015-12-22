@@ -1,8 +1,8 @@
-package com.apricotjam.screen;
+package com.apricotjam.spacepanic.screen;
 
-import com.apricotjam.art.MiscArt;
-import com.apricotjam.input.InputData;
-import com.apricotjam.input.ScreenInput;
+import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.input.InputData;
+import com.apricotjam.spacepanic.input.ScreenInput;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -17,7 +17,6 @@ import com.badlogic.gdx.math.Vector3;
 public abstract class BasicScreen implements Screen {
 
     protected final SpacePanic spacePanic;
-    protected final BasicScreen parent;
     protected final ScreenInput input;
 
     protected static final float CAMERA_WIDTH = 16.0f;
@@ -30,17 +29,22 @@ public abstract class BasicScreen implements Screen {
     protected OrthographicCamera cam;
     protected SpriteBatch spriteBatch;
 
-    public BasicScreen(SpacePanic spacePanic, BasicScreen parent, ScreenInput input) {
+    public BasicScreen(SpacePanic spacePanic, ScreenInput input) {
         this.spacePanic = spacePanic;
-        this.parent = parent;
         this.input = input;
     }
 
-    public void update() {
-        update(input.getInputData());
+    public final void update(float delta) {
+        update(delta, input.getInputData());
     }
 
-    public abstract void update(InputData inputData);
+    public abstract void update(float delta, InputData inputData);
+
+    public final void render(float delta) {
+        render();
+    }
+
+    public abstract void render();
 
     @Override
     public void show() {

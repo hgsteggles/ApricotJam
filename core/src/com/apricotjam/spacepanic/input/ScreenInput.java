@@ -1,4 +1,4 @@
-package com.apricotjam.input;
+package com.apricotjam.spacepanic.input;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input;

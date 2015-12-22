@@ -1,4 +1,4 @@
-package com.apricotjam.input;
+package com.apricotjam.spacepanic.input;
 
 import com.badlogic.gdx.math.Vector2;
 

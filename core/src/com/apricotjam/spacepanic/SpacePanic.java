@@ -1,14 +1,12 @@
 package com.apricotjam.spacepanic;
 
-import com.apricotjam.art.Art;
-import com.apricotjam.input.ScreenInput;
-import com.apricotjam.screen.BasicScreen;
-import com.apricotjam.screen.TitleScreen;
+import com.apricotjam.spacepanic.art.Art;
+import com.apricotjam.spacepanic.input.ScreenInput;
+import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.screen.TitleScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SpacePanic extends ApplicationAdapter {
 
@@ -25,13 +23,13 @@ public class SpacePanic extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (screen != null) {
 			if (screen.getInputData().isBackPressedLast()) {
 				screen.backPressed();
 			}
-			screen.update();
+			screen.update(Gdx.graphics.getDeltaTime());
 			screen.render(Gdx.graphics.getDeltaTime());
 			screen.getInputData().reset();
 		}

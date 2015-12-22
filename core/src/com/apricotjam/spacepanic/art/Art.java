@@ -1,4 +1,4 @@
-package com.apricotjam.art;
+package com.apricotjam.spacepanic.art;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

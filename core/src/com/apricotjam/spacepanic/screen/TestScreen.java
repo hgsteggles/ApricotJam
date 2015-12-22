@@ -1,24 +1,24 @@
-package com.apricotjam.screen;
+package com.apricotjam.spacepanic.screen;
 
-import com.apricotjam.art.MiscArt;
-import com.apricotjam.input.InputData;
-import com.apricotjam.input.ScreenInput;
+import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.input.InputData;
+import com.apricotjam.spacepanic.input.ScreenInput;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.badlogic.gdx.math.Vector2;
 
-public class TitleScreen extends BasicScreen {
+public class TestScreen extends BasicScreen {
 
     float xImage;
     float yImage;
 
-    public TitleScreen(SpacePanic spacePanic, ScreenInput input) {
-        super(spacePanic, null, input);
+    public TestScreen(SpacePanic spacePanic, ScreenInput input) {
+        super(spacePanic, input);
         xImage = CAMERA_WIDTH / 2.0f;
         yImage = CAMERA_HEIGHT / 2.0f;
     }
 
     @Override
-    public void update(InputData inputData) {
+    public void update(float delta, InputData inputData) {
         if (inputData.isPointerDownLast()) {
             System.out.println("Raw location:" + inputData.getPointerLocation().toString());
             Vector2 worldPos =  unprojectPointer(inputData.getPointerLocation());
@@ -34,7 +34,7 @@ public class TitleScreen extends BasicScreen {
     }
 
     @Override
-    public void render(float delta) {
+    public void render() {
         spriteBatch.begin();
         draw(MiscArt.testImage, xImage, yImage, 1.0f, 1.0f, true);
         spriteBatch.end();
