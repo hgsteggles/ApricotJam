@@ -20,11 +20,9 @@ public class TestScreen extends BasicScreen {
     @Override
     public void update(float delta, InputData inputData) {
         if (inputData.isPointerDownLast()) {
-            System.out.println("Raw location:" + inputData.getPointerLocation().toString());
-            Vector2 worldPos =  unprojectPointer(inputData.getPointerLocation());
-            System.out.println("World location:" + worldPos.toString());
-            xImage = worldPos.x;
-            yImage = worldPos.y;
+            System.out.println("location:" + inputData.getPointerLocation().toString());
+            xImage = inputData.getPointerLocation().x;
+            yImage = inputData.getPointerLocation().y;
         }
     }
 

@@ -16,21 +16,33 @@ public class InputData implements InputInterface {
         backPressedLast = true;
     }
 
-    public void pointerDown(int x, int y) {
+    public void pointerDown(Vector2 pos) {
+        pointerDown(pos.x, pos.y);
+    }
+
+    public void pointerDown(float x, float y) {
         pointerLocation.set(x, y);
         pointerDownLocation.set(x, y);
         pointerDown = true;
         pointerDownLast = true;
     }
 
-    public void pointerUp(int x, int y) {
+    public void pointerUp(Vector2 pos) {
+        pointerUp(pos.x, pos.y);
+    }
+
+    public void pointerUp(float x, float y) {
         pointerLocation.set(x, y);
         pointerDrag.set(0, 0);
         pointerDown = false;
         pointerUpLast = true;
     }
 
-    public void pointerMoved(int x, int y, boolean down) {
+    public void pointerMoved(Vector2 pos, boolean down) {
+        pointerMoved(pos.x, pos.y, down);
+    }
+
+    public void pointerMoved(float x, float y, boolean down) {
         pointerLocation.set(x, y);
         if (down) {
             pointerDrag = pointerLocation.cpy().sub(pointerDownLocation);

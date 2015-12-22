@@ -11,6 +11,7 @@ public class TitleScreen extends BasicScreen {
     private float flashTimer = 0.0f;
     private static final float FLASHPERIOD = 0.8f;
 
+
     public TitleScreen(SpacePanic spacePanic, ScreenInput input) {
         super(spacePanic, input);
     }
@@ -39,4 +40,5 @@ public class TitleScreen extends BasicScreen {
         }
         spriteBatch.end();
     }
+
 }
