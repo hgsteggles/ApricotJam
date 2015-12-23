@@ -7,4 +7,5 @@ public class ComponentMappers {
     public static ComponentMapper<BitmapFontComponent> bitmapfont = ComponentMapper.getFor(BitmapFontComponent.class);
     public static ComponentMapper<TextureComponent> texture = ComponentMapper.getFor(TextureComponent.class);
     public static ComponentMapper<AlphaFlashComponent> flash = ComponentMapper.getFor(AlphaFlashComponent.class);
+    public static ComponentMapper<ButtonComponent> button = ComponentMapper.getFor(ButtonComponent.class);
 }

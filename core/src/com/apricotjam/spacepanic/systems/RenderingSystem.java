@@ -14,6 +14,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -25,30 +26,29 @@ import com.badlogic.gdx.utils.Array;
 public class RenderingSystem extends SortedIteratingSystem {
 	public static final float WORLD_WIDTH = 16f;
 	public static final float WORLD_HEIGHT = 9f;
-	public static final float PIXELS_TO_WORLD = 1f/32f;
+	public static final float PIXELS_TO_WORLD = WORLD_WIDTH / SpacePanic.WIDTH;
 	
-	private OrthographicCamera camera, pixelcamera;
+	private Camera worldCamera, pixelcamera;
 	private SpriteBatch batch;
 
-	public RenderingSystem(SpriteBatch batch) {
+	public RenderingSystem(SpriteBatch batch, Camera worldCamera) {
 		super(Family.all(TransformComponent.class)
 					.one(TextureComponent.class, BitmapFontComponent.class)
 					.get(), new DepthComparator());
 		
 		this.batch = batch;
+
+		this.worldCamera = worldCamera;
 		
-		camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-		camera.position.set(WORLD_WIDTH/2f, WORLD_HEIGHT/2f, 0);
-		
-		pixelcamera = new OrthographicCamera(SpacePanic.WIDTH, SpacePanic.HEIGHT);
-		pixelcamera.position.set(SpacePanic.WIDTH/2f, SpacePanic.HEIGHT/2f, 0);
+		this.pixelcamera = new OrthographicCamera(SpacePanic.WIDTH, SpacePanic.HEIGHT);
+		this.pixelcamera.position.set(SpacePanic.WIDTH / 2.0f, SpacePanic.HEIGHT / 2.0f, 0);
 	}
 
 	@Override
 	public void update(float deltaTime) {
-		camera.update();
+		worldCamera.update();
 		pixelcamera.update();
-		batch.setProjectionMatrix(camera.combined);
+		batch.setProjectionMatrix(worldCamera.combined);
 
 		batch.begin();
 		super.update(deltaTime);
@@ -99,7 +99,7 @@ public class RenderingSystem extends SortedIteratingSystem {
 				font.draw(batch, bitmap.string, t.position.x - layout.width / 2f, t.position.y - layout.height / 2f);
 			}
 
-			batch.setProjectionMatrix(camera.combined);
+			batch.setProjectionMatrix(worldCamera.combined);
 		}
 	}
 }

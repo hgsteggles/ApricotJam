@@ -3,12 +3,11 @@ package com.apricotjam.spacepanic.screen;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
+import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
-import com.apricotjam.spacepanic.input.InputData;
-import com.apricotjam.spacepanic.input.ScreenInput;
+import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.systems.RenderingSystem;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 
@@ -16,47 +15,35 @@ public class TitleScreen extends BasicScreen {
 
     private float flashTimer = 0.0f;
     private static final float FLASHPERIOD = 0.8f;
-    private BitmapFontComponent bmfontcomp; 
-    
-    Engine engine;
+    private Entity clickEntity;
 
-
-    public TitleScreen(SpacePanic spacePanic, ScreenInput input) {
-        super(spacePanic, input);
-        
-        engine = new Engine();
-        
-        engine.addSystem(new RenderingSystem(spriteBatch));
-        
-        engine.addEntity(createTitleEntity());
-        engine.addEntity(createClickEntity());
-        
-    }
-
-    @Override
-    public void update(float delta, InputData inputData) {
-    	
-        flashTimer += delta;
-        if (flashTimer > FLASHPERIOD) {
-            flashTimer = 0.0f;
-        }
-        if (inputData.isPointerDownLast()) {
-            spacePanic.setScreen(new MenuScreen(spacePanic, input));
-        }
-        
-        if (flashTimer > FLASHPERIOD / 2.0f)
-        	bmfontcomp.color.a = 1f;
-        else
-        	bmfontcomp.color.a = 0f;
-    }
-
-    @Override
-    public void backPressed() {
+    public TitleScreen(SpacePanic spacePanic) {
+        super(spacePanic);
+        add(createTitleEntity());
+        clickEntity = createClickEntity();
+        add(clickEntity);
     }
 
     @Override
     public void render(float delta) {
-        engine.update(delta);
+    	super.render(delta);
+        flashTimer += delta;
+        if (flashTimer > FLASHPERIOD) {
+            flashTimer = 0.0f;
+        }
+        if (InputManager.screenInput.isPointerDownLast()) {
+            spacePanic.setScreen(new MenuScreen(spacePanic));
+        }
+        
+        if (flashTimer > FLASHPERIOD / 2.0f) {
+            ComponentMappers.bitmapfont.get(clickEntity).color.a = 1.0f;
+        } else {
+            ComponentMappers.bitmapfont.get(clickEntity).color.a = 0.0f;
+        }
+    }
+
+    @Override
+    public void backPressed() {
     }
     
     public Entity createTitleEntity() {
@@ -85,7 +72,6 @@ public class TitleScreen extends BasicScreen {
         fontComp.string = "Click to begin!";
         fontComp.color = new Color(Color.WHITE);
         fontComp.centering = true;
-        bmfontcomp = fontComp;
         
         TransformComponent transComp = new TransformComponent();
         transComp.position.x = SpacePanic.WIDTH / 2f;

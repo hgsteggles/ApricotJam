@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.input;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 
 public interface InputInterface {
@@ -11,4 +12,6 @@ public interface InputInterface {
     boolean isPointerUpLast(); //Returns true if pointer was moved up last frame
 
     boolean isBackPressedLast(); //Returns true if back was pressed last frame
+
+    void reset();
 }

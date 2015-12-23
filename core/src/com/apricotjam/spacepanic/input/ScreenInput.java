@@ -6,13 +6,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-public class ScreenInput implements InputProcessor {
-    protected InputData inputData = new InputData();
+public class ScreenInput extends InputData implements InputProcessor {
     protected Camera camera;
-
-    public InputData getInputData() {
-        return inputData;
-    }
 
     public void setCamera(Camera camera) {
         this.camera = camera;
@@ -21,7 +16,7 @@ public class ScreenInput implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.BACK || keycode == Input.Keys.ESCAPE){
-            inputData.backPressed();
+            backPressed();
             return true;
         }
         return false;
@@ -39,25 +34,25 @@ public class ScreenInput implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        inputData.pointerDown(unprojectPointer(screenX, screenY));
+        pointerDown(unprojectPointer(screenX, screenY));
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        inputData.pointerUp(unprojectPointer(screenX, screenY));
+        pointerUp(unprojectPointer(screenX, screenY));
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        inputData.pointerMoved(unprojectPointer(screenX, screenY), true);
+        pointerMoved(unprojectPointer(screenX, screenY), true);
         return true;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        inputData.pointerMoved(unprojectPointer(screenX, screenY), false);
+        pointerMoved(unprojectPointer(screenX, screenY), false);
         return true;
     }
 
