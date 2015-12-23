@@ -53,10 +53,10 @@ public class TitleScreen extends BasicScreen {
         textComp.region = MiscArt.title;
         
         TransformComponent transComp = new TransformComponent();
-        transComp.position.x = RenderingSystem.WORLD_WIDTH / 2f;
-        transComp.position.y = RenderingSystem.WORLD_HEIGHT / 2f;
-        transComp.scale.x = 6.5f/(MiscArt.title.getRegionWidth()*RenderingSystem.PIXELS_TO_WORLD);
-        transComp.scale.y = 1.5f/(MiscArt.title.getRegionHeight()*RenderingSystem.PIXELS_TO_WORLD);
+        transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+        transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
+        transComp.size.x = 5.0f;
+        transComp.size.y = transComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
         
         titleEntity.add(textComp);
         titleEntity.add(transComp);
@@ -74,8 +74,8 @@ public class TitleScreen extends BasicScreen {
         fontComp.centering = true;
         
         TransformComponent transComp = new TransformComponent();
-        transComp.position.x = SpacePanic.WIDTH / 2f;
-        transComp.position.y = SpacePanic.HEIGHT / 4f;
+        transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+        transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
         
         clickEntity.add(fontComp);
         clickEntity.add(transComp);

@@ -8,6 +8,7 @@ import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -21,12 +22,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class RenderingSystem extends SortedIteratingSystem {
-	public static final float WORLD_WIDTH = 16f;
-	public static final float WORLD_HEIGHT = 9f;
-	public static final float PIXELS_TO_WORLD = WORLD_WIDTH / SpacePanic.WIDTH;
+	public static final float PIXELS_TO_WORLD = BasicScreen.WORLD_WIDTH / SpacePanic.WIDTH;
+	public static final float WORLD_TO_PIXELS =  1.0f / PIXELS_TO_WORLD;
 	
 	private Camera worldCamera, pixelcamera;
 	private SpriteBatch batch;
@@ -73,17 +74,17 @@ public class RenderingSystem extends SortedIteratingSystem {
 
 			TransformComponent t = ComponentMappers.transform.get(entity);
 
-			float width = tex.region.getRegionWidth();
-			float height = tex.region.getRegionHeight();
+			float width = t.size.x;
+			float height = t.size.y;
 			float originX = width * 0.5f;
 			float originY = height * 0.5f;
 
 			batch.draw(tex.region,
-					t.position.x - originX, t.position.y - originY,
-					originX, originY,
-					width, height,
-					t.scale.x * PIXELS_TO_WORLD, t.scale.y * PIXELS_TO_WORLD,
-					MathUtils.radiansToDegrees * t.rotation);
+					   t.position.x - originX, t.position.y - originY,
+					   originX, originY,
+					   width, height,
+					   t.scale.x, t.scale.y,
+					   t.rotation);
 		} else if (ComponentMappers.bitmapfont.has(entity)) {
 			batch.setProjectionMatrix(pixelcamera.combined);
 
@@ -92,11 +93,17 @@ public class RenderingSystem extends SortedIteratingSystem {
 			BitmapFont font = MiscArt.fonts.get(bitmap.font);
 
 			font.setColor(bitmap.color);
+			Vector2 pospixel = new Vector2(t.position.x * WORLD_TO_PIXELS, t.position.y * WORLD_TO_PIXELS);
+			GlyphLayout layout = new GlyphLayout(font, bitmap.string);
 			if (!bitmap.centering) {
-				font.draw(batch, bitmap.string, t.position.x, t.position.y);
+				font.draw(batch,
+						  bitmap.string,
+						  pospixel.x, pospixel.y + layout.height);
 			} else {
-				GlyphLayout layout = new GlyphLayout(font, bitmap.string);
-				font.draw(batch, bitmap.string, t.position.x - layout.width / 2f, t.position.y - layout.height / 2f);
+				font.draw(batch,
+						  bitmap.string,
+						  pospixel.x - layout.width / 2.0f,
+						  pospixel.y + layout.height / 2.0f);
 			}
 
 			batch.setProjectionMatrix(worldCamera.combined);

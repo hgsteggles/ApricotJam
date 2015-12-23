@@ -1,6 +1,5 @@
 package com.apricotjam.spacepanic.screen;
 
-import com.apricotjam.spacepanic.input.InputData;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.systems.RenderingSystem;
@@ -16,8 +15,8 @@ public abstract class BasicScreen implements Screen {
 
     protected final SpacePanic spacePanic;
 
-    protected static final float CAMERA_WIDTH = 16.0f;
-    protected static final float CAMERA_HEIGHT = 9.0f;
+    public static final float WORLD_WIDTH = 16.0f;
+    public static final float WORLD_HEIGHT = 9.0f;
 
     protected int width;
     protected int height;
@@ -29,8 +28,8 @@ public abstract class BasicScreen implements Screen {
 
     public BasicScreen(SpacePanic spacePanic) {
         this.spacePanic = spacePanic;
-        worldCamera = new OrthographicCamera(CAMERA_WIDTH, CAMERA_HEIGHT);
-        worldCamera.position.set(CAMERA_WIDTH / 2.0f, CAMERA_HEIGHT / 2.0f, 0);
+        worldCamera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        worldCamera.position.set(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f, 0);
         worldCamera.update();
         InputManager.screenInput.setCamera(worldCamera);
 
@@ -53,8 +52,8 @@ public abstract class BasicScreen implements Screen {
 
     @Override
     public void show() {
-        worldCamera = new OrthographicCamera(CAMERA_WIDTH, CAMERA_HEIGHT);
-        worldCamera.position.set(CAMERA_WIDTH / 2.0f, CAMERA_HEIGHT / 2.0f, 0);
+        worldCamera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        worldCamera.position.set(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f, 0);
         worldCamera.update();
 
         spriteBatch.setProjectionMatrix(worldCamera.combined);

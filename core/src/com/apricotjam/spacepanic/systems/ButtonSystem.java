@@ -26,16 +26,7 @@ public class ButtonSystem extends IteratingSystem {
         bc.clickLast = false;
 
         Vector2 pos = new Vector2(InputManager.screenInput.getPointerLocation());
-        boolean inside = false;
-        if (ComponentMappers.transform.has(entity)) {
-            TransformComponent tc = ComponentMappers.transform.get(entity);
-            if (isInside(tc, pos.x, pos.y)) {
-                inside = true;
-            }
-        } else {
-            inside = true;
-        }
-        if (inside) {
+        if (isInside(bc, pos.x, pos.y)) {
             if (InputManager.screenInput.isPointerDown()) {
                 bc.pointerOver = true;
             } else if (InputManager.screenInput.isPointerUpLast()) {
@@ -44,14 +35,11 @@ public class ButtonSystem extends IteratingSystem {
         }
     }
 
-    private boolean isInside(TransformComponent tc, float x, float y) {
-        if (x > tc.position.x
-                && x < tc.position.x + tc.scale.x
-                && y > tc.position.y
-                && y < tc.position.y + tc.scale.y) {
+    private boolean isInside(ButtonComponent bc, float x, float y) {
+        if (bc.shape == null) {
             return true;
         } else {
-            return false;
+            return bc.shape.contains(x, y);
         }
     }
 }

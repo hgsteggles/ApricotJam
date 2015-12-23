@@ -7,11 +7,12 @@ import com.apricotjam.spacepanic.systems.ButtonSystem;
 import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Rectangle;
 
 public class MenuScreen extends BasicScreen {
 
     private static final float TITLESPEED = 3.5f;
-    private static final float TITLEENDPOSITION = CAMERA_HEIGHT * 3.0f / 4.0f;
+    private static final float TITLEENDPOSITION = WORLD_HEIGHT * 3.0f / 4.0f;
 
     private Entity startButton;
     private Entity title;
@@ -38,10 +39,10 @@ public class MenuScreen extends BasicScreen {
         textComp.region = MiscArt.title;
 
         TransformComponent transComp = new TransformComponent();
-        transComp.position.x = RenderingSystem.WORLD_WIDTH / 2f;
-        transComp.position.y = RenderingSystem.WORLD_HEIGHT / 2f;
-        transComp.scale.x = 6.5f/(MiscArt.title.getRegionWidth()*RenderingSystem.PIXELS_TO_WORLD);
-        transComp.scale.y = 1.5f/(MiscArt.title.getRegionHeight()*RenderingSystem.PIXELS_TO_WORLD);
+        transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+        transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
+        transComp.size.x = 5.0f;
+        transComp.size.y = transComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
 
         titleEntity.add(textComp);
         titleEntity.add(transComp);
@@ -59,13 +60,13 @@ public class MenuScreen extends BasicScreen {
         fontComp.centering = true;
 
         TransformComponent transComp = new TransformComponent();
-        transComp.position.x = SpacePanic.WIDTH / 2f;
-        transComp.position.y = SpacePanic.HEIGHT / 4f;
-        transComp.scale.x = 1.0f;
-        transComp.scale.y = 1.0f;
+        transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+        transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
 
         ButtonComponent buttonComponent = new ButtonComponent();
         buttonComponent.active = true;
+        buttonComponent.shape = new Rectangle().setSize(2.0f, 0.5f)
+                                               .setCenter(transComp.position.x, transComp.position.y);
 
         clickEntity.add(fontComp);
         clickEntity.add(transComp);
