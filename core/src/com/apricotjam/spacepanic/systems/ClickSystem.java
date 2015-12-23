@@ -1,6 +1,6 @@
 package com.apricotjam.spacepanic.systems;
 
-import com.apricotjam.spacepanic.components.ButtonComponent;
+import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.badlogic.ashley.core.Entity;
@@ -8,14 +8,14 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 
-public class ButtonSystem extends IteratingSystem {
-	public ButtonSystem() {
-		super(Family.all(ButtonComponent.class).get());
+public class ClickSystem extends IteratingSystem {
+	public ClickSystem() {
+		super(Family.all(ClickComponent.class).get());
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		ButtonComponent bc = ComponentMappers.button.get(entity);
+		ClickComponent bc = ComponentMappers.click.get(entity);
 
 		if (!bc.active) {
 			return;
@@ -34,7 +34,7 @@ public class ButtonSystem extends IteratingSystem {
 		}
 	}
 
-	private boolean isInside(ButtonComponent bc, float x, float y) {
+	private boolean isInside(ClickComponent bc, float x, float y) {
 		if (bc.shape == null) {
 			return true;
 		} else {

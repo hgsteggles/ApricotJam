@@ -3,7 +3,7 @@ package com.apricotjam.spacepanic.screen;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
-import com.apricotjam.spacepanic.systems.ButtonSystem;
+import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,7 +18,7 @@ public class MenuScreen extends BasicScreen {
 
 	public MenuScreen(SpacePanic spacePanic) {
 		super(spacePanic);
-		add(new ButtonSystem());
+		add(new ClickSystem());
 
 		title = createTitleEntity();
 		add(title);
@@ -62,14 +62,14 @@ public class MenuScreen extends BasicScreen {
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
 
-		ButtonComponent buttonComponent = new ButtonComponent();
-		buttonComponent.active = true;
-		buttonComponent.shape = new Rectangle().setSize(2.0f, 0.5f)
-											   .setCenter(transComp.position.x, transComp.position.y);
+		ClickComponent clickComponent = new ClickComponent();
+		clickComponent.active = true;
+		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f)
+											  .setCenter(transComp.position.x, transComp.position.y);
 
 		clickEntity.add(fontComp);
 		clickEntity.add(transComp);
-		clickEntity.add(buttonComponent);
+		clickEntity.add(clickComponent);
 
 		return clickEntity;
 	}
@@ -83,7 +83,7 @@ public class MenuScreen extends BasicScreen {
 			titleTransform.position.y += delta * TITLESPEED;
 		}
 
-		ButtonComponent button = ComponentMappers.button.get(startButton);
+		ClickComponent button = ComponentMappers.click.get(startButton);
 		if (button.clickLast) {
 			startGame();
 		}
