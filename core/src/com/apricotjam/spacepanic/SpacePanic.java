@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.screen.MenuScreen;
+import com.apricotjam.spacepanic.screen.TitleScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,8 +20,7 @@ public class SpacePanic extends ApplicationAdapter {
 	public void create() {
 		Art.load();
 		InputManager.create();
-		//setScreen(new TitleScreen(this));
-		setScreen(new MenuScreen(this));
+		setScreen(new TitleScreen(this));
 	}
 
 	@Override
