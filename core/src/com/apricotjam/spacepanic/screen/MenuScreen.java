@@ -23,7 +23,7 @@ public class MenuScreen extends BasicScreen {
 
 		title = createTitleEntity();
 		add(title);
-		startButton = createClickEntity();
+		startButton = createStartButton();
 		add(startButton);
 
 	}
@@ -50,13 +50,13 @@ public class MenuScreen extends BasicScreen {
 		return titleEntity;
 	}
 
-	public Entity createClickEntity() {
+	public Entity createStartButton() {
 		Entity clickEntity = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
 		fontComp.string = "START";
-		fontComp.color = new Color(Color.WHITE);
+		fontComp.color = Color.WHITE;
 		fontComp.centering = true;
 
 		TransformComponent transComp = new TransformComponent();
@@ -73,9 +73,14 @@ public class MenuScreen extends BasicScreen {
 		clickComponent.active = true;
 		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f).setCenter(0.0f, 0.0f);
 
+		TextButtonComponent textButtonComponent = new TextButtonComponent();
+		textButtonComponent.base = fontComp.color;
+		textButtonComponent.pressed = Color.RED;
+
 		clickEntity.add(fontComp);
 		clickEntity.add(transComp);
 		clickEntity.add(clickComponent);
+		clickEntity.add(textButtonComponent);
 
 		return clickEntity;
 	}

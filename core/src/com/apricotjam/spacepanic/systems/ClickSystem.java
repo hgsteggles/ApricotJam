@@ -1,8 +1,6 @@
 package com.apricotjam.spacepanic.systems;
 
-import com.apricotjam.spacepanic.components.ClickComponent;
-import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -41,6 +39,17 @@ public class ClickSystem extends IteratingSystem {
 				bc.clicker.onClick();
 			}
 		}
+
+		if (ComponentMappers.textbutton.has(entity)) {
+			TextButtonComponent tc = ComponentMappers.textbutton.get(entity);
+			BitmapFontComponent bmc = ComponentMappers.bitmapfont.get(entity);
+			if (InputManager.screenInput.isPointerDown()) {
+				bmc.color = tc.pressed;
+			} else {
+				bmc.color = tc.base;
+			}
+		}
+
 	}
 
 	private boolean isInside(ClickComponent bc, float x, float y) {
