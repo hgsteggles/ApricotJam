@@ -93,17 +93,6 @@ public class MenuScreen extends BasicScreen {
 		if (titleTransform.position.y < TITLEENDPOSITION) {
 			titleTransform.position.y += delta * TITLESPEED;
 		}
-
-		ClickComponent button = ComponentMappers.click.get(startButton);
-		if (button.pointerOver) {
-			TransformComponent buttonTransform = ComponentMappers.transform.get(startButton);
-			BitmapFontComponent buttonFont = ComponentMappers.bitmapfont.get(startButton);
-			buttonFont.color = Color.RED;
-		} else {
-			TransformComponent buttonTransform = ComponentMappers.transform.get(startButton);
-			BitmapFontComponent buttonFont = ComponentMappers.bitmapfont.get(startButton);
-			buttonFont.color = Color.WHITE;
-		}
 	}
 
 	@Override

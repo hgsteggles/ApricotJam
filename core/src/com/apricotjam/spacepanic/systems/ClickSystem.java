@@ -43,7 +43,7 @@ public class ClickSystem extends IteratingSystem {
 		if (ComponentMappers.textbutton.has(entity)) {
 			TextButtonComponent tc = ComponentMappers.textbutton.get(entity);
 			BitmapFontComponent bmc = ComponentMappers.bitmapfont.get(entity);
-			if (InputManager.screenInput.isPointerDown()) {
+			if (InputManager.screenInput.isPointerDown() && inside) {
 				bmc.color = tc.pressed;
 			} else {
 				bmc.color = tc.base;
