@@ -4,14 +4,17 @@ import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.ClickSystem;
+import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 
 public class MenuScreen extends BasicScreen {
 
-	private static final float TITLESPEED = 3.5f;
+	private static final float TITLETIME = 1.0f;
 	private static final float TITLEENDPOSITION = WORLD_HEIGHT * 3.0f / 4.0f;
 
 	private Entity startButton;
@@ -20,11 +23,10 @@ public class MenuScreen extends BasicScreen {
 	public MenuScreen(SpacePanic spacePanic) {
 		super(spacePanic);
 		add(new ClickSystem());
+		add(new TweenSystem());
 
-		title = createTitleEntity();
-		add(title);
-		startButton = createStartButton();
-		add(startButton);
+		add(createTitleEntity());
+		add(createStartButton());
 
 	}
 
@@ -44,8 +46,25 @@ public class MenuScreen extends BasicScreen {
 		transComp.size.x = 5.0f;
 		transComp.size.y = transComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
 
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = transComp.position.y;
+		tweenSpec.end = TITLEENDPOSITION;
+		tweenSpec.period = TITLETIME;
+		tweenSpec.cycle = TweenSpec.Cycle.REVERSE;
+		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				TransformComponent tc = ComponentMappers.transform.get(e);
+				tc.position.y = a;
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+
 		titleEntity.add(textComp);
 		titleEntity.add(transComp);
+		titleEntity.add(tweenComp);
 
 		return titleEntity;
 	}
@@ -83,16 +102,6 @@ public class MenuScreen extends BasicScreen {
 		clickEntity.add(textButtonComponent);
 
 		return clickEntity;
-	}
-
-	@Override
-	public void render(float delta) {
-		super.render(delta);
-
-		TransformComponent titleTransform = ComponentMappers.transform.get(title);
-		if (titleTransform.position.y < TITLEENDPOSITION) {
-			titleTransform.position.y += delta * TITLESPEED;
-		}
 	}
 
 	@Override
