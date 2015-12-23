@@ -5,19 +5,21 @@ import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.ClickSystem;
+import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
 
 public class TitleScreen extends BasicScreen {
 
-	private static final float FLASHPERIOD = 0.8f;
-	private float flashTimer = 0.0f;
-	private Entity clickEntity;
-
 	public TitleScreen(SpacePanic spacePanic) {
 		super(spacePanic);
+
 		add(new ClickSystem());
+		add(new TweenSystem());
+
 		add(createTitleEntity());
 		add(createClickEntity());
 	}
@@ -57,6 +59,26 @@ public class TitleScreen extends BasicScreen {
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
 
+		TweenComponent tweenComponent = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 1.0f;
+		tweenSpec.end = 0.0f;
+		tweenSpec.period = 0.8f;
+		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.cycle = TweenSpec.Cycle.LOOP;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				BitmapFontComponent bitmapFontComponent = ComponentMappers.bitmapfont.get(e);
+				if (a > 0.5) {
+					bitmapFontComponent.color.a = 1.0f;
+				} else {
+					bitmapFontComponent.color.a = 0.0f;
+				}
+			}
+		};
+		tweenComponent.tweenSpecs.add(tweenSpec);
+
 		ClickComponent clickComp = new ClickComponent();
 		clickComp.clicker = new ClickInterface() {
 			@Override
@@ -68,6 +90,7 @@ public class TitleScreen extends BasicScreen {
 		clickEntity.add(fontComp);
 		clickEntity.add(transComp);
 		clickEntity.add(clickComp);
+		clickEntity.add(tweenComponent);
 
 		return clickEntity;
 	}
