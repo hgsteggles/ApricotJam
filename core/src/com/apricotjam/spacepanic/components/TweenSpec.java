@@ -12,7 +12,6 @@ public class TweenSpec {
 	public float period = 1.0f;
 	public float time = 0;
 	public Cycle cycle = Cycle.ONCE;
-	public boolean reverse = false;
 	public TweenInterface tweenInterface;
 	public Interpolation interp = Interpolation.linear;
 }

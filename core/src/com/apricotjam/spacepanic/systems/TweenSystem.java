@@ -21,7 +21,7 @@ public class TweenSystem extends IteratingSystem {
 		for (TweenSpec tws: twc.tweenSpecs) {
 			tws.time += deltaTime / tws.period;
 			tws.tweenInterface.applyTween(entity, tws.interp.apply(tws.start, tws.end, tws.time));
-			if (!tws.reverse && tws.time > tws.period || tws.reverse && tws.time < 0.0f) {
+			if (tws.time > tws.period) {
 				switch (tws.cycle) {
 					case ONCE:
 						finished.add(tws);
@@ -30,8 +30,10 @@ public class TweenSystem extends IteratingSystem {
 						tws.time -= tws.period;
 						break;
 					case REVERSE:
-						tws.period *= -1.0;
-						tws.reverse = !tws.reverse;
+						tws.time -= tws.period;
+						float temp = tws.start;
+						tws.start = tws.end;
+						tws.end = temp;
 						break;
 				}
 			}
