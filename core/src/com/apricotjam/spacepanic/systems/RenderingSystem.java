@@ -5,6 +5,7 @@ import java.util.Comparator;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
+import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.badlogic.ashley.core.ComponentMapper;
@@ -28,10 +29,6 @@ public class RenderingSystem extends SortedIteratingSystem {
 	
 	private OrthographicCamera camera, pixelcamera;
 	private SpriteBatch batch;
-	
-	private static ComponentMapper<TransformComponent> transformCM = ComponentMapper.getFor(TransformComponent.class);
-	private ComponentMapper<BitmapFontComponent> bitmapfontCM = ComponentMapper.getFor(BitmapFontComponent.class);
-	private ComponentMapper<TextureComponent> textureCM = ComponentMapper.getFor(TextureComponent.class);
 
 	public RenderingSystem(SpriteBatch batch) {
 		super(Family.all(TransformComponent.class)
@@ -61,20 +58,20 @@ public class RenderingSystem extends SortedIteratingSystem {
 	private static class DepthComparator implements Comparator<Entity> {
 		@Override
 		public int compare(Entity e1, Entity e2) {
-			return (int)Math.signum(transformCM.get(e1).position.z - transformCM.get(e2).position.z);
+			return (int)Math.signum(ComponentMappers.transform.get(e1).position.z - ComponentMappers.transform.get(e2).position.z);
 		}
 	}
 	
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		if (textureCM.has(entity)) {
-			TextureComponent tex = textureCM.get(entity);
+		if (ComponentMappers.texture.has(entity)) {
+			TextureComponent tex = ComponentMappers.texture.get(entity);
 
 			if (tex.region == null) {
 				return;
 			}
 
-			TransformComponent t = transformCM.get(entity);
+			TransformComponent t = ComponentMappers.transform.get(entity);
 
 			float width = tex.region.getRegionWidth();
 			float height = tex.region.getRegionHeight();
@@ -87,11 +84,11 @@ public class RenderingSystem extends SortedIteratingSystem {
 					width, height,
 					t.scale.x * PIXELS_TO_WORLD, t.scale.y * PIXELS_TO_WORLD,
 					MathUtils.radiansToDegrees * t.rotation);
-		} else if (bitmapfontCM.has(entity)) {
+		} else if (ComponentMappers.bitmapfont.has(entity)) {
 			batch.setProjectionMatrix(pixelcamera.combined);
 
-			BitmapFontComponent bitmap = bitmapfontCM.get(entity);
-			TransformComponent t = transformCM.get(entity);
+			BitmapFontComponent bitmap = ComponentMappers.bitmapfont.get(entity);
+			TransformComponent t = ComponentMappers.transform.get(entity);
 			BitmapFont font = MiscArt.fonts.get(bitmap.font);
 
 			font.setColor(bitmap.color);
