@@ -64,8 +64,7 @@ public class MenuScreen extends BasicScreen {
 
 		ClickComponent clickComponent = new ClickComponent();
 		clickComponent.active = true;
-		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f)
-											  .setCenter(transComp.position.x, transComp.position.y);
+		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f).setCenter(0.0f, 0.0f);
 
 		clickEntity.add(fontComp);
 		clickEntity.add(transComp);

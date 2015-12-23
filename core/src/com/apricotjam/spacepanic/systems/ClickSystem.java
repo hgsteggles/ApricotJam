@@ -2,6 +2,7 @@ package com.apricotjam.spacepanic.systems;
 
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -25,7 +26,14 @@ public class ClickSystem extends IteratingSystem {
 		bc.clickLast = false;
 
 		Vector2 pos = new Vector2(InputManager.screenInput.getPointerLocation());
-		if (isInside(bc, pos.x, pos.y)) {
+		boolean inside = false;
+		if (ComponentMappers.transform.has(entity)) {
+			TransformComponent tc = ComponentMappers.transform.get(entity);
+			inside = isInside(bc, pos.x - tc.position.x, pos.y - tc.position.y);
+		} else {
+			inside = isInside(bc, pos.x, pos.y);
+		}
+		if (inside) {
 			if (InputManager.screenInput.isPointerDown()) {
 				bc.pointerOver = true;
 			} else if (InputManager.screenInput.isPointerUpLast()) {
