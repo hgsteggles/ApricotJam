@@ -1,7 +1,5 @@
 package com.apricotjam.spacepanic.systems;
 
-import java.util.Comparator;
-
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
@@ -9,26 +7,22 @@ import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+
+import java.util.Comparator;
 
 public class RenderingSystem extends SortedIteratingSystem {
 	public static final float PIXELS_TO_WORLD = BasicScreen.WORLD_WIDTH / SpacePanic.WIDTH;
-	public static final float WORLD_TO_PIXELS =  1.0f / PIXELS_TO_WORLD;
-	
+	public static final float WORLD_TO_PIXELS = 1.0f / PIXELS_TO_WORLD;
+
 	private Camera worldCamera, pixelcamera;
 	private SpriteBatch batch;
 
@@ -36,11 +30,11 @@ public class RenderingSystem extends SortedIteratingSystem {
 		super(Family.all(TransformComponent.class)
 					.one(TextureComponent.class, BitmapFontComponent.class)
 					.get(), new DepthComparator());
-		
+
 		this.batch = batch;
 
 		this.worldCamera = worldCamera;
-		
+
 		this.pixelcamera = new OrthographicCamera(SpacePanic.WIDTH, SpacePanic.HEIGHT);
 		this.pixelcamera.position.set(SpacePanic.WIDTH / 2.0f, SpacePanic.HEIGHT / 2.0f, 0);
 	}
@@ -56,13 +50,6 @@ public class RenderingSystem extends SortedIteratingSystem {
 		batch.end();
 	}
 
-	private static class DepthComparator implements Comparator<Entity> {
-		@Override
-		public int compare(Entity e1, Entity e2) {
-			return (int)Math.signum(ComponentMappers.transform.get(e1).position.z - ComponentMappers.transform.get(e2).position.z);
-		}
-	}
-	
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		if (ComponentMappers.texture.has(entity)) {
@@ -107,6 +94,13 @@ public class RenderingSystem extends SortedIteratingSystem {
 			}
 
 			batch.setProjectionMatrix(worldCamera.combined);
+		}
+	}
+
+	private static class DepthComparator implements Comparator<Entity> {
+		@Override
+		public int compare(Entity e1, Entity e2) {
+			return (int) Math.signum(ComponentMappers.transform.get(e1).position.z - ComponentMappers.transform.get(e2).position.z);
 		}
 	}
 }

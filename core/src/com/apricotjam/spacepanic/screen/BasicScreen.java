@@ -13,82 +13,80 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class BasicScreen implements Screen {
 
-    protected final SpacePanic spacePanic;
+	public static final float WORLD_WIDTH = 16.0f;
+	public static final float WORLD_HEIGHT = 9.0f;
+	protected final SpacePanic spacePanic;
+	protected int width;
+	protected int height;
 
-    public static final float WORLD_WIDTH = 16.0f;
-    public static final float WORLD_HEIGHT = 9.0f;
+	protected OrthographicCamera worldCamera;
+	protected SpriteBatch spriteBatch;
 
-    protected int width;
-    protected int height;
+	private Engine engine;
 
-    protected OrthographicCamera worldCamera;
-    protected SpriteBatch spriteBatch;
+	public BasicScreen(SpacePanic spacePanic) {
+		this.spacePanic = spacePanic;
+		worldCamera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+		worldCamera.position.set(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f, 0);
+		worldCamera.update();
+		InputManager.screenInput.setCamera(worldCamera);
 
-    private Engine engine;
+		engine = new Engine();
+		spriteBatch = new SpriteBatch();
+		engine.addSystem(new RenderingSystem(spriteBatch, worldCamera));
+	}
 
-    public BasicScreen(SpacePanic spacePanic) {
-        this.spacePanic = spacePanic;
-        worldCamera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        worldCamera.position.set(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f, 0);
-        worldCamera.update();
-        InputManager.screenInput.setCamera(worldCamera);
+	public void add(Entity e) {
+		engine.addEntity(e);
+	}
 
-        engine = new Engine();
-        spriteBatch = new SpriteBatch();
-        engine.addSystem(new RenderingSystem(spriteBatch, worldCamera));
-    }
+	public void add(EntitySystem es) {
+		engine.addSystem(es);
+	}
 
-    public void add(Entity e) {
-        engine.addEntity(e);
-    }
+	public void render(float delta) {
+		engine.update(delta);
+	}
 
-    public void add(EntitySystem es) {
-        engine.addSystem(es);
-    }
+	@Override
+	public void show() {
+		worldCamera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+		worldCamera.position.set(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f, 0);
+		worldCamera.update();
 
-    public void render(float delta) {
-        engine.update(delta);
-    }
+		spriteBatch.setProjectionMatrix(worldCamera.combined);
 
-    @Override
-    public void show() {
-        worldCamera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        worldCamera.position.set(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f, 0);
-        worldCamera.update();
+		width = Gdx.graphics.getWidth();
+		height = Gdx.graphics.getHeight();
+	}
 
-        spriteBatch.setProjectionMatrix(worldCamera.combined);
+	@Override
+	public void resize(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
 
-        width = Gdx.graphics.getWidth();
-        height = Gdx.graphics.getHeight();
-    }
+	@Override
+	public void dispose() {
+		spriteBatch.dispose();
+	}
 
-    @Override
-    public void resize(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
+	@Override
+	public void hide() {
+		dispose();
+	}
 
-    @Override
-    public void dispose() {
-        spriteBatch.dispose();
-    }
+	@Override
+	public void pause() {
+	}
 
-    @Override
-    public void hide() {
-        dispose();
-    }
+	@Override
+	public void resume() {
+	}
 
-    @Override
-    public void pause() {
-    }
+	public boolean isOverlay() {
+		return false;
+	}
 
-    @Override
-    public void resume() {
-    }
-
-    public boolean isOverlay() {
-        return false;
-    }
-
-    public abstract void backPressed();
+	public abstract void backPressed();
 }
