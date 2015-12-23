@@ -11,6 +11,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
-public class RenderingSystem extends IteratingSystem {
+public class RenderingSystem extends SortedIteratingSystem {
 	public static final float WORLD_WIDTH = 16f;
 	public static final float WORLD_HEIGHT = 9f;
 	public static final float PIXELS_TO_WORLD = 1f/32f;
@@ -28,100 +29,80 @@ public class RenderingSystem extends IteratingSystem {
 	private OrthographicCamera camera, pixelcamera;
 	private SpriteBatch batch;
 	
-	private ComponentMapper<TransformComponent> transformCM;
-	private ComponentMapper<BitmapFontComponent> bitmapfontCM;
-	private ComponentMapper<TextureComponent> textureCM;
-	
-	private Comparator<Entity> comparator;
-	
-	private Array<Entity> orderedEntities;
-	
+	private static ComponentMapper<TransformComponent> transformCM = ComponentMapper.getFor(TransformComponent.class);
+	private ComponentMapper<BitmapFontComponent> bitmapfontCM = ComponentMapper.getFor(BitmapFontComponent.class);
+	private ComponentMapper<TextureComponent> textureCM = ComponentMapper.getFor(TextureComponent.class);
+
 	public RenderingSystem(SpriteBatch batch) {
 		super(Family.all(TransformComponent.class)
 					.one(TextureComponent.class, BitmapFontComponent.class)
-					.get());
+					.get(), new DepthComparator());
 		
 		this.batch = batch;
-		
-		textureCM = ComponentMapper.getFor(TextureComponent.class);
-		bitmapfontCM = ComponentMapper.getFor(BitmapFontComponent.class);
-		transformCM = ComponentMapper.getFor(TransformComponent.class);
-		
-		comparator = new Comparator<Entity>() {
-			@Override
-			public int compare(Entity entityA, Entity entityB) {
-				return (int)Math.signum(transformCM.get(entityB).position.z - transformCM.get(entityA).position.z);
-			}
-		};
 		
 		camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
 		camera.position.set(WORLD_WIDTH/2f, WORLD_HEIGHT/2f, 0);
 		
 		pixelcamera = new OrthographicCamera(SpacePanic.WIDTH, SpacePanic.HEIGHT);
 		pixelcamera.position.set(SpacePanic.WIDTH/2f, SpacePanic.HEIGHT/2f, 0);
-		
-		orderedEntities = new Array<Entity>();
 	}
 
 	@Override
 	public void update(float deltaTime) {
-		super.update(deltaTime);
-		
-		orderedEntities.sort(comparator);
-		
 		camera.update();
 		pixelcamera.update();
 		batch.setProjectionMatrix(camera.combined);
+
 		batch.begin();
-		
-		for (Entity entity : orderedEntities) {
-			if (textureCM.has(entity)) {
-				TextureComponent tex = textureCM.get(entity);
-				
-				if (tex.region == null) {
-					continue;
-				}
-				
-				TransformComponent t = transformCM.get(entity);
-			
-				float width = tex.region.getRegionWidth();
-				float height = tex.region.getRegionHeight();
-				float originX = width * 0.5f;
-				float originY = height * 0.5f;
-				
-				batch.draw(tex.region,
-						   t.position.x - originX, t.position.y - originY,
-						   originX, originY,
-						   width, height,
-						   t.scale.x * PIXELS_TO_WORLD, t.scale.y * PIXELS_TO_WORLD,
-						   MathUtils.radiansToDegrees * t.rotation);
-			}
-			else if (bitmapfontCM.has(entity)) {
-				batch.setProjectionMatrix(pixelcamera.combined);
-				
-				BitmapFontComponent bitmap = bitmapfontCM.get(entity);
-				TransformComponent t = transformCM.get(entity);
-				BitmapFont font = MiscArt.fonts.get(bitmap.font);
-				
-				font.setColor(bitmap.color);
-				if (!bitmap.centering) {
-					font.draw(batch, bitmap.string, t.position.x, t.position.y);
-				}
-				else {
-					GlyphLayout layout = new GlyphLayout(font, bitmap.string);
-					font.draw(batch, bitmap.string, t.position.x - layout.width/2f, t.position.y - layout.height/2f);
-				}
-				
-				batch.setProjectionMatrix(camera.combined);
-			}
-		}
-		
+		super.update(deltaTime);
 		batch.end();
-		orderedEntities.clear();
+	}
+
+	private static class DepthComparator implements Comparator<Entity> {
+		@Override
+		public int compare(Entity e1, Entity e2) {
+			return (int)Math.signum(transformCM.get(e1).position.z - transformCM.get(e2).position.z);
+		}
 	}
 	
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		orderedEntities.add(entity);
+		if (textureCM.has(entity)) {
+			TextureComponent tex = textureCM.get(entity);
+
+			if (tex.region == null) {
+				return;
+			}
+
+			TransformComponent t = transformCM.get(entity);
+
+			float width = tex.region.getRegionWidth();
+			float height = tex.region.getRegionHeight();
+			float originX = width * 0.5f;
+			float originY = height * 0.5f;
+
+			batch.draw(tex.region,
+					t.position.x - originX, t.position.y - originY,
+					originX, originY,
+					width, height,
+					t.scale.x * PIXELS_TO_WORLD, t.scale.y * PIXELS_TO_WORLD,
+					MathUtils.radiansToDegrees * t.rotation);
+		} else if (bitmapfontCM.has(entity)) {
+			batch.setProjectionMatrix(pixelcamera.combined);
+
+			BitmapFontComponent bitmap = bitmapfontCM.get(entity);
+			TransformComponent t = transformCM.get(entity);
+			BitmapFont font = MiscArt.fonts.get(bitmap.font);
+
+			font.setColor(bitmap.color);
+			if (!bitmap.centering) {
+				font.draw(batch, bitmap.string, t.position.x, t.position.y);
+			} else {
+				GlyphLayout layout = new GlyphLayout(font, bitmap.string);
+				font.draw(batch, bitmap.string, t.position.x - layout.width / 2f, t.position.y - layout.height / 2f);
+			}
+
+			batch.setProjectionMatrix(camera.combined);
+		}
 	}
 }
