@@ -8,4 +8,5 @@ public class ComponentMappers {
 	public static ComponentMapper<TextureComponent> texture = ComponentMapper.getFor(TextureComponent.class);
 	public static ComponentMapper<AlphaFlashComponent> flash = ComponentMapper.getFor(AlphaFlashComponent.class);
 	public static ComponentMapper<ButtonComponent> button = ComponentMapper.getFor(ButtonComponent.class);
+	public static ComponentMapper<PipeTileComponent> pipetile = ComponentMapper.getFor(PipeTileComponent.class);
 }
