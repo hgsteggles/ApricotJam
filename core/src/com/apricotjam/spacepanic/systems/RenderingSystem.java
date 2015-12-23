@@ -65,9 +65,6 @@ public class RenderingSystem extends IteratingSystem {
 
 	@Override
 	public void update(float deltaTime) {
-		Gdx.graphics.getGL20().glClearColor( 0.0f, 0.0f, 0.0f, 1 );
-		Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
-		
 		super.update(deltaTime);
 		
 		orderedEntities.sort(comparator);

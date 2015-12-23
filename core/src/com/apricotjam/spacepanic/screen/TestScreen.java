@@ -32,7 +32,7 @@ public class TestScreen extends BasicScreen {
     }
 
     @Override
-    public void render() {
+    public void render(float delta) {
         spriteBatch.begin();
         draw(MiscArt.testImage, xImage, yImage, 1.0f, 1.0f, true);
         spriteBatch.end();

@@ -35,7 +35,7 @@ public class MenuScreen extends BasicScreen {
     }
 
     @Override
-    public void render() {
+    public void render(float delta) {
         spriteBatch.begin();
         draw(MiscArt.title, CAMERA_WIDTH / 2.0f, titlePosition, 6.5f, 1.5f, true);
         buttonManager.render(this);

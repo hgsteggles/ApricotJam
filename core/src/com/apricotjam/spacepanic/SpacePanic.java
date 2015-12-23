@@ -23,8 +23,8 @@ public class SpacePanic extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		//Gdx.gl.glClearColor(0, 0, 0, 1);
-		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.graphics.getGL20().glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		if (screen != null) {
 			if (screen.getInputData().isBackPressedLast()) {
 				screen.backPressed();

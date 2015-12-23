@@ -35,7 +35,6 @@ public class TitleScreen extends BasicScreen {
 
     @Override
     public void update(float delta, InputData inputData) {
-    	engine.update(delta);
     	
         flashTimer += delta;
         if (flashTimer > FLASHPERIOD) {
@@ -56,13 +55,8 @@ public class TitleScreen extends BasicScreen {
     }
 
     @Override
-    public void render() {
-        //spriteBatch.begin();
-        //draw(MiscArt.title, CAMERA_WIDTH / 2.0f, CAMERA_HEIGHT / 2.0f, 6.5f, 1.5f, true);
-        //if (flashTimer > FLASHPERIOD / 2.0f) {
-           //drawString("Click to begin!", CAMERA_WIDTH / 2.0f, CAMERA_HEIGHT / 4.0f, 0.3f, true, Color.WHITE);
-        //}
-       // spriteBatch.end();
+    public void render(float delta) {
+        engine.update(delta);
     }
     
     public Entity createTitleEntity() {

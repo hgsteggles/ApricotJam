@@ -44,11 +44,7 @@ public abstract class BasicScreen implements Screen {
 
     public abstract void update(float delta, InputData inputData);
 
-    public final void render(float delta) {
-        render();
-    }
-
-    public abstract void render();
+    public abstract void render(float delta);
 
     @Override
     public void show() {
