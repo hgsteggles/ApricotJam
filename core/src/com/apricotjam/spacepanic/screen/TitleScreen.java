@@ -2,11 +2,10 @@ package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
-import com.apricotjam.spacepanic.components.BitmapFontComponent;
-import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.TextureComponent;
-import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.input.InputManager;
+import com.apricotjam.spacepanic.interfaces.ClickInterface;
+import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 
@@ -18,27 +17,9 @@ public class TitleScreen extends BasicScreen {
 
 	public TitleScreen(SpacePanic spacePanic) {
 		super(spacePanic);
+		add(new ClickSystem());
 		add(createTitleEntity());
-		clickEntity = createClickEntity();
-		add(clickEntity);
-	}
-
-	@Override
-	public void render(float delta) {
-		super.render(delta);
-		flashTimer += delta;
-		if (flashTimer > FLASHPERIOD) {
-			flashTimer = 0.0f;
-		}
-		if (InputManager.screenInput.isPointerDownLast()) {
-			spacePanic.setScreen(new MenuScreen(spacePanic));
-		}
-
-		if (flashTimer > FLASHPERIOD / 2.0f) {
-			ComponentMappers.bitmapfont.get(clickEntity).color.a = 1.0f;
-		} else {
-			ComponentMappers.bitmapfont.get(clickEntity).color.a = 0.0f;
-		}
+		add(createClickEntity());
 	}
 
 	@Override
@@ -76,8 +57,17 @@ public class TitleScreen extends BasicScreen {
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
 
+		ClickComponent clickComp = new ClickComponent();
+		clickComp.clicker = new ClickInterface() {
+			@Override
+			public void onClick() {
+				spacePanic.setScreen(new MenuScreen(spacePanic));
+			}
+		};
+
 		clickEntity.add(fontComp);
 		clickEntity.add(transComp);
+		clickEntity.add(clickComp);
 
 		return clickEntity;
 	}

@@ -3,6 +3,7 @@ package com.apricotjam.spacepanic.screen;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
@@ -63,6 +64,12 @@ public class MenuScreen extends BasicScreen {
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
 
 		ClickComponent clickComponent = new ClickComponent();
+		clickComponent.clicker = new ClickInterface() {
+			@Override
+			public void onClick() {
+				startGame();
+			}
+		};
 		clickComponent.active = true;
 		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f).setCenter(0.0f, 0.0f);
 
@@ -83,9 +90,6 @@ public class MenuScreen extends BasicScreen {
 		}
 
 		ClickComponent button = ComponentMappers.click.get(startButton);
-		if (button.clickLast) {
-			startGame();
-		}
 		if (button.pointerOver) {
 			TransformComponent buttonTransform = ComponentMappers.transform.get(startButton);
 			BitmapFontComponent buttonFont = ComponentMappers.bitmapfont.get(startButton);

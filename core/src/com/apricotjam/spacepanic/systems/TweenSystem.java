@@ -11,7 +11,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 public class TweenSystem extends IteratingSystem {
 
 	public TweenSystem() {
-		super(Family.all(TweenComponent.class, TransformComponent.class).get());
+		super(Family.all(TweenComponent.class).get());
 	}
 
 	@Override
@@ -19,28 +19,7 @@ public class TweenSystem extends IteratingSystem {
 		TweenComponent twc = ComponentMappers.tween.get(entity);
 		for (TweenSpec tws: twc.tweenSpecs) {
 			tws.x += deltaTime / tws.period;
-			float newValue = tws.interp.apply(tws.start, tws.end, tws.x);
-			TransformComponent trc = ComponentMappers.transform.get(entity);
-			switch (tws.target) {
-				case POSX:
-					trc.position.x = newValue;
-					break;
-				case POSY:
-					trc.position.y = newValue;
-					break;
-				case POSZ:
-					trc.position.z = newValue;
-					break;
-				case SCALEX:
-					trc.scale.x = newValue;
-					break;
-				case SCALEY:
-					trc.scale.y = newValue;
-					break;
-				case ROTATION:
-					trc.rotation = newValue;
-					break;
-			}
+			tws.tweenInterface.applyTween(tws.interp.apply(tws.start, tws.end, tws.x));
 		}
 	}
 }

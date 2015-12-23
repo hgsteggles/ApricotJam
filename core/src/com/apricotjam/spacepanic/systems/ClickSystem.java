@@ -38,6 +38,7 @@ public class ClickSystem extends IteratingSystem {
 				bc.pointerOver = true;
 			} else if (InputManager.screenInput.isPointerUpLast()) {
 				bc.clickLast = true;
+				bc.clicker.onClick();
 			}
 		}
 	}
