@@ -33,12 +33,12 @@ public class TitleScreen extends BasicScreen {
 
 		TextureComponent textComp = new TextureComponent();
 		textComp.region = MiscArt.title;
+		textComp.size.x = 5.0f;
+		textComp.size.y = textComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
-		transComp.size.x = 5.0f;
-		transComp.size.y = transComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
 
 		titleEntity.add(textComp);
 		titleEntity.add(transComp);

@@ -61,8 +61,8 @@ public class RenderingSystem extends SortedIteratingSystem {
 
 			TransformComponent t = ComponentMappers.transform.get(entity);
 
-			float width = t.size.x;
-			float height = t.size.y;
+			float width = tex.size.x;
+			float height = tex.size.y;
 			float originX = width * 0.5f;
 			float originY = height * 0.5f;
 
