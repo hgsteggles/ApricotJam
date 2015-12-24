@@ -9,4 +9,5 @@ public class ComponentMappers {
 	public static ComponentMapper<ClickComponent> click = ComponentMapper.getFor(ClickComponent.class);
 	public static ComponentMapper<TweenComponent> tween = ComponentMapper.getFor(TweenComponent.class);
 	public static ComponentMapper<TextButtonComponent> textbutton = ComponentMapper.getFor(TextButtonComponent.class);
+	public static ComponentMapper<PipeTileComponent> pipetile = ComponentMapper.getFor(PipeTileComponent.class);
 }
