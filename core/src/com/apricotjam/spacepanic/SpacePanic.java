@@ -3,7 +3,6 @@ package com.apricotjam.spacepanic;
 import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.screen.PipeTestScreen;
 import com.apricotjam.spacepanic.screen.TitleScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;

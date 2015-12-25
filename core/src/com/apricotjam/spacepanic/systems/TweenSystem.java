@@ -18,7 +18,7 @@ public class TweenSystem extends IteratingSystem {
 	protected void processEntity(Entity entity, float deltaTime) {
 		TweenComponent twc = ComponentMappers.tween.get(entity);
 		Array<TweenSpec> finished = new Array<TweenSpec>();
-		for (TweenSpec tws: twc.tweenSpecs) {
+		for (TweenSpec tws : twc.tweenSpecs) {
 			tws.time += deltaTime / tws.period;
 			tws.tweenInterface.applyTween(entity, tws.interp.apply(tws.start, tws.end, tws.time));
 			if (tws.time > tws.period) {
