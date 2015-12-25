@@ -10,4 +10,6 @@ public class ComponentMappers {
 	public static ComponentMapper<TweenComponent> tween = ComponentMapper.getFor(TweenComponent.class);
 	public static ComponentMapper<TextButtonComponent> textbutton = ComponentMapper.getFor(TextButtonComponent.class);
 	public static ComponentMapper<PipeTileComponent> pipetile = ComponentMapper.getFor(PipeTileComponent.class);
+	public static ComponentMapper<MovementComponent> movment = ComponentMapper.getFor(MovementComponent.class);
+	public static ComponentMapper<ScrollComponent> scroll = ComponentMapper.getFor(ScrollComponent.class);
 }

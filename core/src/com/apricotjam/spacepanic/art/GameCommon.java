@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.art;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameCommon {
