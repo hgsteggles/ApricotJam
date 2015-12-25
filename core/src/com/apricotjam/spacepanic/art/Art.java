@@ -8,6 +8,7 @@ public class Art {
 
     public static void load() {
         MiscArt.load();
+        GameCommon.load();
     }
 
     // Splits a given image into individual dx by dy textureregions

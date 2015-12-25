@@ -10,7 +10,6 @@ public class MiscArt {
 
     public static TextureRegion[] chars;
     public static TextureRegion[] pipes;
-    public static TextureRegion testImage;
     public static TextureRegion title;
     
     public static ObjectMap<String, BitmapFont> fonts = new ObjectMap<String, BitmapFont>();

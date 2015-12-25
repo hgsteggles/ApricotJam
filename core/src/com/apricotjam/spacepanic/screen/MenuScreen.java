@@ -31,7 +31,8 @@ public class MenuScreen extends BasicScreen {
 	}
 
 	private void startGame() {
-		System.out.println("So the game would start now...");
+		System.out.println("Starting game!");
+		spacePanic.setScreen(new GameScreen(spacePanic));
 	}
 
 	public Entity createTitleEntity() {
