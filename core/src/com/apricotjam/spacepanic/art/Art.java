@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Art {
 
 	public static void load() {
+		HelmetUI.load();
+		ComputerArt.load();
 		MiscArt.load();
-		GameCommon.load();
 	}
 
 	public static Texture loadTexture(String name) {
