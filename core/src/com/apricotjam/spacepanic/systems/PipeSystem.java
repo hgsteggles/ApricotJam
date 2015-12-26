@@ -1,11 +1,14 @@
 package com.apricotjam.spacepanic.systems;
 
 import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.puzzle.PipePuzzleGenerator;
 import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.screen.MenuScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -13,6 +16,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 public class PipeSystem extends EntitySystem {
@@ -51,7 +55,6 @@ public class PipeSystem extends EntitySystem {
 	}
 
 	static public byte disconnectAtIndex(byte mask, int index) {
-		System.out.println(mask + " " + index + " " + (mask & ~(1 << index)));
 		return (byte)(mask & ~(1 << index));
 	}
 	
@@ -93,13 +96,6 @@ public class PipeSystem extends EntitySystem {
 		
 		byte[][] maskGrid = generator.generatePuzzle(0);
 		
-		for (int j = GRID_LENGTH - 1; j >= 0; --j) {
-			for (int i = 0; i < GRID_LENGTH; ++i) {
-				System.out.print(maskGrid[i][j] + " ");
-			}			
-			System.out.println();
-		}
-		
 		for (int i = 0; i < GRID_LENGTH; ++i) {
 			for (int j = 0; j < GRID_LENGTH; ++j) {
 				//engine.addEntity(createTile((byte) ((int) randKeys.get(rng.nextInt(randKeys.size))), i, j));
@@ -129,11 +125,23 @@ public class PipeSystem extends EntitySystem {
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
 
 		if (mask == (byte) (5)) {
-			transComp.rotation = 90f;
-			System.out.println("rotated at: " + ipos + " " + jpos);
+			transComp.rotation = -90f;
 		}
+		
+		ClickComponent clickComp = new ClickComponent();
+		clickComp.active = true;
+		clickComp.clicker = new ClickInterface() {
+			@Override
+			public void onClick() {
+				transComp.rotation -= 90f;
+				if (transComp.rotation > 360f)
+					transComp.rotation += 360f;
+				pipeTileComp.mask = rotateMask(pipeTileComp.mask);
+			}
+		};
+		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
 
-		tile.add(pipeTileComp).add(textureComp).add(transComp);
+		tile.add(pipeTileComp).add(textureComp).add(transComp).add(clickComp);
 
 		return tile;
 	}
@@ -142,6 +150,6 @@ public class PipeSystem extends EntitySystem {
 		byte ND = (byte) (mask << 1);
 		ND = (byte) (ND + ((mask >> 3) & 1));
 
-		return mask;
+		return (byte)(ND%16);
 	}
 }
