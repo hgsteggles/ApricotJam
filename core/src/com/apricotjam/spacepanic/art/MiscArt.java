@@ -29,6 +29,12 @@ public class MiscArt {
 		pipes = Art.loadTexture("pipespritesheetx640640.png");
 		pipesRegion = Art.split(pipes, 128, 128);
 
+		
+		pipeIndexes.put(1, 24);
+		pipeIndexes.put(2, 21);
+		pipeIndexes.put(4, 23);
+		pipeIndexes.put(8, 22);
+		pipeIndexes.put(0, 12);
 		pipeIndexes.put(10, 1);
 		pipeIndexes.put(5, 1);
 		pipeIndexes.put(3, 10);
