@@ -1,18 +1,25 @@
 package com.apricotjam.spacepanic.systems;
 
 import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.puzzle.PipePuzzleGenerator;
 import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.screen.MenuScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -134,12 +141,13 @@ public class PipeSystem extends EntitySystem {
 		}
 		
 		if (solved) {
-			System.out.println("Solved!");
+			getEngine().addEntity(createSolvedText());
+			resetTiles();
 		}
 	}
 
 	private void addTiles(Engine engine) {
-		generator.generatePuzzle(10);
+		generator.generatePuzzle(4);
 		byte[][] maskGrid = generator.getMaskGrid();
 		
 		for (int i = 0; i < GRID_LENGTH; ++i) {
@@ -166,8 +174,33 @@ public class PipeSystem extends EntitySystem {
 			}
 		}
 	}
+	
+	private void resetTiles() {
+		generator.generatePuzzle(4);
+		byte[][] maskGrid = generator.getMaskGrid();
+		
+		for (int i = 0; i < GRID_LENGTH; ++i) {
+			for (int j = 0; j < GRID_LENGTH; ++j) {
+				GridPoint2 start = generator.getEntryPoint();
+				GridPoint2 end = generator.getExitPoint();
+				boolean isExitEntry = ((i == start.x && j == start.y) || (i == end.x && j == end.y));
+				
+				resetTile(maskGrid[i][j], i, j, isExitEntry);
+				
+				if (!isExitEntry) {
+					if (rng.nextBoolean())
+						rotateTile(pipeTiles[i][j]);
+					else {
+						rotateTile(pipeTiles[i][j]);
+						rotateTile(pipeTiles[i][j]);
+						rotateTile(pipeTiles[i][j]);
+					}
+				}
+			}
+		}
+	}
 
-	public Entity createTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
+	private Entity createTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
 		Entity tile = new Entity();
 
 		PipeTileComponent pipeTileComp = new PipeTileComponent();
@@ -187,7 +220,7 @@ public class PipeSystem extends EntitySystem {
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
 
 		if (mask == (byte) (5)) {
-			transComp.rotation = -90f;
+			transComp.rotation = 270f;
 		}
 		
 		ClickComponent clickComp = new ClickComponent();
@@ -208,6 +241,19 @@ public class PipeSystem extends EntitySystem {
 		return tile;
 	}
 	
+	private void resetTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
+		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[ipos][jpos]);
+		pipeTileComp.mask = mask;
+		
+		ClickComponent clickComp = ComponentMappers.click.get(pipeTiles[ipos][jpos]);
+		clickComp.active = !isExitEntry;
+		
+		if (pipeTileComp.mask == (byte)(5)) {
+			TransformComponent transComp = new TransformComponent();
+			transComp.rotation = 270f;
+		}
+	}
+	
 	public void rotateTile(Entity tile) {
 		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(tile);
 		TransformComponent transComp = ComponentMappers.transform.get(tile);
@@ -216,6 +262,39 @@ public class PipeSystem extends EntitySystem {
 		if (transComp.rotation > 360f)
 			transComp.rotation += 360f;
 		pipeTileComp.mask = rotateMask(pipeTileComp.mask);
+	}
+	
+	private Entity createSolvedText() {
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
+		fontComp.string = "Solved!";
+		fontComp.color = new Color(Color.WHITE);
+		fontComp.centering = true;
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT * 9f / 10f;
+
+		TweenComponent tweenComponent = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 1.0f;
+		tweenSpec.end = 0.0f;
+		tweenSpec.period = 1f;
+		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				BitmapFontComponent bitmapFontComponent = ComponentMappers.bitmapfont.get(e);
+				bitmapFontComponent.color.a = Math.max(Math.min(a, 1f), 0f);
+			}
+		};
+		tweenComponent.tweenSpecs.add(tweenSpec);
+
+		Entity solvedText = new Entity();
+		solvedText.add(fontComp).add(transComp).add(tweenComponent);
+		
+		return solvedText;
 	}
 
 	private byte rotateMask(byte mask) {
