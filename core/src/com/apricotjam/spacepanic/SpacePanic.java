@@ -2,6 +2,7 @@ package com.apricotjam.spacepanic;
 
 import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.input.InputManager;
+import com.apricotjam.spacepanic.misc.ScreenshotFactory;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.screen.PipeTestScreen;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -12,6 +13,11 @@ public class SpacePanic extends ApplicationAdapter {
 
 	public static final int WIDTH = 1280;
 	public static final int HEIGHT = 720;
+	
+	private boolean video = false;
+	private float accum = 0;
+	private float frame_time = 1.0f/30f;
+	int nprints = (int)(4f/frame_time);
 
 	private BasicScreen screen;
 
@@ -26,14 +32,24 @@ public class SpacePanic extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		Gdx.graphics.getGL20().glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		Gdx.graphics.getGL20().glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
 		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		if (screen != null) {
 			if (InputManager.screenInput.isBackPressedLast()) {
 				screen.backPressed();
 			}
-			screen.render(Gdx.graphics.getDeltaTime());
+			float deltatime = Gdx.graphics.getDeltaTime();
+			screen.render(deltatime);
 			InputManager.reset();
+			
+			if (video && nprints > 0) {
+				accum += deltatime;
+				if (accum > frame_time) {
+					accum -= frame_time;
+					ScreenshotFactory.saveScreenshot();
+					nprints -= 1;
+				}
+			}
 		}
 	}
 
