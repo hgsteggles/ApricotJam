@@ -41,5 +41,7 @@ public class MiscArt {
 		pipeIndexes.put(6, 5);
 		pipeIndexes.put(12, 14);
 		pipeIndexes.put(9, 19);
+		
+		pipeIndexes.put(15, 13);
 	}
 }

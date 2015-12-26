@@ -36,7 +36,6 @@ public class PipePuzzleGenerator {
 	}
 	
 	private boolean updateMask(int parent_i, int parent_j, int i, int j) {
-		System.out.println(i + " " + j);
 		// Connect to parent after checking if possible.
 		int parentDirection;
 		
