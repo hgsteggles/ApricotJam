@@ -11,14 +11,21 @@ public class Art {
 		GameCommon.load();
 	}
 
-	// Splits a given image into individual dx by dy textureregions
-	public static TextureRegion[] split(String name, int dx, int dy) {
-		return split(name, dx, dy, false, false);
+	public static Texture loadTexture(String name) {
+		return new Texture(Gdx.files.internal(name));
+	}
+
+	public static TextureRegion createTextureRegion(Texture texture) {
+		return new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
 	}
 
 	// Splits a given image into individual dx by dy textureregions
-	public static TextureRegion[] split(String name, int dx, int dy, boolean flipX, boolean flipY) {
-		Texture texture = new Texture(Gdx.files.internal(name));
+	public static TextureRegion[] split(Texture texture, int dx, int dy) {
+		return split(texture, dx, dy, false, false);
+	}
+
+	// Splits a given image into individual dx by dy textureregions
+	public static TextureRegion[] split(Texture texture, int dx, int dy, boolean flipX, boolean flipY) {
 		int xSlices = texture.getWidth() / dx;
 		int ySlices = texture.getHeight() / dy;
 		TextureRegion[] out = new TextureRegion[xSlices * ySlices];
@@ -32,13 +39,12 @@ public class Art {
 	}
 
 	// Splits a single row given image into individual dx by dy textureregions
-	public static TextureRegion[] splitRow(String name, int dx, int dy, int row) {
-		return splitRow(name, dx, dy, row, false, false);
+	public static TextureRegion[] splitRow(Texture texture, int dx, int dy, int row) {
+		return splitRow(texture, dx, dy, row, false, false);
 	}
 
 	// Splits a single row given image into individual dx by dy textureregions
-	public static TextureRegion[] splitRow(String name, int dx, int dy, int row, boolean flipX, boolean flipY) {
-		Texture texture = new Texture(Gdx.files.internal(name));
+	public static TextureRegion[] splitRow(Texture texture, int dx, int dy, int row, boolean flipX, boolean flipY) {
 		int xSlices = texture.getWidth() / dx;
 		TextureRegion[] out = new TextureRegion[xSlices];
 		for (int x = 0; x < xSlices; x++) {
@@ -47,15 +53,5 @@ public class Art {
 			out[x].flip(flipX, flipY);
 		}
 		return out;
-	}
-
-	public static TextureRegion load(String name, int width, int height) {
-		Texture texture = new Texture(Gdx.files.internal(name));
-		return new TextureRegion(texture, 0, 0, width, height);
-	}
-
-	public static TextureRegion load(String name) {
-		Texture texture = new Texture(Gdx.files.internal(name));
-		return new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
 	}
 }

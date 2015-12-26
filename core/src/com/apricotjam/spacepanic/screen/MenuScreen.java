@@ -1,6 +1,7 @@
 package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
@@ -39,7 +40,7 @@ public class MenuScreen extends BasicScreen {
 		Entity titleEntity = new Entity();
 
 		TextureComponent textComp = new TextureComponent();
-		textComp.region = MiscArt.title;
+		textComp.region = Art.createTextureRegion(MiscArt.title);
 		textComp.size.x = 5.0f;
 		textComp.size.y = textComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
 

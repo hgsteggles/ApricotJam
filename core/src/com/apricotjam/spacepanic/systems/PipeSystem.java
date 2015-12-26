@@ -75,7 +75,7 @@ public class PipeSystem extends EntitySystem {
 		pipeTileComp.mask = mask;
 
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.region = MiscArt.pipes[MiscArt.pipeIndexes.get(mask)];
+		textureComp.region = MiscArt.pipesRegion[MiscArt.pipeIndexes.get(mask)];
 
 		TransformComponent transComp = new TransformComponent();
 		float tileWidth = 1f;

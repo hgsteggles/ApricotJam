@@ -1,6 +1,7 @@
 package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.GameCommon;
 import com.apricotjam.spacepanic.components.MovementComponent;
 import com.apricotjam.spacepanic.components.ScrollComponent;
@@ -29,7 +30,7 @@ public class GameScreen extends BasicScreen {
 		Entity e = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
-		texComp.region = GameCommon.mainOverlay;
+		texComp.region = Art.createTextureRegion(GameCommon.mainOverlay);
 		texComp.size.x = BasicScreen.WORLD_WIDTH;
 		texComp.size.y = BasicScreen.WORLD_HEIGHT;
 
@@ -48,7 +49,7 @@ public class GameScreen extends BasicScreen {
 		Entity e = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
-		Texture tex = GameCommon.mainBackground.getTexture();
+		Texture tex = GameCommon.mainBackground;
 		float texToCorner = (float)Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
 		texComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
 		tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);

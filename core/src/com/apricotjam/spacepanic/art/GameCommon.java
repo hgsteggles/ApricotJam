@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameCommon {
 
-	public static TextureRegion mainOverlay;
-	public static TextureRegion mainBackground;
+	public static Texture mainOverlay;
+	public static Texture mainBackground;
 
 	public static void load() {
-		mainOverlay = Art.load("mainOverlay.png");
-		mainBackground = Art.load("mainBackground.png");
+		mainOverlay = Art.loadTexture("mainOverlay.png");
+		mainBackground = Art.loadTexture("mainBackground.png");
 	}
 }
