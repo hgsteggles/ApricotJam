@@ -1,28 +1,32 @@
 package com.apricotjam.spacepanic.systems;
 
 import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
+import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.puzzle.PipePuzzleGenerator;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.screen.MenuScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 public class PipeSystem extends EntitySystem {
-	public static final int GRID_LENGTH = 5;
+	public static final int GRID_LENGTH = 6;
 	public static final Array<GridPoint2> GridDeltas = createGridDeltas();
-	private ImmutableArray<Entity> pipeTiles;
+	private Entity[][] pipeTiles = new Entity[GRID_LENGTH][GRID_LENGTH];
 	private RandomXS128 rng = new RandomXS128(0);
 	private PipePuzzleGenerator generator = new PipePuzzleGenerator();
 
@@ -58,7 +62,7 @@ public class PipeSystem extends EntitySystem {
 		return (byte)(mask & ~(1 << index));
 	}
 	
-	static public int opppositeDirectionIndex(int index) {
+	static public int oppositeDirectionIndex(int index) {
 		return (index + 2)%4;
 	}
 	
@@ -75,37 +79,127 @@ public class PipeSystem extends EntitySystem {
 	@Override
 	public void addedToEngine(Engine engine) {
 		addTiles(engine);
-		pipeTiles = engine.getEntitiesFor(Family.all(PipeTileComponent.class).get());
+		//pipeTiles = engine.getEntitiesFor(Family.all(PipeTileComponent.class).get());
 	}
 
 	@Override
 	public void update(float deltaTime) {
-
-	}
-
-	private void addTiles(Engine engine) {
-		/*
-		Array<Integer> randKeys = new Array<Integer>();
-		randKeys.add(10);
-		randKeys.add(5);
-		randKeys.add(3);
-		randKeys.add(6);
-		randKeys.add(12);
-		randKeys.add(9);
-		*/
+		// Check if the puzzle is solved.
+		GridPoint2 start = generator.getEntryPoint();
+		GridPoint2 end = generator.getExitPoint();
 		
-		byte[][] maskGrid = generator.generatePuzzle(0);
+		int curr_i = start.x;
+		int curr_j = start.y;
 		
-		for (int i = 0; i < GRID_LENGTH; ++i) {
-			for (int j = 0; j < GRID_LENGTH; ++j) {
-				//engine.addEntity(createTile((byte) ((int) randKeys.get(rng.nextInt(randKeys.size))), i, j));
-				engine.addEntity(createTile(maskGrid[i][j], i, j));
+		Entity tile = pipeTiles[start.x][start.y];
+		PipeTileComponent tileComp = ComponentMappers.pipetile.get(tile);
+		
+		// Find start pipe exit.
+		int lastPipeExitDir = 0;
+		for (int idir = 0; idir < 4; ++idir) {
+			if (connectedAtIndex(tileComp.mask, idir)) {
+				lastPipeExitDir = idir;
+				break;
+			}
+		}
+	
+		boolean solved = false;
+		
+		while (!solved) {
+			curr_i = curr_i + GridDeltas.get(lastPipeExitDir).x;
+			curr_j = curr_j + GridDeltas.get(lastPipeExitDir).y;
+			if (curr_i < 0 || curr_i >= GRID_LENGTH || curr_j < 0 || curr_j >= GRID_LENGTH) {
+				break;
 			}
 			
+			tile = pipeTiles[curr_i][curr_j];
+			tileComp = ComponentMappers.pipetile.get(tile);
+			
+			// Check if connected to previous pipe segment.
+			if (connectedAtIndex(tileComp.mask, oppositeDirectionIndex(lastPipeExitDir))) {
+				// If this is the exit tile then it is solved.
+				// If cross pipe, then the exit is opposite to entry. Else the exit is at 90 degrees.
+				if (curr_i == end.x && curr_j == end.y) {
+					solved = true;
+				}
+				else if (connectedAtIndex(tileComp.mask, lastPipeExitDir)) {
+					continue;
+				}
+				else if (connectedAtIndex(tileComp.mask, (lastPipeExitDir+1)%4)) {
+					lastPipeExitDir = (lastPipeExitDir+1)%4;
+					continue;
+				}
+				else if (connectedAtIndex(tileComp.mask, (lastPipeExitDir+3)%4)) {
+					lastPipeExitDir = (lastPipeExitDir+3)%4;
+					continue;
+				}
+			}
+			else {
+				break;
+			}
+		}
+		
+		if (solved) {
+			getEngine().addEntity(createSolvedText());
+			resetTiles();
 		}
 	}
 
-	public Entity createTile(byte mask, int ipos, int jpos) {
+	private void addTiles(Engine engine) {
+		generator.generatePuzzle(4);
+		byte[][] maskGrid = generator.getMaskGrid();
+		
+		for (int i = 0; i < GRID_LENGTH; ++i) {
+			for (int j = 0; j < GRID_LENGTH; ++j) {
+				GridPoint2 start = generator.getEntryPoint();
+				GridPoint2 end = generator.getExitPoint();
+				boolean isExitEntry = ((i == start.x && j == start.y) || (i == end.x && j == end.y));
+				
+				Entity tile = createTile(maskGrid[i][j], i, j, isExitEntry);
+				
+				if (!isExitEntry) {
+					if (rng.nextBoolean())
+						rotateTile(tile);
+					else {
+						rotateTile(tile);
+						rotateTile(tile);
+						rotateTile(tile);
+					}
+				}
+				
+				engine.addEntity(tile);
+				
+				pipeTiles[i][j] = tile;
+			}
+		}
+	}
+	
+	private void resetTiles() {
+		generator.generatePuzzle(4);
+		byte[][] maskGrid = generator.getMaskGrid();
+		
+		for (int i = 0; i < GRID_LENGTH; ++i) {
+			for (int j = 0; j < GRID_LENGTH; ++j) {
+				GridPoint2 start = generator.getEntryPoint();
+				GridPoint2 end = generator.getExitPoint();
+				boolean isExitEntry = ((i == start.x && j == start.y) || (i == end.x && j == end.y));
+				
+				resetTile(maskGrid[i][j], i, j, isExitEntry);
+				
+				if (!isExitEntry) {
+					if (rng.nextBoolean())
+						rotateTile(pipeTiles[i][j]);
+					else {
+						rotateTile(pipeTiles[i][j]);
+						rotateTile(pipeTiles[i][j]);
+						rotateTile(pipeTiles[i][j]);
+					}
+				}
+			}
+		}
+	}
+
+	private Entity createTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
 		Entity tile = new Entity();
 
 		PipeTileComponent pipeTileComp = new PipeTileComponent();
@@ -125,25 +219,83 @@ public class PipeSystem extends EntitySystem {
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
 
 		if (mask == (byte) (5)) {
-			transComp.rotation = -90f;
+			transComp.rotation = 270f;
 		}
 		
 		ClickComponent clickComp = new ClickComponent();
-		clickComp.active = true;
-		/*clickComp.clicker = new ClickInterface() {
+		clickComp.active = !isExitEntry;
+		clickComp.clicker = new ClickInterface() {
 			@Override
-			public void onClick() {
-				transComp.rotation -= 90f;
-				if (transComp.rotation > 360f)
-					transComp.rotation += 360f;
-				pipeTileComp.mask = rotateMask(pipeTileComp.mask);
+			public void onClick(Entity entity) {
+				TransformComponent tc = ComponentMappers.transform.get(entity);
+				tc.rotation -= 90f;
+				if (tc.rotation > 360f)
+					tc.rotation += 360f;
+				PipeTileComponent ptc = ComponentMappers.pipetile.get(entity);
+				ptc.mask = rotateMask(pipeTileComp.mask);
 			}
-		};*/
+		};
 		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
 
 		tile.add(pipeTileComp).add(textureComp).add(transComp).add(clickComp);
 
 		return tile;
+	}
+	
+	private void resetTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
+		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[ipos][jpos]);
+		pipeTileComp.mask = mask;
+		
+		ClickComponent clickComp = ComponentMappers.click.get(pipeTiles[ipos][jpos]);
+		clickComp.active = !isExitEntry;
+		
+		if (pipeTileComp.mask == (byte)(5)) {
+			TransformComponent transComp = new TransformComponent();
+			transComp.rotation = 270f;
+		}
+	}
+	
+	public void rotateTile(Entity tile) {
+		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(tile);
+		TransformComponent transComp = ComponentMappers.transform.get(tile);
+		
+		transComp.rotation -= 90f;
+		if (transComp.rotation > 360f)
+			transComp.rotation += 360f;
+		pipeTileComp.mask = rotateMask(pipeTileComp.mask);
+	}
+	
+	private Entity createSolvedText() {
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
+		fontComp.string = "Solved!";
+		fontComp.color = new Color(Color.WHITE);
+		fontComp.centering = true;
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT * 9f / 10f;
+
+		TweenComponent tweenComponent = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 1.0f;
+		tweenSpec.end = 0.0f;
+		tweenSpec.period = 1f;
+		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				BitmapFontComponent bitmapFontComponent = ComponentMappers.bitmapfont.get(e);
+				bitmapFontComponent.color.a = Math.max(Math.min(a, 1f), 0f);
+			}
+		};
+		tweenComponent.tweenSpecs.add(tweenSpec);
+
+		Entity solvedText = new Entity();
+		solvedText.add(fontComp).add(transComp).add(tweenComponent);
+		
+		return solvedText;
 	}
 
 	private byte rotateMask(byte mask) {
