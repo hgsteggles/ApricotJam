@@ -13,7 +13,7 @@ public class PipePuzzleGenerator {
 	private GridPoint2 start = new GridPoint2(0, 0);
 	private GridPoint2 end = new GridPoint2(PipeSystem.GRID_LENGTH - 1, PipeSystem.GRID_LENGTH - 1);
 	
-	public byte[][] generatePuzzle(int difficulty) {
+	public void generatePuzzle(int difficulty) {
 		// TODO: modify generation parameters to reflect difficulty.
 		
 		resetMaskGrid();
@@ -23,8 +23,18 @@ public class PipePuzzleGenerator {
 		maskGrid[end.x][end.y] = PipeSystem.connectAtIndex(maskGrid[end.x][end.y], 3);
 		
 		updateMask(start.x, start.y, start.x+1, start.y);
-		
+	}
+	
+	public byte[][] getMaskGrid() {
 		return maskGrid;
+	}
+	
+	public GridPoint2 getEntryPoint() {
+		return start;
+	}
+	
+	public GridPoint2 getExitPoint() {
+		return end;
 	}
 	
 	private void resetMaskGrid() {

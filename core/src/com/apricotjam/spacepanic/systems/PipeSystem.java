@@ -84,28 +84,20 @@ public class PipeSystem extends EntitySystem {
 	}
 
 	private void addTiles(Engine engine) {
-		/*
-		Array<Integer> randKeys = new Array<Integer>();
-		randKeys.add(10);
-		randKeys.add(5);
-		randKeys.add(3);
-		randKeys.add(6);
-		randKeys.add(12);
-		randKeys.add(9);
-		*/
-		
-		byte[][] maskGrid = generator.generatePuzzle(0);
+		generator.generatePuzzle(0);
+		byte[][] maskGrid = generator.getMaskGrid();
 		
 		for (int i = 0; i < GRID_LENGTH; ++i) {
 			for (int j = 0; j < GRID_LENGTH; ++j) {
-				//engine.addEntity(createTile((byte) ((int) randKeys.get(rng.nextInt(randKeys.size))), i, j));
-				engine.addEntity(createTile(maskGrid[i][j], i, j));
+				GridPoint2 start = generator.getEntryPoint();
+				GridPoint2 end = generator.getExitPoint();
+				boolean isExitEntry = ((i == start.x && j == start.y) || (i == end.x && j == end.y));
+				engine.addEntity(createTile(maskGrid[i][j], i, j, isExitEntry));
 			}
-			
 		}
 	}
 
-	public Entity createTile(byte mask, int ipos, int jpos) {
+	public Entity createTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
 		Entity tile = new Entity();
 
 		PipeTileComponent pipeTileComp = new PipeTileComponent();
@@ -129,7 +121,7 @@ public class PipeSystem extends EntitySystem {
 		}
 		
 		ClickComponent clickComp = new ClickComponent();
-		clickComp.active = true;
+		clickComp.active = !isExitEntry;
 		clickComp.clicker = new ClickInterface() {
 			@Override
 			public void onClick() {
