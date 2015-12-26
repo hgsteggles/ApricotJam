@@ -87,7 +87,7 @@ public class MenuScreen extends BasicScreen {
 		ClickComponent clickComponent = new ClickComponent();
 		clickComponent.clicker = new ClickInterface() {
 			@Override
-			public void onClick() {
+			public void onClick(Entity entity) {
 				startGame();
 			}
 		};

@@ -82,7 +82,7 @@ public class TitleScreen extends BasicScreen {
 		ClickComponent clickComp = new ClickComponent();
 		clickComp.clicker = new ClickInterface() {
 			@Override
-			public void onClick() {
+			public void onClick(Entity entity) {
 				spacePanic.setScreen(new MenuScreen(spacePanic));
 			}
 		};

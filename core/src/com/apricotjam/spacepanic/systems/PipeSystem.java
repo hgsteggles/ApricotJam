@@ -130,7 +130,7 @@ public class PipeSystem extends EntitySystem {
 		
 		ClickComponent clickComp = new ClickComponent();
 		clickComp.active = true;
-		clickComp.clicker = new ClickInterface() {
+		/*clickComp.clicker = new ClickInterface() {
 			@Override
 			public void onClick() {
 				transComp.rotation -= 90f;
@@ -138,7 +138,7 @@ public class PipeSystem extends EntitySystem {
 					transComp.rotation += 360f;
 				pipeTileComp.mask = rotateMask(pipeTileComp.mask);
 			}
-		};
+		};*/
 		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
 
 		tile.add(pipeTileComp).add(textureComp).add(transComp).add(clickComp);
