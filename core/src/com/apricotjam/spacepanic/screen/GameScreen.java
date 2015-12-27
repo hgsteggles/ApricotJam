@@ -60,10 +60,10 @@ public class GameScreen extends BasicScreen {
 		transComp.position.z = Float.MIN_VALUE;
 
 		MovementComponent movementComp = new MovementComponent();
-		movementComp.rotationalVelocity = 10.0f;
+		movementComp.rotationalVelocity = 5.0f;
 
 		ScrollComponent scrollComp = new ScrollComponent();
-		scrollComp.speed.x = 1.0f;
+		scrollComp.speed.x = 0.5f;
 
 		e.add(texComp);
 		e.add(transComp);
