@@ -232,7 +232,7 @@ public class PipeSystem extends EntitySystem {
 				if (tc.rotation > 360f)
 					tc.rotation += 360f;
 				PipeTileComponent ptc = ComponentMappers.pipetile.get(entity);
-				ptc.mask = rotateMask(pipeTileComp.mask);
+				ptc.mask = rotateMask(ptc.mask);
 			}
 		};
 		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
