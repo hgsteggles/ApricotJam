@@ -28,7 +28,7 @@ public class MenuScreen extends BasicScreen {
 
 		add(createTitleEntity());
 		add(createStartButton());
-
+		add(createBackground());
 	}
 
 	private void startGame() {
@@ -104,6 +104,25 @@ public class MenuScreen extends BasicScreen {
 		clickEntity.add(textButtonComponent);
 
 		return clickEntity;
+	}
+
+	private Entity createBackground() {
+		Entity e = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = Art.createTextureRegion(MiscArt.mainBackground);
+		texComp.size.x = BasicScreen.WORLD_WIDTH;
+		texComp.size.y = BasicScreen.WORLD_HEIGHT;
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		transComp.position.z = -1.0f;
+
+		e.add(texComp);
+		e.add(transComp);
+
+		return e;
 	}
 
 	@Override

@@ -7,9 +7,12 @@ import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.ClickSystem;
+import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 
 public class TitleScreen extends BasicScreen {
@@ -22,6 +25,7 @@ public class TitleScreen extends BasicScreen {
 
 		add(createTitleEntity());
 		add(createClickEntity());
+		add(createBackground());
 	}
 
 	@Override
@@ -93,6 +97,25 @@ public class TitleScreen extends BasicScreen {
 		clickEntity.add(tweenComponent);
 
 		return clickEntity;
+	}
+
+	private Entity createBackground() {
+		Entity e = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = Art.createTextureRegion(MiscArt.mainBackground);
+		texComp.size.x = BasicScreen.WORLD_WIDTH;
+		texComp.size.y = BasicScreen.WORLD_HEIGHT;
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		transComp.position.z = -1.0f;
+
+		e.add(texComp);
+		e.add(transComp);
+
+		return e;
 	}
 
 }

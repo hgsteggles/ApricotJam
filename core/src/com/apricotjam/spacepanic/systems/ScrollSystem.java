@@ -21,14 +21,11 @@ public class ScrollSystem extends IteratingSystem {
 		float dx = deltaTime * sc.speed.x * RenderingSystem.WORLD_TO_PIXELS;
 		float dy = deltaTime * sc.speed.y * RenderingSystem.WORLD_TO_PIXELS;
 
-		if (ComponentMappers.transform.has(entity)) {
-			float rotation = ComponentMappers.transform.get(entity).rotation;
-			if (rotation != 0) {
-				float dx_rot = dx * MathUtils.cosDeg(rotation) + dy * MathUtils.sinDeg(rotation);
-				float dy_rot = dy * MathUtils.cosDeg(rotation) - dx * MathUtils.sinDeg(rotation);
-				dx = dx_rot;
-				dy = dy_rot;
-			}
+		if (sc.rotation != 0) {
+			float dx_rot = dx * MathUtils.cosDeg(sc.rotation) + dy * MathUtils.sinDeg(sc.rotation);
+			float dy_rot = dy * MathUtils.cosDeg(sc.rotation) - dx * MathUtils.sinDeg(sc.rotation);
+			dx = dx_rot;
+			dy = dy_rot;
 		}
 
 		//x has to be negative to get scroll correct
