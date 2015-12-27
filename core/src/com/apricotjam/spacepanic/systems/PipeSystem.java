@@ -232,7 +232,7 @@ public class PipeSystem extends EntitySystem {
 				if (tc.rotation > 360f)
 					tc.rotation += 360f;
 				PipeTileComponent ptc = ComponentMappers.pipetile.get(entity);
-				ptc.mask = rotateMask(pipeTileComp.mask);
+				ptc.mask = rotateMask(ptc.mask);
 			}
 		};
 		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
@@ -243,16 +243,20 @@ public class PipeSystem extends EntitySystem {
 	}
 	
 	private void resetTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
+		TextureComponent textureComp = ComponentMappers.texture.get(pipeTiles[ipos][jpos]);
+		textureComp.region = MiscArt.pipesRegion[MiscArt.pipeIndexes.get(mask)];
+		
 		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[ipos][jpos]);
 		pipeTileComp.mask = mask;
 		
 		ClickComponent clickComp = ComponentMappers.click.get(pipeTiles[ipos][jpos]);
 		clickComp.active = !isExitEntry;
 		
-		if (pipeTileComp.mask == (byte)(5)) {
-			TransformComponent transComp = new TransformComponent();
+		TransformComponent transComp = ComponentMappers.transform.get(pipeTiles[ipos][jpos]);
+		if (pipeTileComp.mask == (byte)(5))
 			transComp.rotation = 270f;
-		}
+		else
+			transComp.rotation = 0f;
 	}
 	
 	public void rotateTile(Entity tile) {
