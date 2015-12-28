@@ -1,11 +1,15 @@
 package com.apricotjam.spacepanic.art;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.IntMap;
 
 public class PipeGameArt {
+	public static TextureAtlas atlas;
+	
 	public static Texture pipes;
 	public static Texture pipeFluidTestMask;
 	public static TextureRegion[] pipesRegion;
@@ -17,6 +21,8 @@ public class PipeGameArt {
 	public static String fluidFrag;
 	
 	public static void load() {
+		atlas = new TextureAtlas(Gdx.files.internal("atlas/pipetiles.atlas"));
+		
 		pipes = Art.loadTexture("pipespritesheetx640640.png");
 		pipesRegion = Art.split(pipes, 128, 128);
 

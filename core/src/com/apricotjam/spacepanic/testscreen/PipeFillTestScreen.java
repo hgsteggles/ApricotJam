@@ -32,7 +32,7 @@ public class PipeFillTestScreen extends BasicScreen {
 		Entity tile = new Entity();
 
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.region = PipeGameArt.pipesRegion[0];
+		textureComp.region = PipeGameArt.pipesRegion[PipeGameArt.pipeIndexes.get(6)];
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 2f, 1);
@@ -52,7 +52,8 @@ public class PipeFillTestScreen extends BasicScreen {
 		transComp.position.set(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 2f, 0);
 		
 		AnimationComponent animComp = new AnimationComponent();
-		animComp.animations.put(0, new Animation(0.1f, PipeGameArt.pipeFluidTestMaskRegion));
+		animComp.animations.put(0, new Animation(0.1f, PipeGameArt.atlas.findRegions("pipefill8")));
+		//animComp.animations.put(0, new Animation(0.1f, PipeGameArt.pipeFluidTestMaskRegion));
 		
 		StateComponent stateComp = new StateComponent();
 		stateComp.set(0);
