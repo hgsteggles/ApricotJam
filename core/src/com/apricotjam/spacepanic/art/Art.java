@@ -10,6 +10,11 @@ public class Art {
 		HelmetUI.load();
 		ComputerArt.load();
 		MiscArt.load();
+		PipeGameArt.load();
+	}
+	
+	public static void dispose() {
+		PipeGameArt.dipose();
 	}
 
 	public static Texture loadTexture(String name) {

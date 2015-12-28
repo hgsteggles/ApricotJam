@@ -1,11 +1,14 @@
 package com.apricotjam.spacepanic.systems;
 
-import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.art.PipeGameArt;
+import com.apricotjam.spacepanic.components.AnimatedShaderComponent;
+import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
+import com.apricotjam.spacepanic.components.StateComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
@@ -25,7 +28,6 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.sun.jndi.cosnaming.CNNameParser;
 
 public class PipeSystem extends EntitySystem {
 	public static final int GRID_LENGTH = 6;
@@ -111,9 +113,15 @@ public class PipeSystem extends EntitySystem {
 				if (withinBounds(pipeFluidComp.iposExit, pipeFluidComp.jposExit)) {
 					PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit]);
 					
-					if (connectedAtIndex(pipeTileComp.mask, oppositeDirectionIndex(directionFromMask(pipeFluidComp.exitMask)))) {
+					int entryDirection = oppositeDirectionIndex(directionFromMask(pipeFluidComp.exitMask));
+					
+					if (connectedAtIndex(pipeTileComp.mask, entryDirection)) {
 						// Next pipe is connected, start filling.
+						getEngine().addEntity(createFluid(pipeTileComp.mask, entryDirection, pipeFluidComp.iposExit, pipeFluidComp.jposExit));
 						
+						// Stop player rotating the filling pipe.
+						ClickComponent clickComp = ComponentMappers.click.get(pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit]);
+						clickComp.active = false;
 					}
 					else {
 						// TODO: player fails.
@@ -122,9 +130,6 @@ public class PipeSystem extends EntitySystem {
 				else {
 					// TODO: player fails.
 				}
-
-				ClickComponent clickComp = ComponentMappers.click.get(pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit]);
-				clickComp.active = false;
 			}
 		}
 		
@@ -250,7 +255,7 @@ public class PipeSystem extends EntitySystem {
 		pipeTileComp.mask = mask;
 
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.region = MiscArt.pipesRegion[MiscArt.pipeIndexes.get(mask)];
+		textureComp.region = PipeGameArt.pipesRegion[PipeGameArt.pipeIndexes.get(mask)];
 
 		TransformComponent transComp = new TransformComponent();
 		float tileWidth = textureComp.size.x;
@@ -283,9 +288,37 @@ public class PipeSystem extends EntitySystem {
 		return tile;
 	}
 	
+	private Entity createFluid(byte mask, int entryDirection, int ipos, int jpos) {
+		Entity tile = new Entity();
+
+		// TODO: need mask textures to set animation and texture component regions.
+		AnimationComponent animComp = new AnimationComponent();
+		//animComp.animations.put(0, new Animation(0.1f, PipeGameArt.pipeFluidTestMaskRegion));
+		
+		TextureComponent textureComp = new TextureComponent();
+		//textureComp.region = PipeGameArt.pipeFluidTestMaskRegion[0];
+
+		TransformComponent transComp = new TransformComponent();
+		float tileWidth = textureComp.size.x;
+		float tileHeight = textureComp.size.y;
+		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - GRID_LENGTH * tileWidth / 2f;
+		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - GRID_LENGTH * tileHeight / 2f;
+		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, -1);
+		
+		StateComponent stateComp = new StateComponent();
+		stateComp.set(PipeFluidComponent.STATE_FILLING);
+		
+		AnimatedShaderComponent animShaderComp = new AnimatedShaderComponent();
+		animShaderComp.shader = PipeGameArt.fluidShader;
+		
+		tile.add(textureComp).add(transComp).add(animComp).add(stateComp).add(animShaderComp);
+
+		return tile;
+	}
+	
 	private void resetTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
 		TextureComponent textureComp = ComponentMappers.texture.get(pipeTiles[ipos][jpos]);
-		textureComp.region = MiscArt.pipesRegion[MiscArt.pipeIndexes.get(mask)];
+		textureComp.region = PipeGameArt.pipesRegion[PipeGameArt.pipeIndexes.get(mask)];
 		
 		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[ipos][jpos]);
 		pipeTileComp.mask = mask;

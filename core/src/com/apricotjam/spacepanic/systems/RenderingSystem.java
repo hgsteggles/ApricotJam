@@ -1,5 +1,7 @@
 package com.apricotjam.spacepanic.systems;
 
+import java.util.Comparator;
+
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.AnimatedShaderComponent;
@@ -12,15 +14,12 @@ import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-
-import java.util.Comparator;
 
 public class RenderingSystem extends SortedIteratingSystem {
 	public static final float PIXELS_TO_WORLD = BasicScreen.WORLD_WIDTH / SpacePanic.WIDTH;
