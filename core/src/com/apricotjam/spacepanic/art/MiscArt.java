@@ -13,7 +13,9 @@ public class MiscArt {
 	public static Texture mainBackground;
 
 	public static Texture pipes;
+	public static Texture pipeFluidTestMask;
 	public static TextureRegion[] pipesRegion;
+	public static TextureRegion[] pipeFluidTestMaskRegion;
 	public static IntMap<Integer> pipeIndexes = new IntMap<Integer>();
 
 	public static ObjectMap<String, BitmapFont> fonts = new ObjectMap<String, BitmapFont>();
@@ -41,5 +43,8 @@ public class MiscArt {
 		pipeIndexes.put(12, 14);
 		pipeIndexes.put(9, 19);
 		pipeIndexes.put(15, 2);
+		
+		pipeFluidTestMask = Art.loadTexture("PipeMaskTestSpriteSheet2.png");
+		pipeFluidTestMaskRegion = Art.split(pipeFluidTestMask, 64, 64);
 	}
 }
