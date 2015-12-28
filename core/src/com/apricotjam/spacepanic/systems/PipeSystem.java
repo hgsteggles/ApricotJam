@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
@@ -16,17 +17,21 @@ import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.sun.jndi.cosnaming.CNNameParser;
 
 public class PipeSystem extends EntitySystem {
 	public static final int GRID_LENGTH = 6;
 	public static final Array<GridPoint2> GridDeltas = createGridDeltas();
 	private Entity[][] pipeTiles = new Entity[GRID_LENGTH][GRID_LENGTH];
+	private ImmutableArray<Entity> pipeFluids;
 	private RandomXS128 rng = new RandomXS128(0);
 	private PipePuzzleGenerator generator = new PipePuzzleGenerator();
 
@@ -66,6 +71,18 @@ public class PipeSystem extends EntitySystem {
 		return (index + 2)%4;
 	}
 	
+	static public boolean withinBounds(int i, int j) {
+		return i < 0 || i >= GRID_LENGTH || j < 0 || j >= GRID_LENGTH;
+	}
+	
+	static public int directionFromMask(byte mask) {
+		for (int i = 0; i < 4; ++i) {
+			if (connectedAtIndex(mask, i))
+				return i;
+		}
+		return -1;
+	}
+	
 	static private Array<GridPoint2> createGridDeltas() {
 		Array<GridPoint2> deltas = new Array<GridPoint2>();
 		deltas.add(new GridPoint2(0, 1));
@@ -80,10 +97,37 @@ public class PipeSystem extends EntitySystem {
 	public void addedToEngine(Engine engine) {
 		addTiles(engine);
 		//pipeTiles = engine.getEntitiesFor(Family.all(PipeTileComponent.class).get());
+		pipeFluids = engine.getEntitiesFor(Family.all(PipeFluidComponent.class).get());
 	}
 
 	@Override
 	public void update(float deltaTime) {
+		for (Entity pipeFluid : pipeFluids) {
+			PipeFluidComponent pipeFluidComp = ComponentMappers.pipefluid.get(pipeFluid);
+			pipeFluidComp.currFill += deltaTime;
+			
+			if (pipeFluidComp.currFill >= pipeFluidComp.fillDuration) { // Pipe is full.
+				// Find next pipe. If not connected, player fails; else start next pipe filling and prevent user from rotating it.
+				if (withinBounds(pipeFluidComp.iposExit, pipeFluidComp.jposExit)) {
+					PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit]);
+					
+					if (connectedAtIndex(pipeTileComp.mask, oppositeDirectionIndex(directionFromMask(pipeFluidComp.exitMask)))) {
+						// Next pipe is connected, start filling.
+						
+					}
+					else {
+						// TODO: player fails.
+					}
+				}
+				else {
+					// TODO: player fails.
+				}
+
+				ClickComponent clickComp = ComponentMappers.click.get(pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit]);
+				clickComp.active = false;
+			}
+		}
+		
 		// Check if the puzzle is solved.
 		GridPoint2 start = generator.getEntryPoint();
 		GridPoint2 end = generator.getExitPoint();
@@ -203,9 +247,6 @@ public class PipeSystem extends EntitySystem {
 		Entity tile = new Entity();
 
 		PipeTileComponent pipeTileComp = new PipeTileComponent();
-		pipeTileComp.fillDuration = 4f;
-		pipeTileComp.currFill = 0;
-		pipeTileComp.filling = false;
 		pipeTileComp.mask = mask;
 
 		TextureComponent textureComp = new TextureComponent();
