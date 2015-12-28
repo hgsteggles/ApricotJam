@@ -2,14 +2,17 @@ package com.apricotjam.spacepanic.systems;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.components.AnimatedShaderComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.StateComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -66,12 +69,23 @@ public class RenderingSystem extends SortedIteratingSystem {
 			float originX = width * 0.5f;
 			float originY = height * 0.5f;
 
+			if (ComponentMappers.animatedshader.has(entity)) {
+				AnimatedShaderComponent animShaderComp = ComponentMappers.animatedshader.get(entity);
+				batch.setShader(animShaderComp.shader);
+				if (ComponentMappers.state.has(entity)) {
+					StateComponent stateComp = ComponentMappers.state.get(entity);
+					animShaderComp.shader.setUniformf("time", stateComp.time);
+				}
+			}
+			
 			batch.draw(tex.region,
 					   t.position.x - originX, t.position.y - originY,
 					   originX, originY,
 					   width, height,
 					   t.scale.x, t.scale.y,
 					   t.rotation);
+			
+			batch.setShader(null);
 		} else if (ComponentMappers.bitmapfont.has(entity)) {
 			batch.setProjectionMatrix(pixelcamera.combined);
 
