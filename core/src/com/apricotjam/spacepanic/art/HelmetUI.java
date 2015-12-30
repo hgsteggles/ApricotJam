@@ -1,41 +1,43 @@
 package com.apricotjam.spacepanic.art;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public class HelmetUI {
 
-	public static Texture fullOverlay;
-	public static Texture base;
-	public static Texture pipesLeft;
-	public static Texture pipesRight;
+	public static AtlasRegion fullOverlay;
+	public static AtlasRegion base;
+	public static AtlasRegion pipesLeft;
+	public static AtlasRegion pipesRight;
 
-	public static Texture fluidBlue;
-	public static Texture fluidRed;
-	public static Texture fluidYellow;
-	public static Texture fluidBlack;
+	public static AtlasRegion fluidBlue;
+	public static AtlasRegion fluidRed;
+	public static AtlasRegion fluidYellow;
+	public static AtlasRegion fluidBlack;
 
-	public static Texture valveBlue;
-	public static Texture valveGreen;
+	public static AtlasRegion valveBlue;
+	public static AtlasRegion valveGreen;
 
-	public static Texture screw;
-	public static Texture speaker;
+	public static AtlasRegion screw;
+	public static AtlasRegion speaker;
 
-	public static void load() {
-		fullOverlay = Art.loadTexture("mainOverlay.png");
+	public static void load(TextureAtlas atlas) {
+		fullOverlay = atlas.findRegion("mainOverlay");
 
-		base = Art.loadTexture("helmetBase.png");
-		pipesLeft = Art.loadTexture("helmetPipesLeft.png");
-		pipesRight = Art.loadTexture("helmetPipesRight.png");
+		base = atlas.findRegion("helmetBase");
+		pipesLeft = atlas.findRegion("helmetPipesLeft");
+		pipesRight = atlas.findRegion("helmetPipesRight");
 
-		fluidBlue = Art.loadTexture("fluidBlue.png");
-		fluidRed = Art.loadTexture("fluidRed.png");
-		fluidYellow = Art.loadTexture("fluidYellow.png");
-		fluidBlack = Art.loadTexture("fluidBlack.png");
+		fluidBlue = atlas.findRegion("fluidBlue");
+		fluidRed = atlas.findRegion("fluidRed");
+		fluidYellow = atlas.findRegion("fluidYellow");
+		fluidBlack = atlas.findRegion("fluidBlack");
 
-		valveBlue = Art.loadTexture("valveBlue.png");
-		valveGreen = Art.loadTexture("valveGreen.png");
+		valveBlue = atlas.findRegion("valveBlue");
+		valveGreen = atlas.findRegion("valveGreen");
 
-		screw = Art.loadTexture("screw.png");
-		speaker = Art.loadTexture("comsSpeaker.png");
+		screw = atlas.findRegion("screw");
+		speaker = atlas.findRegion("comsSpeaker");
 	}
 }

@@ -40,7 +40,7 @@ public class MenuScreen extends BasicScreen {
 		Entity titleEntity = new Entity();
 
 		TextureComponent textComp = new TextureComponent();
-		textComp.region = Art.createTextureRegion(MiscArt.title);
+		textComp.region = MiscArt.title;
 		textComp.size.x = 5.0f;
 		textComp.size.y = textComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
 
@@ -110,7 +110,7 @@ public class MenuScreen extends BasicScreen {
 		Entity e = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
-		texComp.region = Art.createTextureRegion(MiscArt.mainBackground);
+		texComp.region = MiscArt.mainBackground;
 		texComp.size.x = BasicScreen.WORLD_WIDTH;
 		texComp.size.y = BasicScreen.WORLD_HEIGHT;
 

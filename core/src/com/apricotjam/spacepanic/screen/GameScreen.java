@@ -34,8 +34,6 @@ public class GameScreen extends BasicScreen {
 
 		add(createBackground());
 		add(createOverlayBase());
-		add(createPipes(true));
-		add(createPipes(false));
 
 		for (Vector2 v : SCREWLOCATIONS) {
 			add(createScrew(v.x, v.y, false));
@@ -47,7 +45,7 @@ public class GameScreen extends BasicScreen {
 		Entity e = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
-		Texture tex = MiscArt.mainBackground;
+		Texture tex = MiscArt.mainBackgroundScrollable;
 		float texToCorner = (float)Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
 		texComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
 		tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -78,7 +76,7 @@ public class GameScreen extends BasicScreen {
 		e.add(new HelmetPartComponent());
 
 		TextureComponent texComp = new TextureComponent();
-		texComp.region = Art.createTextureRegion(HelmetUI.base);
+		texComp.region = HelmetUI.base;
 		texComp.size.x = BasicScreen.WORLD_WIDTH;
 		texComp.size.y = BasicScreen.WORLD_HEIGHT;
 		e.add(texComp);
@@ -92,42 +90,14 @@ public class GameScreen extends BasicScreen {
 		return e;
 	}
 
-	private Entity createPipes(boolean left) {
-		Entity e = new Entity();
-		e.add(new HelmetPartComponent());
-
-		TextureComponent texComp = new TextureComponent();
-		if (left) {
-			texComp.region = Art.createTextureRegion(HelmetUI.pipesLeft);
-		} else {
-			texComp.region = Art.createTextureRegion(HelmetUI.pipesRight);
-		}
-		texComp.size.x = BasicScreen.WORLD_WIDTH * 2.0f / 4.0f;
-		texComp.size.y = texComp.size.x * texComp.region.getRegionHeight() / texComp.region.getRegionWidth();
-		texComp.centre = false;
-		e.add(texComp);
-
-		TransformComponent transformComponent = new TransformComponent();
-		if (left) {
-			transformComponent.position.x = 0.0f;
-		} else {
-			transformComponent.position.x = BasicScreen.WORLD_WIDTH - texComp.size.x;
-		}
-		transformComponent.position.y = 0.0f;
-		transformComponent.position.z = OVERLAYZ + 3;
-		e.add(transformComponent);
-
-		return e;
-	}
-
 	public Entity createScrew(float x, float y, boolean mirror) {
 		Entity e = new Entity();
 		e.add(new HelmetPartComponent());
 
 		TextureComponent texComp = new TextureComponent();
-		texComp.region = Art.createTextureRegion(HelmetUI.screw);
-		texComp.size.x = 0.5f;
-		texComp.size.y = 0.5f;
+		texComp.region = HelmetUI.screw;
+		texComp.size.x = 0.3f;
+		texComp.size.y = 0.3f;
 		e.add(texComp);
 
 		TransformComponent transformComponent = new TransformComponent();

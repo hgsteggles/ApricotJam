@@ -10,8 +10,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
 public class PipeGameArt {
-	public static TextureAtlas atlas;
-	
+
 	public static class RotatedRegionData {
 		public AtlasRegion region;
 		public float rotation;
@@ -29,9 +28,7 @@ public class PipeGameArt {
 	public static String fluidVert;
 	public static String fluidFrag;
 	
-	public static void load() {
-		atlas = new TextureAtlas(Gdx.files.internal("atlas/art.atlas"));
-		
+	public static void load(TextureAtlas atlas) {
 		// Load all pipes and fluid animations.
 		for (int i = 0; i < 16; ++i) {
 			// Load pipes.
@@ -147,10 +144,9 @@ public class PipeGameArt {
 	}
 	
 	public static void dipose() {
-		if (fluidShader != null)
+		if (fluidShader != null) {
 			fluidShader.dispose();
-		
-		atlas.dispose();
+		}
 	}
 	
 	static private String createVert() {

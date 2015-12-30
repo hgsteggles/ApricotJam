@@ -2,19 +2,25 @@ package com.apricotjam.spacepanic.art;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Art {
 
+	private static TextureAtlas atlas;
+
 	public static void load() {
-		HelmetUI.load();
-		ComputerArt.load();
-		MiscArt.load();
-		PipeGameArt.load();
+		Art.atlas = new TextureAtlas(Gdx.files.internal("atlas/art.atlas"));
+
+		HelmetUI.load(atlas);
+		ComputerArt.load(atlas);
+		MiscArt.load(atlas);
+		PipeGameArt.load(atlas);
 	}
 	
 	public static void dispose() {
 		PipeGameArt.dipose();
+		atlas.dispose();
 	}
 
 	public static Texture loadTexture(String name) {
