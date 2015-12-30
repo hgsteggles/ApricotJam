@@ -62,6 +62,7 @@ public class RenderingSystem extends SortedIteratingSystem {
 			}
 
 			TransformComponent t = ComponentMappers.transform.get(entity);
+			TransformComponent totalTransform = t.getTotalTransform();
 
 			float width = tex.size.x;
 			float height = tex.size.y;
@@ -78,11 +79,11 @@ public class RenderingSystem extends SortedIteratingSystem {
 			}
 			
 			batch.draw(tex.region,
-					   t.position.x - originX, t.position.y - originY,
+					   totalTransform.position.x - originX, totalTransform.position.y - originY,
 					   originX, originY,
 					   width, height,
-					   t.scale.x, t.scale.y,
-					   t.rotation);
+					   totalTransform.scale.x, totalTransform.scale.y,
+					   totalTransform.rotation);
 			
 			batch.setShader(null);
 		} else if (ComponentMappers.bitmapfont.has(entity)) {
@@ -90,10 +91,11 @@ public class RenderingSystem extends SortedIteratingSystem {
 
 			BitmapFontComponent bitmap = ComponentMappers.bitmapfont.get(entity);
 			TransformComponent t = ComponentMappers.transform.get(entity);
+			TransformComponent totalTransform = t.getTotalTransform();
 			BitmapFont font = MiscArt.fonts.get(bitmap.font);
 
 			font.setColor(bitmap.color);
-			Vector2 pospixel = new Vector2(t.position.x * WORLD_TO_PIXELS, t.position.y * WORLD_TO_PIXELS);
+			Vector2 pospixel = new Vector2(totalTransform.position.x * WORLD_TO_PIXELS, totalTransform.position.y * WORLD_TO_PIXELS);
 			GlyphLayout layout = new GlyphLayout(font, bitmap.string);
 			if (!bitmap.centering) {
 				font.draw(batch,
@@ -113,7 +115,7 @@ public class RenderingSystem extends SortedIteratingSystem {
 	private static class DepthComparator implements Comparator<Entity> {
 		@Override
 		public int compare(Entity e1, Entity e2) {
-			return (int) Math.signum(ComponentMappers.transform.get(e1).position.z - ComponentMappers.transform.get(e2).position.z);
+			return (int) Math.signum(ComponentMappers.transform.get(e1).getTotalZ() - ComponentMappers.transform.get(e2).getTotalZ());
 		}
 	}
 }

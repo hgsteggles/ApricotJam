@@ -10,35 +10,31 @@ public class TransformComponent implements Component {
 	public float rotation = 0.0f;
 	public TransformComponent parent = null;
 
-	public Vector3 getTotalPosition() {
-		Vector3 totalPosition = new Vector3(position);
+	public TransformComponent getTotalTransform() {
+		TransformComponent total = new TransformComponent();
+		total.position.add(position);
+		total.scale.x *= scale.x;
+		total.scale.y *= scale.y;
+		total.rotation += rotation;
 		TransformComponent ipar = parent;
 		while (ipar != null) {
-			totalPosition.add(ipar.position);
+			total.position.add(ipar.position);
+			total.scale.x *= ipar.scale.x;
+			total.scale.y *= ipar.scale.y;
+			total.rotation += ipar.rotation;
 			ipar = ipar.parent;
 		}
-		return totalPosition;
+		return total;
 	}
 
-	public Vector2 getTotalScale() {
-		Vector2 totalScale = new Vector2(scale);
+	public float getTotalZ() {
+		float totalZ = position.z;
 		TransformComponent ipar = parent;
 		while (ipar != null) {
-			totalScale.x *= ipar.scale.x;
-			totalScale.y *= ipar.scale.y;
+			totalZ += ipar.position.z;
 			ipar = ipar.parent;
 		}
-		return totalScale;
-	}
-
-	public float getTotalRotation() {
-		float totalRotation = rotation;
-		TransformComponent ipar = parent;
-		while (ipar != null) {
-			totalRotation += ipar.rotation;
-			ipar = ipar.parent;
-		}
-		return totalRotation;
+		return totalZ;
 	}
 }
 
