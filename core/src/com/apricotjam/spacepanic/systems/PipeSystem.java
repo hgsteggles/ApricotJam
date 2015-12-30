@@ -1,6 +1,7 @@
 package com.apricotjam.spacepanic.systems;
 
 import com.apricotjam.spacepanic.art.PipeGameArt;
+import com.apricotjam.spacepanic.art.PipeGameArt.RotatedAnimationData;
 import com.apricotjam.spacepanic.components.AnimatedShaderComponent;
 import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
@@ -23,6 +24,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
@@ -36,6 +38,7 @@ public class PipeSystem extends EntitySystem {
 	private ImmutableArray<Entity> pipeFluids;
 	private RandomXS128 rng = new RandomXS128(0);
 	private PipePuzzleGenerator generator = new PipePuzzleGenerator();
+	private boolean startedSolutionAnimation = false;
 
 	static public int numberConnections(byte mask) {
 		return ((mask) & 1) + ((mask >> 1) & 1) + ((mask >> 2) & 1) + ((mask >> 3) & 1);
@@ -74,7 +77,7 @@ public class PipeSystem extends EntitySystem {
 	}
 	
 	static public boolean withinBounds(int i, int j) {
-		return i < 0 || i >= GRID_LENGTH || j < 0 || j >= GRID_LENGTH;
+		return !(i < 0 || i >= GRID_LENGTH || j < 0 || j >= GRID_LENGTH);
 	}
 	
 	static public int directionFromMask(byte mask) {
@@ -83,6 +86,41 @@ public class PipeSystem extends EntitySystem {
 				return i;
 		}
 		return -1;
+	}
+	
+	static public byte maskFromDirection(int dir) {
+		return (byte)(1 << dir);
+	}
+	
+	static public byte rotateMask(byte mask) {
+		byte ND = (byte) (mask << 1);
+		ND = (byte) (ND + ((mask >> 3) & 1));
+
+		return (byte)(ND%16);
+	}
+	
+	static public byte rotateMaskN(byte mask, int N) {
+		byte result = mask;
+		for (int i = 0; i < N; ++i)
+			result = rotateMask(result);
+		
+		return result;
+	}
+	
+	static public int exitFromEntryDirection(byte mask, int entryDir) {
+		int oppositeDir = oppositeDirectionIndex(entryDir);
+		if (connectedAtIndex(mask, oppositeDir))
+			return oppositeDir;
+		
+		int dir = (entryDir+1)%4;
+		if (connectedAtIndex(mask, dir))
+			return dir;
+		
+		dir = (entryDir+3)%4;
+		if (connectedAtIndex(mask, dir))
+			return dir;
+		
+		return oppositeDir;
 	}
 	
 	static private Array<GridPoint2> createGridDeltas() {
@@ -104,14 +142,20 @@ public class PipeSystem extends EntitySystem {
 
 	@Override
 	public void update(float deltaTime) {
+		GridPoint2 start = generator.getEntryPoint();
+		GridPoint2 end = generator.getExitPoint();
+		
 		for (Entity pipeFluid : pipeFluids) {
 			PipeFluidComponent pipeFluidComp = ComponentMappers.pipefluid.get(pipeFluid);
 			pipeFluidComp.currFill += deltaTime;
 			
-			if (pipeFluidComp.currFill >= pipeFluidComp.fillDuration) { // Pipe is full.
+			if (pipeFluidComp.filling && pipeFluidComp.currFill >= pipeFluidComp.fillDuration) { // Pipe is full.
+				pipeFluidComp.filling = false;
+				
 				// Find next pipe. If not connected, player fails; else start next pipe filling and prevent user from rotating it.
 				if (withinBounds(pipeFluidComp.iposExit, pipeFluidComp.jposExit)) {
-					PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit]);
+					Entity nextPipe = pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit];
+					PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(nextPipe);
 					
 					int entryDirection = oppositeDirectionIndex(directionFromMask(pipeFluidComp.exitMask));
 					
@@ -120,7 +164,7 @@ public class PipeSystem extends EntitySystem {
 						getEngine().addEntity(createFluid(pipeTileComp.mask, entryDirection, pipeFluidComp.iposExit, pipeFluidComp.jposExit));
 						
 						// Stop player rotating the filling pipe.
-						ClickComponent clickComp = ComponentMappers.click.get(pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit]);
+						ClickComponent clickComp = ComponentMappers.click.get(nextPipe);
 						clickComp.active = false;
 					}
 					else {
@@ -134,9 +178,6 @@ public class PipeSystem extends EntitySystem {
 		}
 		
 		// Check if the puzzle is solved.
-		GridPoint2 start = generator.getEntryPoint();
-		GridPoint2 end = generator.getExitPoint();
-		
 		int curr_i = start.x;
 		int curr_j = start.y;
 		
@@ -152,45 +193,51 @@ public class PipeSystem extends EntitySystem {
 			}
 		}
 	
-		boolean solved = false;
-		
-		while (!solved) {
-			curr_i = curr_i + GridDeltas.get(lastPipeExitDir).x;
-			curr_j = curr_j + GridDeltas.get(lastPipeExitDir).y;
-			if (curr_i < 0 || curr_i >= GRID_LENGTH || curr_j < 0 || curr_j >= GRID_LENGTH) {
-				break;
+		if (!startedSolutionAnimation) {
+			boolean solved = false;
+			
+			while (!solved) {
+				curr_i = curr_i + GridDeltas.get(lastPipeExitDir).x;
+				curr_j = curr_j + GridDeltas.get(lastPipeExitDir).y;
+				if (curr_i < 0 || curr_i >= GRID_LENGTH || curr_j < 0 || curr_j >= GRID_LENGTH) {
+					break;
+				}
+				
+				tile = pipeTiles[curr_i][curr_j];
+				tileComp = ComponentMappers.pipetile.get(tile);
+				
+				// Check if connected to previous pipe segment.
+				if (connectedAtIndex(tileComp.mask, oppositeDirectionIndex(lastPipeExitDir))) {
+					// If this is the exit tile then it is solved.
+					// If cross pipe, then the exit is opposite to entry. Else the exit is at 90 degrees.
+					if (curr_i == end.x && curr_j == end.y) {
+						solved = true;
+					}
+					else if (connectedAtIndex(tileComp.mask, lastPipeExitDir)) {
+						continue;
+					}
+					else if (connectedAtIndex(tileComp.mask, (lastPipeExitDir+1)%4)) {
+						lastPipeExitDir = (lastPipeExitDir+1)%4;
+						continue;
+					}
+					else if (connectedAtIndex(tileComp.mask, (lastPipeExitDir+3)%4)) {
+						lastPipeExitDir = (lastPipeExitDir+3)%4;
+						continue;
+					}
+				}
+				else {
+					break;
+				}
 			}
 			
-			tile = pipeTiles[curr_i][curr_j];
-			tileComp = ComponentMappers.pipetile.get(tile);
-			
-			// Check if connected to previous pipe segment.
-			if (connectedAtIndex(tileComp.mask, oppositeDirectionIndex(lastPipeExitDir))) {
-				// If this is the exit tile then it is solved.
-				// If cross pipe, then the exit is opposite to entry. Else the exit is at 90 degrees.
-				if (curr_i == end.x && curr_j == end.y) {
-					solved = true;
-				}
-				else if (connectedAtIndex(tileComp.mask, lastPipeExitDir)) {
-					continue;
-				}
-				else if (connectedAtIndex(tileComp.mask, (lastPipeExitDir+1)%4)) {
-					lastPipeExitDir = (lastPipeExitDir+1)%4;
-					continue;
-				}
-				else if (connectedAtIndex(tileComp.mask, (lastPipeExitDir+3)%4)) {
-					lastPipeExitDir = (lastPipeExitDir+3)%4;
-					continue;
-				}
+			if (solved) {
+				startedSolutionAnimation = true;
+				Entity entryPipe = pipeTiles[start.x][start.y];
+				byte entryMask = ComponentMappers.pipetile.get(entryPipe).mask;
+				getEngine().addEntity(createFluid(entryMask, oppositeDirectionIndex(directionFromMask(entryMask)), start.x, start.y));
+				//getEngine().addEntity(createSolvedText());
+				//resetTiles();
 			}
-			else {
-				break;
-			}
-		}
-		
-		if (solved) {
-			getEngine().addEntity(createSolvedText());
-			resetTiles();
 		}
 	}
 
@@ -255,7 +302,7 @@ public class PipeSystem extends EntitySystem {
 		pipeTileComp.mask = mask;
 
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.region = PipeGameArt.pipesRegion[PipeGameArt.pipeIndexes.get(mask)];
+		textureComp.region = PipeGameArt.pipeRegions.get(mask).region;
 
 		TransformComponent transComp = new TransformComponent();
 		float tileWidth = textureComp.size.x;
@@ -263,10 +310,7 @@ public class PipeSystem extends EntitySystem {
 		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - GRID_LENGTH * tileWidth / 2f;
 		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - GRID_LENGTH * tileHeight / 2f;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
-
-		if (mask == (byte) (5)) {
-			transComp.rotation = 270f;
-		}
+		transComp.rotation = PipeGameArt.pipeRegions.get(mask).rotation;
 		
 		ClickComponent clickComp = new ClickComponent();
 		clickComp.active = !isExitEntry;
@@ -290,13 +334,21 @@ public class PipeSystem extends EntitySystem {
 	
 	private Entity createFluid(byte mask, int entryDirection, int ipos, int jpos) {
 		Entity tile = new Entity();
+		
+		PipeFluidComponent pipeFluidComp = new PipeFluidComponent();
+		pipeFluidComp.fillDuration = 0.5f;
+		
+		int exitDirection = exitFromEntryDirection(mask, entryDirection);
+		pipeFluidComp.exitMask = maskFromDirection(exitDirection);
+		pipeFluidComp.iposExit = ipos + GridDeltas.get(exitDirection).x;
+		pipeFluidComp.jposExit = jpos + GridDeltas.get(exitDirection).y;
 
 		// TODO: need mask textures to set animation and texture component regions.
+		RotatedAnimationData animData = PipeGameArt.fluidRegions.get(mask).get(entryDirection);
 		AnimationComponent animComp = new AnimationComponent();
-		//animComp.animations.put(0, new Animation(0.1f, PipeGameArt.pipeFluidTestMaskRegion));
+		animComp.animations.put(PipeFluidComponent.STATE_FILLING, new Animation(pipeFluidComp.fillDuration/animData.regions.size, animData.regions));
 		
 		TextureComponent textureComp = new TextureComponent();
-		//textureComp.region = PipeGameArt.pipeFluidTestMaskRegion[0];
 
 		TransformComponent transComp = new TransformComponent();
 		float tileWidth = textureComp.size.x;
@@ -304,6 +356,7 @@ public class PipeSystem extends EntitySystem {
 		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - GRID_LENGTH * tileWidth / 2f;
 		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - GRID_LENGTH * tileHeight / 2f;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, -1);
+		transComp.rotation = animData.rotation;
 		
 		StateComponent stateComp = new StateComponent();
 		stateComp.set(PipeFluidComponent.STATE_FILLING);
@@ -311,14 +364,14 @@ public class PipeSystem extends EntitySystem {
 		AnimatedShaderComponent animShaderComp = new AnimatedShaderComponent();
 		animShaderComp.shader = PipeGameArt.fluidShader;
 		
-		tile.add(textureComp).add(transComp).add(animComp).add(stateComp).add(animShaderComp);
+		tile.add(pipeFluidComp).add(textureComp).add(transComp).add(animComp).add(stateComp).add(animShaderComp);
 
 		return tile;
 	}
 	
 	private void resetTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
 		TextureComponent textureComp = ComponentMappers.texture.get(pipeTiles[ipos][jpos]);
-		textureComp.region = PipeGameArt.pipesRegion[PipeGameArt.pipeIndexes.get(mask)];
+		textureComp.region = PipeGameArt.pipeRegions.get(mask).region;
 		
 		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[ipos][jpos]);
 		pipeTileComp.mask = mask;
@@ -374,12 +427,5 @@ public class PipeSystem extends EntitySystem {
 		solvedText.add(fontComp).add(transComp).add(tweenComponent);
 		
 		return solvedText;
-	}
-
-	private byte rotateMask(byte mask) {
-		byte ND = (byte) (mask << 1);
-		ND = (byte) (ND + ((mask >> 3) & 1));
-
-		return (byte)(ND%16);
 	}
 }

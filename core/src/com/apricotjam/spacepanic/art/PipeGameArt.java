@@ -1,31 +1,122 @@
 package com.apricotjam.spacepanic.art;
 
+import com.apricotjam.spacepanic.systems.PipeSystem;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntMap.Entry;
 
 public class PipeGameArt {
 	public static TextureAtlas atlas;
 	
-	public static Texture pipes;
-	public static Texture pipeFluidTestMask;
-	public static TextureRegion[] pipesRegion;
-	public static TextureRegion[] pipeFluidTestMaskRegion;
-	public static IntMap<Integer> pipeIndexes = new IntMap<Integer>();
+	public static class RotatedRegionData {
+		public AtlasRegion region;
+		public float rotation;
+	}
+	
+	public static class RotatedAnimationData {
+		public Array<AtlasRegion> regions = null;
+		public float rotation;
+	}
+	
+	public static IntMap<RotatedRegionData> pipeRegions = new IntMap<RotatedRegionData>();
+	public static IntMap<IntMap<RotatedAnimationData>> fluidRegions = new IntMap<IntMap<RotatedAnimationData>>();
 	
 	public static ShaderProgram fluidShader;
 	public static String fluidVert;
 	public static String fluidFrag;
 	
 	public static void load() {
-		atlas = new TextureAtlas(Gdx.files.internal("atlas/pipetiles.atlas"));
+		atlas = new TextureAtlas(Gdx.files.internal("atlas/art.atlas"));
 		
-		pipes = Art.loadTexture("pipespritesheetx640640.png");
-		pipesRegion = Art.split(pipes, 128, 128);
-
+		// Load all pipes and fluid animations.
+		for (int i = 0; i < 16; ++i) {
+			// Load pipes.
+			RotatedRegionData rotRegComp = new RotatedRegionData();
+			rotRegComp.region = atlas.findRegion("pipe"+Integer.toString(i));
+			pipeRegions.put(i, rotRegComp);
+			
+			// Load Fluids.
+			IntMap<RotatedAnimationData> fluidEntryRegions = new IntMap<RotatedAnimationData>();
+			fluidRegions.put(i, fluidEntryRegions);
+			
+			for (int ientry = 0; ientry < 4; ++ientry) {
+				if (PipeSystem.connectedAtIndex((byte)(i), ientry) || (PipeSystem.numberConnections((byte)(i)) == 1 && ientry == PipeSystem.oppositeDirectionIndex(PipeSystem.directionFromMask((byte)(i))))) {
+					RotatedAnimationData rotAnimComp = new RotatedAnimationData();
+					rotAnimComp.regions = atlas.findRegions("fluid"+Integer.toString(i)+"-"+Integer.toString(ientry));
+					fluidEntryRegions.put(ientry,  rotAnimComp);
+				}
+			}
+		}
+		
+		// Any pieces missing? Find rotated versions.
+		for (int i = 0; i < 16; ++i) {
+			// Pipes.
+			RotatedRegionData rotData = pipeRegions.get(i);
+			if (rotData.region == null) {
+				for (int irot = 0; irot < 3; ++irot) {
+					rotData.rotation += 90f;
+					AtlasRegion region = pipeRegions.get(PipeSystem.rotateMask((byte)(i))).region;
+					if (region != null) {
+						rotData.region = region;
+						break;
+					}
+				}
+			}
+			
+			// Fluids.
+			IntMap<RotatedAnimationData> fluidEntryRegions = fluidRegions.get(i);
+			for (Entry<RotatedAnimationData> rotAnimData : fluidEntryRegions.entries()) {
+				//RotatedAnimationData rotAnimData = fluidRegions.get(i);
+				
+				if (rotAnimData.value.regions.size == 0) {
+					for (int irot = 1; irot < 4; ++irot) {
+						rotAnimData.value.rotation += 90f;
+						RotatedAnimationData foundAnimRotData = fluidRegions.get(PipeSystem.rotateMaskN((byte)(i), irot)).get((rotAnimData.key + irot)%4);
+						if (foundAnimRotData.regions.size != 0) {
+							rotAnimData.value.regions = foundAnimRotData.regions;
+							rotAnimData.value.rotation += foundAnimRotData.rotation;
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		// Reverse direction fluid animations.
+		for (int i = 0; i < 16; ++i) {
+			IntMap<RotatedAnimationData> fluidEntryRegions = fluidRegions.get(i);
+			for (int ientry = 0; ientry < 4; ++ientry) {
+				if (PipeSystem.connectedAtIndex((byte)(i), ientry)) {
+					RotatedAnimationData rotAnimData = fluidEntryRegions.get(ientry);
+					if (PipeSystem.numberConnections((byte)(i)) != 1 && fluidEntryRegions.get(ientry).regions.size == 0) {
+						if (PipeSystem.connectedAtIndex((byte)(i), (ientry+2)%4)) {
+							RotatedAnimationData foundAnimRotData = fluidEntryRegions.get((ientry+2)%4);
+							rotAnimData.regions = foundAnimRotData.regions;
+							rotAnimData.rotation = foundAnimRotData.rotation + 180f;
+						}
+						else {
+							RotatedAnimationData foundAnimRotData = fluidEntryRegions.get(PipeSystem.directionFromMask((byte)(i - (1 << ientry))));
+							
+							
+							Array<AtlasRegion> flippedRegions = new Array<AtlasRegion>();
+							for (int iregion = 0; iregion < foundAnimRotData.regions.size; ++iregion) {
+								AtlasRegion flippedRegion = new AtlasRegion(foundAnimRotData.regions.get(iregion));
+								flippedRegion.flip(true, false);
+								flippedRegions.add(flippedRegion);
+							}
+							rotAnimData.regions = flippedRegions;
+							rotAnimData.rotation = foundAnimRotData.rotation + 90f;
+						}
+					}
+				}
+			}
+		}
+		
+		/*
 		pipeIndexes.put(1, 24);
 		pipeIndexes.put(2, 21);
 		pipeIndexes.put(4, 23);
@@ -39,8 +130,9 @@ public class PipeGameArt {
 		pipeIndexes.put(9, 19);
 		pipeIndexes.put(15, 2);
 		
-		pipeFluidTestMask = Art.loadTexture("PipeMaskTestSpriteSheet2.png");
-		pipeFluidTestMaskRegion = Art.split(pipeFluidTestMask, 64, 64);
+		pipeFillRegion10 = atlas.findRegions("pipeFill10");
+		
+		*/
 		
 		fluidVert = createVert();
 		fluidFrag = createFrag();
@@ -57,6 +149,8 @@ public class PipeGameArt {
 	public static void dipose() {
 		if (fluidShader != null)
 			fluidShader.dispose();
+		
+		atlas.dispose();
 	}
 	
 	static private String createVert() {
