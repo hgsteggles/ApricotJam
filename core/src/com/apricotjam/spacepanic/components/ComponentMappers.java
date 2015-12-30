@@ -18,4 +18,5 @@ public class ComponentMappers {
 	public static ComponentMapper<HelmetPartComponent> helmetPart = ComponentMapper.getFor(HelmetPartComponent.class);
 	public static ComponentMapper<ResourcesComponent> resources = ComponentMapper.getFor(ResourcesComponent.class);
 	public static ComponentMapper<AnimatedShaderComponent> animatedshader = ComponentMapper.getFor(AnimatedShaderComponent.class);
+	public static ComponentMapper<MapPartComponent> mapPart = ComponentMapper.getFor(MapPartComponent.class);
 }

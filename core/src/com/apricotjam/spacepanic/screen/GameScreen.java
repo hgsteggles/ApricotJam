@@ -5,10 +5,7 @@ import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
-import com.apricotjam.spacepanic.systems.GameSystem;
-import com.apricotjam.spacepanic.systems.MovementSystem;
-import com.apricotjam.spacepanic.systems.RenderingSystem;
-import com.apricotjam.spacepanic.systems.ScrollSystem;
+import com.apricotjam.spacepanic.systems.*;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,6 +28,7 @@ public class GameScreen extends BasicScreen {
 		add(new MovementSystem());
 		add(new ScrollSystem());
 		add(new GameSystem());
+		add(new MapSystem(8.25f, 4.75f));
 
 		add(createBackground());
 		add(createOverlayBase());
@@ -55,7 +53,7 @@ public class GameScreen extends BasicScreen {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = Float.MIN_VALUE;
+		transComp.position.z = -1.0f;
 
 		MovementComponent movementComp = new MovementComponent();
 		movementComp.rotationalVelocity = 5.0f;

@@ -53,21 +53,21 @@ filter: Nearest,Nearest
 repeat: none
 computer
   rotate: false
-  xy: 2, 1086
-  size: 1280, 720
-  orig: 1280, 720
+  xy: 2, 364
+  size: 1056, 608
+  orig: 1056, 608
   offset: 0, 0
   index: -1
 computerBackground
   rotate: false
-  xy: 1284, 1446
+  xy: 1284, 1334
   size: 640, 360
   orig: 640, 360
   offset: 0, 0
   index: -1
 computerFrameLarge
   rotate: false
-  xy: 2, 364
+  xy: 2, 974
   size: 1280, 720
   orig: 1280, 720
   offset: 0, 0
