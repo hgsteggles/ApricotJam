@@ -15,7 +15,7 @@ public class DesktopLauncher {
 		config.height = SpacePanic.HEIGHT;
 		new LwjglApplication(new SpacePanic(), config);*/
 
-		MazeGenerator mg = new MazeGenerator(10, 10);
+		MazeGenerator mg = new MazeGenerator(1234535, 6, 6);
 		mg.createPatch(0, 1);
 		System.out.print("-------\n");
 		mg.createPatch(0, 0);

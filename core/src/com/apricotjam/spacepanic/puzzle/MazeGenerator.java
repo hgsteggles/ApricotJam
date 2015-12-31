@@ -1,7 +1,9 @@
 package com.apricotjam.spacepanic.puzzle;
 
 import com.badlogic.gdx.math.RandomXS128;
-import com.badlogic.gdx.math.Vector2;
+
+import java.awt.*;
+import java.util.ArrayList;
 
 public class MazeGenerator {
 
@@ -11,9 +13,10 @@ public class MazeGenerator {
 	private int patchWidth;
 	private int patchHeight;
 
-	private static final int UNDETERMINED = 0;
-	public static final int PATH = 1;
-	public static final int WALL = 2;
+	public static final int UNEXPOSED = 0;
+	private static final int UNDETERMINED = 1;
+	public static final int PATH = 2;
+	public static final int WALL = 3;
 
 	public MazeGenerator(int patchWidth, int patchHeight) {
 		this(System.nanoTime(), patchWidth, patchHeight);
@@ -27,9 +30,11 @@ public class MazeGenerator {
 
 	public int[][] createPatch(int x, int y) {
 		int[][] patch = new int[patchWidth + 1][patchHeight + 1];
+		int[][] connectivity = new int[patchWidth + 1][patchHeight + 1];
 		for (int i = 0; i < patchWidth + 1; i++) {
 			for (int j = 0; j < patchHeight + 1; j++) {
-				patch[i][j] = PATH;
+				patch[i][j] = UNEXPOSED;
+				connectivity[i][j] = 0;
 			}
 		}
 
@@ -37,6 +42,8 @@ public class MazeGenerator {
 		int[] topBounds = createPatchBoundary(x, y + 1);
 		int[] topRightBounds = createPatchBoundary(x + 1, y + 1);
 		int[] rightBounds = createPatchBoundary(x + 1, y);
+
+		ArrayList<Point> exposed = new ArrayList<Point>();
 
 		for (int i = 0; i < patchHeight; i++) {
 			patch[0][i] = thisBounds[patchHeight - 1 - i];
@@ -49,8 +56,160 @@ public class MazeGenerator {
 		patch[0][patchHeight] = topBounds[patchHeight - 1];
 		patch[patchWidth][patchHeight] = topRightBounds[patchHeight - 1];
 
-		printPatch(patch);
+		for (int i = 0; i < patchWidth + 1; i++) {
+			for (int j = 0; j < patchHeight + 1; j++) {
+				if (patch[i][j] == PATH) {
+					int side = 0;
+					if (i == 0) {
+						side = 4;
+					} else if (i == patchWidth) {
+						side = 2;
+					} if (j == 0) {
+						side = 3;
+					} else if (j == patchHeight) {
+						side = 1;
+					}
+					connectivity[i][j] = side;
+					createPath(i, j, patch, connectivity, exposed);
+				}
+			}
+		}
+
+		setRandomStateMain(x, y);
+		while (exposed.size() > 0) {
+			int index = rng.nextInt(exposed.size());
+			Point choice = exposed.get(index);
+			if (validPath(choice.x, choice.y, patch)) {
+				createPath(choice.x, choice.y, patch, connectivity, exposed);
+			} else {
+				patch[choice.x][choice.y] = WALL;
+			}
+			exposed.remove(choice);
+		}
+
+		//Clean up connectivity
+		for (int i = 1; i < patchWidth; i++) {
+			for (int j = 1; j < patchHeight; j++) {
+				if (patch[i][j] != PATH) {
+					connectivity[i][j] = 0;
+				}
+			}
+		}
+
+		printPatch(patch, connectivity);
+
+		//Find connection points
+		for (int i = 1; i < patchWidth; i++) {
+			for (int j = 1; j < patchHeight; j++) {
+				if (patch[i][j] != WALL) {
+					continue;
+				}
+				boolean[] connected = {false, false, false, false, false};
+				connected[connectivity[i - 1][j]] = true;
+				connected[connectivity[i + 1][j]] = true;
+				connected[connectivity[i][j - 1]] = true;
+				connected[connectivity[i][j + 1]] = true;
+
+				int sideMask = 0;
+				for (int n = 1; n < connected.length; n++) {
+					if (connected[n]) {
+						sideMask += 1 << (n - 1);
+					}
+				}
+
+				if (sideMask != 0 && sideMask != 1 && sideMask != 2 && sideMask != 4 && sideMask != 8) {
+					System.out.println("Connection at (" + i + ", " + j + ") of " + sideMask);
+				}
+
+			}
+		}
+
+		//printPatch(patch);
 		return patch;
+	}
+
+	private void createPath(int i, int j, int[][] patch, int[][] connectivity, ArrayList<Point> exposed) {
+		patch[i][j] = PATH;
+		int side = connectivity[i][j];
+
+		if (getCell(i - 1, j, patch) == UNEXPOSED) {
+			patch[i - 1][j] = UNDETERMINED;
+			connectivity[i - 1][j] = side;
+			exposed.add(new Point(i - 1, j));
+		}
+
+		if (getCell(i + 1, j, patch) == UNEXPOSED) {
+			patch[i + 1][j] = UNDETERMINED;
+			connectivity[i + 1][j] = side;
+			exposed.add(new Point(i + 1, j));
+		}
+
+		if (getCell(i, j - 1, patch) == UNEXPOSED) {
+			patch[i][j - 1] = UNDETERMINED;
+			connectivity[i][j - 1] = side;
+			exposed.add(new Point(i, j - 1));
+		}
+		if (getCell(i, j + 1, patch) == UNEXPOSED) {
+			patch[i][j + 1] = UNDETERMINED;
+			connectivity[i][j + 1] = side;
+			exposed.add(new Point(i, j + 1));
+		}
+	}
+
+	private boolean validPath(int i, int j, int[][] patch) {
+		int edgeState = 0;
+
+		if (getCell(i - 1, j, patch) == PATH) {
+			edgeState += 1;
+		}
+
+		if (getCell(i + 1, j, patch) == PATH) {
+			edgeState += 2;
+		}
+
+		if (getCell(i, j - 1, patch) == PATH) {
+			edgeState += 4;
+		}
+
+		if (getCell(i, j + 1, patch) == PATH) {
+			edgeState += 8;
+		}
+
+		if (edgeState == 1) {
+			if (getCell(i + 1, j - 1, patch) == PATH)
+				return false;
+			if (getCell(i + 1, j + 1, patch) == PATH)
+				return false;
+
+			return true;
+		} else if (edgeState == 2) {
+			if (getCell(i - 1, j - 1, patch) == PATH)
+				return false;
+			if (getCell(i - 1, j + 1, patch) == PATH)
+				return false;
+			return true;
+		} else if (edgeState == 4) {
+			if (getCell(i - 1, j + 1, patch) == PATH)
+				return false;
+			if (getCell(i + 1, j + 1, patch) == PATH)
+				return false;
+			return true;
+		} else if (edgeState == 8) {
+			if (getCell(i - 1, j - 1, patch) == PATH)
+				return false;
+			if (getCell(i + 1, j - 1, patch) == PATH)
+				return false;
+			return true;
+		}
+		return false;
+	}
+
+	private int getCell(int i, int j, int[][] patch) {
+		if (i < 0 || i > patchWidth || j < 0 || j > patchHeight) {
+			return -1;
+		} else {
+			return patch[i][j];
+		}
 	}
 
 	public int[] createPatchBoundary(int x, int y) {
@@ -67,11 +226,11 @@ public class MazeGenerator {
 		return bound;
 	}
 
-	public void printPatch(int[][] patch) {
+	public void printPatch(int[][] patch, int[][] connectivity) {
 		for (int j = patchHeight; j >= 0; j--) {
 			for (int i = 0; i < patchWidth + 1; i++) {
-				if(patch[i][j] == WALL) {
-					System.out.print("X");
+				if (patch[i][j] == PATH) {
+					System.out.print(connectivity[i][j]);
 				} else {
 					System.out.print(".");
 				}
@@ -82,8 +241,11 @@ public class MazeGenerator {
 
 	// Coordinates get +0.5 to prevent non-random behaviour at zero
 	private void setRandomStateBoundary(int x, int y) {
-		rng.setState((int)((x + 0.5) * seed), (int)((y + 0.5) * seed));
+		rng.setState((int) ((x + 0.5) * seed), (int) ((y + 0.5) * seed));
 	}
 
+	private void setRandomStateMain(int x, int y) {
+		rng.setState((int) ((x + 0.5) * seed + 1), (int) ((y + 0.5) * seed) + 1);
+	}
 
 }
