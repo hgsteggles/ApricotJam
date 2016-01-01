@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.art.ComputerArt;
 import com.apricotjam.spacepanic.components.MapPartComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.puzzle.MazeGenerator;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -11,14 +12,19 @@ import com.badlogic.ashley.core.EntitySystem;
 
 public class MapSystem extends EntitySystem {
 
-	Entity screen;
 	float width;
 	float height;
+
+	Entity screen;
+
+	MazeGenerator mazeGenerator;
 
 	public MapSystem(float width, float height) {
 		this.width = width;
 		this.height = height;
-		screen = createScreen();
+		//screen = createScreen();
+
+		mazeGenerator = new MazeGenerator(10, 10);
 	}
 
 	@Override

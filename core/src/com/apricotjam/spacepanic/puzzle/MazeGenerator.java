@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.RandomXS128;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class MazeGenerator {
 
@@ -135,10 +134,15 @@ public class MazeGenerator {
 			patch[choice.x][choice.y] = PATH;
 		}
 
+		//Remove extra boundaries
+		int[][] trimmedPatch = new int[patchWidth][patchHeight];
+		for (int i = 0; i < patchWidth; i++) {
+			for (int j = 0; j < patchHeight; j++) {
+				trimmedPatch[i][j] = patch[i][j];
+			}
+		}
 
-		printPatch(patch);
-
-		return patch;
+		return trimmedPatch;
 	}
 
 	private void createPath(int i, int j, int[][] patch, int[][] connectivity, ArrayList<Point> exposed) {
@@ -268,10 +272,6 @@ public class MazeGenerator {
 	// Coordinates get +0.5 to prevent non-random behaviour at zero
 	private void setRandomStateBoundary(int x, int y) {
 		rng.setState((int) ((x + 0.5) * seed), (int) ((y + 0.5) * seed));
-	}
-
-	private void setRandomStateMain(int x, int y) {
-		rng.setState((int) ((x + 0.5) * seed + 1), (int) ((y + 0.5) * seed) + 1);
 	}
 
 }
