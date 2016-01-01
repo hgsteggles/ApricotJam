@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.RandomXS128;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MazeGenerator {
 
@@ -75,7 +77,7 @@ public class MazeGenerator {
 			}
 		}
 
-		setRandomStateMain(x, y);
+		//setRandomStateMain(x, y);
 		while (exposed.size() > 0) {
 			int index = rng.nextInt(exposed.size());
 			Point choice = exposed.get(index);
@@ -96,9 +98,8 @@ public class MazeGenerator {
 			}
 		}
 
-		printPatch(patch, connectivity);
-
-		//Find connection points
+		//Find potential connection points
+		HashMap<Integer, ArrayList<Point>> connections = new HashMap<Integer, ArrayList<Point>>();
 		for (int i = 1; i < patchWidth; i++) {
 			for (int j = 1; j < patchHeight; j++) {
 				if (patch[i][j] != WALL) {
@@ -118,13 +119,25 @@ public class MazeGenerator {
 				}
 
 				if (sideMask != 0 && sideMask != 1 && sideMask != 2 && sideMask != 4 && sideMask != 8) {
-					System.out.println("Connection at (" + i + ", " + j + ") of " + sideMask);
+					if (!connections.containsKey(sideMask)) {
+						connections.put(sideMask, new ArrayList<Point>());
+					}
+					connections.get(sideMask).add(new Point(i, j));
 				}
 
 			}
 		}
+		
+		//Cut connections
+		for (int i : connections.keySet()) {
+			int index = rng.nextInt(connections.get(i).size());
+			Point choice = connections.get(i).get(index);
+			patch[choice.x][choice.y] = PATH;
+		}
 
-		//printPatch(patch);
+
+		printPatch(patch);
+
 		return patch;
 	}
 
@@ -224,6 +237,19 @@ public class MazeGenerator {
 			}
 		}
 		return bound;
+	}
+
+	public void printPatch(int[][] patch) {
+		for (int j = patchHeight; j >= 0; j--) {
+			for (int i = 0; i < patchWidth + 1; i++) {
+				if (patch[i][j] == PATH) {
+					System.out.print(".");
+				} else {
+					System.out.print("X");
+				}
+			}
+			System.out.print("\n");
+		}
 	}
 
 	public void printPatch(int[][] patch, int[][] connectivity) {
