@@ -1,6 +1,7 @@
-package com.apricotjam.spacepanic.screen;
+package com.apricotjam.spacepanic.testscreen;
 
 import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.systems.*;
 
 public class MapTestScreen extends BasicScreen {

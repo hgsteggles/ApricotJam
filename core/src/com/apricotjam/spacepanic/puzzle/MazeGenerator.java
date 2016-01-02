@@ -24,6 +24,7 @@ public class MazeGenerator {
 	}
 
 	public MazeGenerator(long seed, int patchWidth, int patchHeight) {
+		System.out.println("Seed: " + seed);
 		this.seed = seed;
 		this.patchWidth = patchWidth;
 		this.patchHeight = patchHeight;
@@ -232,7 +233,7 @@ public class MazeGenerator {
 	public int[] createPatchBoundary(int x, int y) {
 		int nCells = patchHeight + patchWidth - 1;
 		int[] bound = new int[nCells];
-		setRandomStateBoundary(x, y);
+		setRandomState(x, y);
 		for (int i = 0; i < nCells; ++i) {
 			if (rng.nextBoolean()) {
 				bound[i] = PATH;
@@ -269,9 +270,8 @@ public class MazeGenerator {
 		}
 	}
 
-	// Coordinates get +0.5 to prevent non-random behaviour at zero
-	private void setRandomStateBoundary(int x, int y) {
-		rng.setState((int) ((x + 0.5) * seed), (int) ((y + 0.5) * seed));
+	private void setRandomState(int x, int y) {
+		rng.setState(seed + x, seed + y);
 	}
 
 }
