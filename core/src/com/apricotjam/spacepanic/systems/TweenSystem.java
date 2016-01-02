@@ -39,9 +39,5 @@ public class TweenSystem extends IteratingSystem {
 			}
 		}
 		twc.tweenSpecs.removeAll(finished, false);
-		if (twc.tweenSpecs.size == 0) {
-			entity.remove(TweenComponent.class);
-		}
-
 	}
 }
