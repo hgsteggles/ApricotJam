@@ -8,7 +8,8 @@ public class MapTestScreen extends BasicScreen {
 	public MapTestScreen(SpacePanic spacePanic) {
 		super(spacePanic);
 		add(new RenderingSystem(spriteBatch, worldCamera));
-		add(new MovementSystem());
+		add(new ClickSystem());
+		add(new TweenSystem());
 		add(new MapSystem(8.25f, 4.75f));
 	}
 

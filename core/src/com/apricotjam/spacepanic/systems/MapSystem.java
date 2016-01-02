@@ -1,19 +1,20 @@
 package com.apricotjam.spacepanic.systems;
 
+import com.apricotjam.spacepanic.art.ComputerArt;
 import com.apricotjam.spacepanic.art.HelmetUI;
-import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.MapPartComponent;
-import com.apricotjam.spacepanic.components.TextureComponent;
-import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.input.InputManager;
+import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.puzzle.MazeGenerator;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class MapSystem extends EntitySystem {
@@ -46,8 +47,8 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private static final float PATHINESS = 0.5f; //How likely each cell is to be a path on the patch boundaries
-	private static final float ASTEROID_WIDTH = 0.1f;
-	private static final float ASTEROID_HEIGHT = 0.1f;
+	private static final float ASTEROID_WIDTH = 0.3f;
+	private static final float ASTEROID_HEIGHT = 0.3f;
 	private static final int PATCH_WIDTH = 10;
 	private static final int PATCH_HEIGHT = 10;
 	private static final int PATCHES_X = 5;
@@ -57,16 +58,23 @@ public class MapSystem extends EntitySystem {
 	private static final float XLIMIT = ((PATCHES_X / 2.0f) - 1.0f) * PATCH_WIDTH * ASTEROID_WIDTH;
 	private static final float YLIMIT = ((PATCHES_Y / 2.0f) - 1.0f) * PATCH_HEIGHT * ASTEROID_HEIGHT;
 
+	private static final float SPEED = 5.0f;
+
 	float width;
 	float height;
 
 	Engine engine = null;
 
 	Entity screen;
+	TransformComponent screenTrans;
 	Entity mapCentre;
 	TransformComponent mapCentreTrans;
 	Entity playerIcon;
-	Vector2 offsetFromCentre; //Distance player is from current centre patch, used to know when to rotate patches
+
+	Vector2 target = new Vector2();
+	Vector2 playerPosition = new Vector2();
+	Vector2 offsetFromCentre = new Vector2(); //Distance player is from current centre patch, used to know when to rotate patches
+	boolean moving = false;
 
 	MazeGenerator mazeGenerator;
 	Patch[][] patches;
@@ -75,10 +83,10 @@ public class MapSystem extends EntitySystem {
 		this.width = width;
 		this.height = height;
 		screen = createScreen();
+		screenTrans = ComponentMappers.transform.get(screen);
 		mapCentre = createMapCentre();
 		mapCentreTrans = ComponentMappers.transform.get(mapCentre);
 		playerIcon = createPlayerIcon();
-		offsetFromCentre = new Vector2();
 
 		mazeGenerator = new MazeGenerator(PATCH_WIDTH, PATCH_HEIGHT, PATHINESS);
 		patches = new Patch[PATCHES_X][PATCHES_Y];
@@ -107,18 +115,21 @@ public class MapSystem extends EntitySystem {
 
 	@Override
 	public void update (float deltaTime) {
-		if (InputManager.testInput.isTyped(Input.Keys.LEFT)) {
-			move(-1.0f, 0.0f);
+		if (moving) {
+			Vector2 moveVector = target.cpy().sub(playerPosition);
+			float dist = moveVector.len();
+			Vector2 dir = moveVector.cpy().nor();
+			if (dist > SPEED * deltaTime) {
+				move(dir.x * SPEED * deltaTime, dir.y * SPEED * deltaTime);
+			} else  {
+				move(moveVector.x, moveVector.y);
+				moving = false;
+			}
 		}
-		if (InputManager.testInput.isTyped(Input.Keys.RIGHT)) {
-			move(1.0f, 0.0f);
-		}
-		if (InputManager.testInput.isTyped(Input.Keys.UP)) {
-			move(0.0f, 1.0f);
-		}
-		if (InputManager.testInput.isTyped(Input.Keys.DOWN)) {
-			move(0.0f, -1.0f);
-		}
+		checkPatches();
+	}
+
+	private void checkPatches() {
 		if (offsetFromCentre.y > YLIMIT) {
 			movePatchesUp(engine);
 			offsetFromCentre.y -= PATCH_HEIGHT * ASTEROID_HEIGHT;
@@ -135,11 +146,17 @@ public class MapSystem extends EntitySystem {
 		}
 	}
 
+	private void click(int x, int y) {
+		target.set(x, y);
+		moving = true;
+	}
+
 	private void move(float dx, float dy) {
 		mapCentreTrans.position.x -= dx * ASTEROID_WIDTH;
 		mapCentreTrans.position.y -= dy * ASTEROID_HEIGHT;
 		offsetFromCentre.x += dx * ASTEROID_WIDTH;
 		offsetFromCentre.y += dy * ASTEROID_WIDTH;
+		playerPosition.add(dx, dy);
 	}
 
 	private void movePatchesUp(Engine engine) {
@@ -208,17 +225,32 @@ public class MapSystem extends EntitySystem {
 		MapPartComponent mpc = new MapPartComponent();
 		screen.add(mpc);
 
-		//TextureComponent texc = new TextureComponent();
-		//texc.region = ComputerArt.computer;
-		//texc.size.x = width;
-		//texc.size.y = height;
-		//screen.add(texc);
+		TextureComponent texc = new TextureComponent();
+		texc.region = ComputerArt.computer;
+		texc.size.x = width;
+		texc.size.y = height;
+		screen.add(texc);
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
 		tranc.position.z = 0.0f;
 		screen.add(tranc);
+
+		ClickComponent cc = new ClickComponent();
+		cc.shape = new Rectangle().setSize(width, height).setCenter(0.0f, 0.0f);
+		cc.clicker = new ClickInterface() {
+			@Override
+			public void onClick(Entity entity) {
+				Vector2 pos = new Vector2(InputManager.screenInput.getPointerDownLocation());
+				pos.sub(screenTrans.position.x, screenTrans.position.y);
+				pos.sub(mapCentreTrans.position.x, mapCentreTrans.position.y);
+				pos.x /= ASTEROID_WIDTH;
+				pos.y /= ASTEROID_HEIGHT;
+				click(Math.round(pos.x), Math.round(pos.y));
+			}
+		};
+		screen.add(cc);
 
 		return screen;
 	}
@@ -235,6 +267,9 @@ public class MapSystem extends EntitySystem {
 		tranc.position.z = 0.0f;
 		tranc.parent = ComponentMappers.transform.get(screen);
 		mapCentre.add(tranc);
+
+		TweenComponent tc = new TweenComponent();
+		mapCentre.add(tc);
 
 		return mapCentre;
 	}
