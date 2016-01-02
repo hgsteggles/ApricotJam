@@ -71,10 +71,7 @@ public class RenderingSystem extends SortedIteratingSystem {
 			if (ComponentMappers.animatedshader.has(entity)) {
 				AnimatedShaderComponent animShaderComp = ComponentMappers.animatedshader.get(entity);
 				batch.setShader(animShaderComp.shader);
-				if (ComponentMappers.state.has(entity)) {
-					StateComponent stateComp = ComponentMappers.state.get(entity);
-					animShaderComp.shader.setUniformf("time", stateComp.time);
-				}
+				animShaderComp.shader.setUniformf("time", animShaderComp.time);
 			}
 			
 			batch.draw(tex.region,

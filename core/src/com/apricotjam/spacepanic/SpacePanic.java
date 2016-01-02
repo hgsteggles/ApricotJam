@@ -27,14 +27,14 @@ public class SpacePanic extends ApplicationAdapter {
 		Art.load();
 		InputManager.create();
 		//setScreen(new GameScreen(this));
-		setScreen(new TitleScreen(this));
-		//setScreen(new PipeTestScreen(this));
+		//setScreen(new TitleScreen(this));
+		setScreen(new PipeTestScreen(this));
 		//setScreen(new PipeFillTestScreen(this));
 	}
 
 	@Override
 	public void render() {
-		Gdx.graphics.getGL20().glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		Gdx.graphics.getGL20().glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
 		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		if (screen != null) {
 			if (InputManager.screenInput.isBackPressedLast()) {

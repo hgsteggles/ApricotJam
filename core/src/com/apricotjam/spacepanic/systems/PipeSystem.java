@@ -1,44 +1,27 @@
 package com.apricotjam.spacepanic.systems;
 
-import com.apricotjam.spacepanic.art.PipeGameArt;
-import com.apricotjam.spacepanic.art.PipeGameArt.RotatedAnimationData;
-import com.apricotjam.spacepanic.components.AnimatedShaderComponent;
-import com.apricotjam.spacepanic.components.AnimationComponent;
-import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
-import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
-import com.apricotjam.spacepanic.components.TweenComponent;
-import com.apricotjam.spacepanic.components.TweenSpec;
-import com.apricotjam.spacepanic.interfaces.ClickInterface;
-import com.apricotjam.spacepanic.interfaces.TweenInterface;
-import com.apricotjam.spacepanic.puzzle.PipePuzzleGenerator;
-import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.generators.PipeWorld;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.RandomXS128;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 public class PipeSystem extends EntitySystem {
 	public static final int GRID_LENGTH = 6;
 	public static final Array<GridPoint2> GridDeltas = createGridDeltas();
-	private Entity[][] pipeTiles = new Entity[GRID_LENGTH][GRID_LENGTH];
-	private ImmutableArray<Entity> pipeFluids;
-	private RandomXS128 rng = new RandomXS128(0);
-	private PipePuzzleGenerator generator = new PipePuzzleGenerator();
+	private ImmutableArray<Entity> pipeFluids, pipeTiles;
+	private PipeWorld world = new PipeWorld();
 	private boolean startedSolutionAnimation = false;
+	private float solvedFluidSpeedup = 32f;
 
 	static public int numberConnections(byte mask) {
 		return ((mask) & 1) + ((mask >> 1) & 1) + ((mask >> 2) & 1) + ((mask >> 3) & 1);
@@ -123,6 +106,34 @@ public class PipeSystem extends EntitySystem {
 		return oppositeDir;
 	}
 	
+	static public void rotateTile(Entity tile) {
+		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(tile);
+		TransformComponent transComp = ComponentMappers.transform.get(tile);
+		
+		transComp.rotation -= 90f;
+		if (transComp.rotation > 360f)
+			transComp.rotation += 360f;
+		pipeTileComp.mask = rotateMask(pipeTileComp.mask);
+	}
+	
+	static public String createTimerString(int t) {
+		int nminutes = (int)(t/60f);
+		int nseconds = (int)(t - nminutes*60);
+		
+		String timestring = "";
+		if (nminutes < 10)
+			timestring += "0";
+		timestring += Integer.toString(nminutes);
+		
+		timestring += ":";
+		
+		if (nseconds < 10)
+			timestring += "0";
+		timestring += Integer.toString(nseconds);
+
+		return timestring;
+	}
+	
 	static private Array<GridPoint2> createGridDeltas() {
 		Array<GridPoint2> deltas = new Array<GridPoint2>();
 		deltas.add(new GridPoint2(0, 1));
@@ -135,33 +146,42 @@ public class PipeSystem extends EntitySystem {
 
 	@Override
 	public void addedToEngine(Engine engine) {
-		addTiles(engine);
-		//pipeTiles = engine.getEntitiesFor(Family.all(PipeTileComponent.class).get());
+		world.build(engine);
+		pipeTiles = engine.getEntitiesFor(Family.all(PipeTileComponent.class, ClickComponent.class).get());
 		pipeFluids = engine.getEntitiesFor(Family.all(PipeFluidComponent.class).get());
 	}
 
 	@Override
 	public void update(float deltaTime) {
-		GridPoint2 start = generator.getEntryPoint();
-		GridPoint2 end = generator.getExitPoint();
+		//GridPoint2 start = generator.getEntryPoint();
+		//GridPoint2 end = generator.getExitPoint();
 		
 		for (Entity pipeFluid : pipeFluids) {
 			PipeFluidComponent pipeFluidComp = ComponentMappers.pipefluid.get(pipeFluid);
-			pipeFluidComp.currFill += deltaTime;
+			StateComponent stateComp = ComponentMappers.state.get(pipeFluid);
+			pipeFluidComp.currFill += stateComp.timescale*deltaTime;
 			
 			if (pipeFluidComp.filling && pipeFluidComp.currFill >= pipeFluidComp.fillDuration) { // Pipe is full.
 				pipeFluidComp.filling = false;
 				
 				// Find next pipe. If not connected, player fails; else start next pipe filling and prevent user from rotating it.
-				if (withinBounds(pipeFluidComp.iposExit, pipeFluidComp.jposExit)) {
-					Entity nextPipe = pipeTiles[pipeFluidComp.iposExit][pipeFluidComp.jposExit];
-					PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(nextPipe);
+				int exitDirection = directionFromMask(pipeFluidComp.exitMask);
+				PipeTileComponent currPipeTileComp = ComponentMappers.pipetile.get(pipeFluidComp.parentPipe);
+				Entity nextPipe = currPipeTileComp.neighbours[exitDirection];
+				if (nextPipe != null) {
+					PipeTileComponent nextPipeTileComp = ComponentMappers.pipetile.get(nextPipe);
 					
-					int entryDirection = oppositeDirectionIndex(directionFromMask(pipeFluidComp.exitMask));
+					int entryDirection = oppositeDirectionIndex(exitDirection);
 					
-					if (connectedAtIndex(pipeTileComp.mask, entryDirection)) {
+					if (connectedAtIndex(nextPipeTileComp.mask, entryDirection)) {
 						// Next pipe is connected, start filling.
-						getEngine().addEntity(createFluid(pipeTileComp.mask, entryDirection, pipeFluidComp.iposExit, pipeFluidComp.jposExit));
+						Entity nextFluid = world.createFluid(nextPipe, entryDirection);
+						if (startedSolutionAnimation) {
+							StateComponent nextStateComp = ComponentMappers.state.get(nextFluid);
+							nextStateComp.timescale = solvedFluidSpeedup;
+						}
+						
+						getEngine().addEntity(nextFluid);
 						
 						// Stop player rotating the filling pipe.
 						ClickComponent clickComp = ComponentMappers.click.get(nextPipe);
@@ -177,6 +197,49 @@ public class PipeSystem extends EntitySystem {
 			}
 		}
 		
+		if (!startedSolutionAnimation) {
+			Entity currPipe = world.getEntryPipe();
+			PipeTileComponent currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
+			int currExitDirection = directionFromMask(currPipeTileComp.mask);
+			
+			boolean solved = false;
+			
+			while (!solved) {
+				currPipe = currPipeTileComp.neighbours[currExitDirection];
+				if (currPipe == null)
+					break;
+				else if (currPipe == world.getExitPipe()) {
+					solved = true;
+					break;
+				}
+				else {
+					currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
+					int currEntryDirection = oppositeDirectionIndex(currExitDirection);
+					
+					if (!connectedAtIndex(currPipeTileComp.mask, currEntryDirection))
+						break;
+					else
+						currExitDirection = exitFromEntryDirection(currPipeTileComp.mask, currEntryDirection);
+				}
+			}
+			
+			if (solved) {
+				System.out.println("solved");
+				startedSolutionAnimation = true;
+				// Prevent user from rotating tiles.
+				for (Entity pipeTile : pipeTiles) {
+					ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
+					clickComp.active = false;
+				}
+				// Speed up the fluid filling.
+				for (Entity pipeFluid : pipeFluids) {
+					StateComponent stateComp = ComponentMappers.state.get(pipeFluid);
+					stateComp.timescale = solvedFluidSpeedup;
+				}
+			}
+		}
+		
+		/*
 		// Check if the puzzle is solved.
 		int curr_i = start.x;
 		int curr_j = start.y;
@@ -239,193 +302,6 @@ public class PipeSystem extends EntitySystem {
 				//resetTiles();
 			}
 		}
-	}
-
-	private void addTiles(Engine engine) {
-		generator.generatePuzzle(4);
-		byte[][] maskGrid = generator.getMaskGrid();
-		
-		for (int i = 0; i < GRID_LENGTH; ++i) {
-			for (int j = 0; j < GRID_LENGTH; ++j) {
-				GridPoint2 start = generator.getEntryPoint();
-				GridPoint2 end = generator.getExitPoint();
-				boolean isExitEntry = ((i == start.x && j == start.y) || (i == end.x && j == end.y));
-				
-				Entity tile = createTile(maskGrid[i][j], i, j, isExitEntry);
-				
-				if (!isExitEntry) {
-					if (rng.nextBoolean())
-						rotateTile(tile);
-					else {
-						rotateTile(tile);
-						rotateTile(tile);
-						rotateTile(tile);
-					}
-				}
-				
-				engine.addEntity(tile);
-				
-				pipeTiles[i][j] = tile;
-			}
-		}
-	}
-	
-	private void resetTiles() {
-		generator.generatePuzzle(4);
-		byte[][] maskGrid = generator.getMaskGrid();
-		
-		for (int i = 0; i < GRID_LENGTH; ++i) {
-			for (int j = 0; j < GRID_LENGTH; ++j) {
-				GridPoint2 start = generator.getEntryPoint();
-				GridPoint2 end = generator.getExitPoint();
-				boolean isExitEntry = ((i == start.x && j == start.y) || (i == end.x && j == end.y));
-				
-				resetTile(maskGrid[i][j], i, j, isExitEntry);
-				
-				if (!isExitEntry) {
-					if (rng.nextBoolean())
-						rotateTile(pipeTiles[i][j]);
-					else {
-						rotateTile(pipeTiles[i][j]);
-						rotateTile(pipeTiles[i][j]);
-						rotateTile(pipeTiles[i][j]);
-					}
-				}
-			}
-		}
-	}
-
-	private Entity createTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
-		Entity tile = new Entity();
-
-		PipeTileComponent pipeTileComp = new PipeTileComponent();
-		pipeTileComp.mask = mask;
-
-		TextureComponent textureComp = new TextureComponent();
-		textureComp.region = PipeGameArt.pipeRegions.get(mask).region;
-
-		TransformComponent transComp = new TransformComponent();
-		float tileWidth = textureComp.size.x;
-		float tileHeight = textureComp.size.y;
-		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - GRID_LENGTH * tileWidth / 2f;
-		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - GRID_LENGTH * tileHeight / 2f;
-		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
-		transComp.rotation = PipeGameArt.pipeRegions.get(mask).rotation;
-		
-		ClickComponent clickComp = new ClickComponent();
-		clickComp.active = !isExitEntry;
-		clickComp.clicker = new ClickInterface() {
-			@Override
-			public void onClick(Entity entity) {
-				TransformComponent tc = ComponentMappers.transform.get(entity);
-				tc.rotation -= 90f;
-				if (tc.rotation > 360f)
-					tc.rotation += 360f;
-				PipeTileComponent ptc = ComponentMappers.pipetile.get(entity);
-				ptc.mask = rotateMask(ptc.mask);
-			}
-		};
-		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
-
-		tile.add(pipeTileComp).add(textureComp).add(transComp).add(clickComp);
-
-		return tile;
-	}
-	
-	private Entity createFluid(byte mask, int entryDirection, int ipos, int jpos) {
-		Entity tile = new Entity();
-		
-		PipeFluidComponent pipeFluidComp = new PipeFluidComponent();
-		pipeFluidComp.fillDuration = 0.5f;
-		
-		int exitDirection = exitFromEntryDirection(mask, entryDirection);
-		pipeFluidComp.exitMask = maskFromDirection(exitDirection);
-		pipeFluidComp.iposExit = ipos + GridDeltas.get(exitDirection).x;
-		pipeFluidComp.jposExit = jpos + GridDeltas.get(exitDirection).y;
-
-		// TODO: need mask textures to set animation and texture component regions.
-		RotatedAnimationData animData = PipeGameArt.fluidRegions.get(mask).get(entryDirection);
-		AnimationComponent animComp = new AnimationComponent();
-		animComp.animations.put(PipeFluidComponent.STATE_FILLING, new Animation(pipeFluidComp.fillDuration/animData.regions.size, animData.regions));
-		
-		TextureComponent textureComp = new TextureComponent();
-
-		TransformComponent transComp = new TransformComponent();
-		float tileWidth = textureComp.size.x;
-		float tileHeight = textureComp.size.y;
-		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - GRID_LENGTH * tileWidth / 2f;
-		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - GRID_LENGTH * tileHeight / 2f;
-		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, -1);
-		transComp.rotation = animData.rotation;
-		
-		StateComponent stateComp = new StateComponent();
-		stateComp.set(PipeFluidComponent.STATE_FILLING);
-		
-		AnimatedShaderComponent animShaderComp = new AnimatedShaderComponent();
-		animShaderComp.shader = PipeGameArt.fluidShader;
-		
-		tile.add(pipeFluidComp).add(textureComp).add(transComp).add(animComp).add(stateComp).add(animShaderComp);
-
-		return tile;
-	}
-	
-	private void resetTile(byte mask, int ipos, int jpos, boolean isExitEntry) {
-		TextureComponent textureComp = ComponentMappers.texture.get(pipeTiles[ipos][jpos]);
-		textureComp.region = PipeGameArt.pipeRegions.get(mask).region;
-		
-		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTiles[ipos][jpos]);
-		pipeTileComp.mask = mask;
-		
-		ClickComponent clickComp = ComponentMappers.click.get(pipeTiles[ipos][jpos]);
-		clickComp.active = !isExitEntry;
-		
-		TransformComponent transComp = ComponentMappers.transform.get(pipeTiles[ipos][jpos]);
-		if (pipeTileComp.mask == (byte)(5))
-			transComp.rotation = 270f;
-		else
-			transComp.rotation = 0f;
-	}
-	
-	public void rotateTile(Entity tile) {
-		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(tile);
-		TransformComponent transComp = ComponentMappers.transform.get(tile);
-		
-		transComp.rotation -= 90f;
-		if (transComp.rotation > 360f)
-			transComp.rotation += 360f;
-		pipeTileComp.mask = rotateMask(pipeTileComp.mask);
-	}
-	
-	private Entity createSolvedText() {
-		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "retro";
-		fontComp.string = "Solved!";
-		fontComp.color = new Color(Color.WHITE);
-		fontComp.centering = true;
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT * 9f / 10f;
-
-		TweenComponent tweenComponent = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = 1.0f;
-		tweenSpec.end = 0.0f;
-		tweenSpec.period = 1f;
-		tweenSpec.interp = Interpolation.linear;
-		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
-		tweenSpec.tweenInterface = new TweenInterface() {
-			@Override
-			public void applyTween(Entity e, float a) {
-				BitmapFontComponent bitmapFontComponent = ComponentMappers.bitmapfont.get(e);
-				bitmapFontComponent.color.a = Math.max(Math.min(a, 1f), 0f);
-			}
-		};
-		tweenComponent.tweenSpecs.add(tweenSpec);
-
-		Entity solvedText = new Entity();
-		solvedText.add(fontComp).add(transComp).add(tweenComponent);
-		
-		return solvedText;
+		*/
 	}
 }

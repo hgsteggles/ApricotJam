@@ -1,4 +1,4 @@
-package com.apricotjam.spacepanic.puzzle;
+package com.apricotjam.spacepanic.generators;
 
 import com.apricotjam.spacepanic.systems.PipeSystem;
 import com.badlogic.gdx.math.GridPoint2;
@@ -11,23 +11,29 @@ public class PipePuzzleGenerator {
 	private int turnOffCounter = 0;
 	private byte[] randomMasks = createRandomMasks();
 	
-	private GridPoint2 start = new GridPoint2(0, 0);
-	private GridPoint2 end = new GridPoint2(PipeSystem.GRID_LENGTH - 1, PipeSystem.GRID_LENGTH - 1);
+	private GridPoint2 start = new GridPoint2();
+	private GridPoint2 end = new GridPoint2();
+	private int length = 2;
 	
 	public void generatePuzzle(int difficulty) {
 		// Difficulty from 1 to 10;
 		// TODO: modify generation parameters to reflect difficulty.
 		
+		start.set(-1, PipeSystem.GRID_LENGTH - 1);
+		end.set(PipeSystem.GRID_LENGTH, PipeSystem.GRID_LENGTH - 1);
+		
 		resetMaskGrid();
 		turnOffCounter = Math.min(difficulty, 10);
 		
-		maskGrid[start.x][start.y] = PipeSystem.connectAtIndex(maskGrid[start.x][start.y], 1);
-		maskGrid[end.x][end.y] = PipeSystem.connectAtIndex(maskGrid[end.x][end.y], 3);
+		//maskGrid[start.x+1][start.y] = (byte)(4);
+		//maskGrid[end.x][end.y] = (byte)(10);
 		
-		boolean done = updateMask(start.x, start.y, start.x+1, start.y);
+		boolean done = updateMask(start.x, start.y, start.x + 1, start.y);
 		
-		if (!done)
+		if (!done) {
 			System.out.println("PipePuzzleGenerator::generatePuzzle: unable to create puzzle.");
+			System.exit(0);
+		}
 		
 		// Fill out the rest.
 		for (int i = 0; i < PipeSystem.GRID_LENGTH; ++i) {
@@ -51,7 +57,12 @@ public class PipePuzzleGenerator {
 		return end;
 	}
 	
+	public int getSolutionLength() {
+		return length;
+	}
+	
 	private void resetMaskGrid() {
+		length = 2;
 		for (int i = 0; i < PipeSystem.GRID_LENGTH; ++i) {
 			for (int j = 0; j < PipeSystem.GRID_LENGTH; ++j) {
 				maskGrid[i][j] = 0;
@@ -73,7 +84,7 @@ public class PipePuzzleGenerator {
 			parentDirection = 0;
 		
 		if (i == end.x && j == end.y) {
-			if (!PipeSystem.connectedAtIndex(maskGrid[i][j], parentDirection) || turnOffCounter != 0)
+			if (!PipeSystem.connectedAtIndex((byte)(8), parentDirection) || turnOffCounter != 0)
 				return false;
 			else
 				return true;
@@ -90,7 +101,7 @@ public class PipePuzzleGenerator {
 				int inew = i + PipeSystem.GridDeltas.get(idir).x;
 				int jnew = j + PipeSystem.GridDeltas.get(idir).y;
 				
-				if (inew >= 0 && inew < PipeSystem.GRID_LENGTH && jnew >= 0 && jnew < PipeSystem.GRID_LENGTH) {
+				if (PipeSystem.withinBounds(inew, jnew) || (inew == end.x && jnew == end.y)) {
 					boolean isStart = (inew == start.x) && (jnew == start.y);
 					if (!isStart) { // Pipe cannot connect to start tile.
 						// Check if pipe can turn off from a direct route to exit.
@@ -119,11 +130,14 @@ public class PipePuzzleGenerator {
 			}
 			
 			maskGrid[i][j] = PipeSystem.connectAtIndex(maskGrid[i][j], route);
+			
+			length += 1;
 			connected = updateMask(i, j, inew, jnew);
 			
 			if (connected)
 				break;
 			else {
+				length -= 1;
 				if ((inew - i > 0 && end.x - i <= 0) || (inew - i < 0 && end.x - i >= 0) ||
 						(jnew - j > 0 && end.y - j <= 0) || (jnew - j < 0 && end.y - j >= 0)) {
 					turnOffCounter += 1;
@@ -132,8 +146,9 @@ public class PipePuzzleGenerator {
 			}
 		}
 		
-		if (!connected)
+		if (!connected) {
 			maskGrid[i][j] = PipeSystem.disconnectAtIndex(maskGrid[i][j], parentDirection);
+		}
 		
 		return connected;
 	}

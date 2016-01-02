@@ -5,4 +5,5 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class AnimatedShaderComponent implements Component {
 	public ShaderProgram shader = null;
+	public float time = 0f;
 }

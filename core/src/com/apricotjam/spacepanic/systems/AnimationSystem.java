@@ -26,6 +26,6 @@ public class AnimationSystem extends IteratingSystem {
 			tex.region = animation.getKeyFrame(state.time); 
 		}
 		
-		state.time += deltaTime;
+		state.time += state.timescale*deltaTime;
 	}
 }
