@@ -8,29 +8,34 @@ import java.util.HashMap;
 
 public class MazeGenerator {
 
-	private final long seed;
-	private RandomXS128 rng = new RandomXS128(0);
-
-	private int patchWidth;
-	private int patchHeight;
-
 	public static final int UNEXPOSED = 0;
 	private static final int UNDETERMINED = 1;
 	public static final int PATH = 2;
 	public static final int WALL = 3;
 
-	public MazeGenerator(int patchWidth, int patchHeight) {
-		this(System.nanoTime(), patchWidth, patchHeight);
+	private final long seed;
+	private RandomXS128 rng = new RandomXS128(0);
+
+	private int patchWidth;
+	private int patchHeight;
+	private float boundaryPathChance;
+
+	public MazeGenerator(int patchWidth, int patchHeight, float boundaryPathChance) {
+		this(System.nanoTime(), patchWidth, patchHeight, boundaryPathChance);
 	}
 
-	public MazeGenerator(long seed, int patchWidth, int patchHeight) {
+	public MazeGenerator(long seed, int patchWidth, int patchHeight, float boundaryPathChance) {
 		System.out.println("Seed: " + seed);
 		this.seed = seed;
 		this.patchWidth = patchWidth;
 		this.patchHeight = patchHeight;
+		this.boundaryPathChance = boundaryPathChance;
 	}
 
 	public int[][] createPatch(int x, int y) {
+		if (x == 0 && y == 0) {
+			return createHomePatch();
+		}
 		int[][] patch = new int[patchWidth + 1][patchHeight + 1];
 		int[][] connectivity = new int[patchWidth + 1][patchHeight + 1];
 		for (int i = 0; i < patchWidth + 1; i++) {
@@ -77,7 +82,6 @@ public class MazeGenerator {
 			}
 		}
 
-		//setRandomStateMain(x, y);
 		while (exposed.size() > 0) {
 			int index = rng.nextInt(exposed.size());
 			Point choice = exposed.get(index);
@@ -144,6 +148,26 @@ public class MazeGenerator {
 		}
 
 		return trimmedPatch;
+	}
+
+	public int[][] createHomePatch() {
+		int[][] patch = new int[patchWidth][patchHeight];
+		for (int i = 0; i < patchWidth; i++) {
+			for (int j = 0; j < patchHeight; j++) {
+				patch[i][j] = PATH;
+			}
+		}
+		int[] thisBounds = createPatchBoundary(0, 0);
+
+		ArrayList<Point> exposed = new ArrayList<Point>();
+
+		for (int i = 0; i < patchHeight; i++) {
+			patch[0][i] = thisBounds[patchHeight - 1 - i];
+		}
+		for (int i = 0; i < patchWidth - 1; i++) {
+			patch[i + 1][0] = thisBounds[patchHeight + i];
+		}
+		return patch;
 	}
 
 	private void createPath(int i, int j, int[][] patch, int[][] connectivity, ArrayList<Point> exposed) {
@@ -235,7 +259,7 @@ public class MazeGenerator {
 		int[] bound = new int[nCells];
 		setRandomState(x, y);
 		for (int i = 0; i < nCells; ++i) {
-			if (rng.nextBoolean()) {
+			if (rng.nextFloat() <= boundaryPathChance) {
 				bound[i] = PATH;
 			} else {
 				bound[i] = WALL;
@@ -270,7 +294,7 @@ public class MazeGenerator {
 		}
 	}
 
-	private void setRandomState(int x, int y) {
+	private void setRandomState(long x, long y) {
 		rng.setState(seed + x, seed + y);
 	}
 

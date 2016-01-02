@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputProcessor;
 public class InputManager {
 
 	public static ScreenInput screenInput;
+	public static TestInput testInput;
 	private static InputMultiplexer input;
 
 	private InputManager() {
@@ -18,10 +19,14 @@ public class InputManager {
 
 		screenInput = new ScreenInput();
 		addInputProcessor(screenInput);
+
+		testInput = new TestInput();
+		addInputProcessor(testInput);
 	}
 
 	public static void reset() {
 		screenInput.reset();
+		testInput.reset();
 	}
 
 	public static void addInputProcessor(InputProcessor ip) {
