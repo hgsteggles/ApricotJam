@@ -1,6 +1,5 @@
 package com.apricotjam.spacepanic.systems;
 
-import com.apricotjam.spacepanic.art.ComputerArt;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.MapPartComponent;
@@ -13,47 +12,61 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
 public class MapSystem extends EntitySystem {
 
 	private class Patch {
-		int width;
-		int height;
+		int x;
+		int y;
 
 		int[][] maze;
 		ArrayList<Entity> asteroids;
 
-		public Patch(int width, int height, int[][] maze) {
-			this.width = width;
-			this.height = height;
+		public Patch(int x, int y, int[][] maze) {
+			this.x = x;
+			this.y = y;
 			this.maze = maze;
 			asteroids = new ArrayList<Entity>();
 		}
 
-		public void dispose(Engine engine) {
+		public void addToEngine(Engine engine) {
+			for (Entity ast : asteroids) {
+				engine.addEntity(ast);
+			}
+		}
+
+		public void removeFromEngine(Engine engine) {
 			for (Entity ast : asteroids) {
 				engine.removeEntity(ast);
 			}
 		}
 	}
 
+	private static final float PATHINESS = 0.5f; //How likely each cell is to be a path on the patch boundaries
 	private static final float ASTEROID_WIDTH = 0.1f;
 	private static final float ASTEROID_HEIGHT = 0.1f;
 	private static final int PATCH_WIDTH = 10;
 	private static final int PATCH_HEIGHT = 10;
 	private static final int PATCHES_X = 5;
 	private static final int PATCHES_Y = 5;
-	private static final float PATHINESS = 0.5f; //How likely each cell is to be a path on the patch boundaries
+
+	//Limits before patches are rotated
+	private static final float XLIMIT = ((PATCHES_X / 2.0f) - 1.0f) * PATCH_WIDTH * ASTEROID_WIDTH;
+	private static final float YLIMIT = ((PATCHES_Y / 2.0f) - 1.0f) * PATCH_HEIGHT * ASTEROID_HEIGHT;
 
 	float width;
 	float height;
+
+	Engine engine = null;
 
 	Entity screen;
 	Entity mapCentre;
 	TransformComponent mapCentreTrans;
 	Entity playerIcon;
+	Vector2 offsetFromCentre; //Distance player is from current centre patch, used to know when to rotate patches
 
 	MazeGenerator mazeGenerator;
 	Patch[][] patches;
@@ -65,6 +78,7 @@ public class MapSystem extends EntitySystem {
 		mapCentre = createMapCentre();
 		mapCentreTrans = ComponentMappers.transform.get(mapCentre);
 		playerIcon = createPlayerIcon();
+		offsetFromCentre = new Vector2();
 
 		mazeGenerator = new MazeGenerator(PATCH_WIDTH, PATCH_HEIGHT, PATHINESS);
 		patches = new Patch[PATCHES_X][PATCHES_Y];
@@ -80,14 +94,13 @@ public class MapSystem extends EntitySystem {
 
 	@Override
 	public void addedToEngine(Engine engine) {
+		this.engine = engine;
 		engine.addEntity(screen);
 		engine.addEntity(mapCentre);
 		engine.addEntity(playerIcon);
 		for (int ipatch = 0; ipatch < PATCHES_X; ipatch++) {
 			for (int jpatch = 0; jpatch < PATCHES_Y; jpatch++) {
-				for (Entity ast : patches[ipatch][jpatch].asteroids) {
-					engine.addEntity(ast);
-				}
+				patches[ipatch][jpatch].addToEngine(engine);
 			}
 		}
 	}
@@ -95,20 +108,97 @@ public class MapSystem extends EntitySystem {
 	@Override
 	public void update (float deltaTime) {
 		if (InputManager.testInput.isTyped(Input.Keys.LEFT)) {
-			System.out.println("LEFT");
-			mapCentreTrans.position.x += ASTEROID_WIDTH;
+			move(-1.0f, 0.0f);
 		}
 		if (InputManager.testInput.isTyped(Input.Keys.RIGHT)) {
-			System.out.println("RIGHT");
-			mapCentreTrans.position.x -= ASTEROID_WIDTH;
+			move(1.0f, 0.0f);
 		}
 		if (InputManager.testInput.isTyped(Input.Keys.UP)) {
-			System.out.println("UP");
-			mapCentreTrans.position.y -= ASTEROID_HEIGHT;
+			move(0.0f, 1.0f);
 		}
 		if (InputManager.testInput.isTyped(Input.Keys.DOWN)) {
-			System.out.println("DOWN");
-			mapCentreTrans.position.y += ASTEROID_HEIGHT;
+			move(0.0f, -1.0f);
+		}
+		if (offsetFromCentre.y > YLIMIT) {
+			movePatchesUp(engine);
+			offsetFromCentre.y -= PATCH_HEIGHT * ASTEROID_HEIGHT;
+		} else if (offsetFromCentre.y < -1 * YLIMIT) {
+			movePatchesDown(engine);
+			offsetFromCentre.y += PATCH_HEIGHT * ASTEROID_HEIGHT;
+		}
+		if (offsetFromCentre.x > XLIMIT) {
+			movePatchesRight(engine);
+			offsetFromCentre.x -= PATCH_WIDTH * ASTEROID_WIDTH;
+		} else if (offsetFromCentre.x < -1 * XLIMIT) {
+			movePatchesLeft(engine);
+			offsetFromCentre.x += PATCH_WIDTH * ASTEROID_WIDTH;
+		}
+	}
+
+	private void move(float dx, float dy) {
+		mapCentreTrans.position.x -= dx * ASTEROID_WIDTH;
+		mapCentreTrans.position.y -= dy * ASTEROID_HEIGHT;
+		offsetFromCentre.x += dx * ASTEROID_WIDTH;
+		offsetFromCentre.y += dy * ASTEROID_WIDTH;
+	}
+
+	private void movePatchesUp(Engine engine) {
+		for (int i = 0; i < PATCHES_X; i++) {
+			patches[i][0].removeFromEngine(engine);
+		}
+		for (int j = 0; j < PATCHES_Y - 1; j++) {
+			for (int i = 0; i < PATCHES_X; i++) {
+				patches[i][j] = patches[i][j + 1];
+			}
+		}
+		for (int i = 0; i < PATCHES_X; i++) {
+			patches[i][PATCHES_Y - 1] = createPatch(patches[i][PATCHES_Y - 2].x, patches[i][PATCHES_Y - 2].y + 1);
+			patches[i][PATCHES_Y - 1].addToEngine(engine);
+		}
+	}
+
+	private void movePatchesDown(Engine engine) {
+		for (int i = 0; i < PATCHES_X; i++) {
+			patches[i][PATCHES_Y - 1].removeFromEngine(engine);
+		}
+		for (int j = PATCHES_Y - 1; j > 0; j--) {
+			for (int i = 0; i < PATCHES_X; i++) {
+				patches[i][j] = patches[i][j - 1];
+			}
+		}
+		for (int i = 0; i < PATCHES_X; i++) {
+			patches[i][0] = createPatch(patches[i][1].x, patches[i][1].y - 1);
+			patches[i][0].addToEngine(engine);
+		}
+	}
+
+	private void movePatchesLeft(Engine engine) {
+		for (int j = 0; j < PATCHES_Y; j++) {
+			patches[PATCHES_X - 1][j].removeFromEngine(engine);
+		}
+		for (int i = PATCHES_X - 1; i > 0; i--) {
+			for (int j = 0; j < PATCHES_Y; j++) {
+				patches[i][j] = patches[i - 1][j];
+			}
+		}
+		for (int j = 0; j < PATCHES_Y; j++) {
+			patches[0][j] = createPatch(patches[1][j].x - 1, patches[1][j].y);
+			patches[0][j].addToEngine(engine);
+		}
+	}
+
+	private void movePatchesRight(Engine engine) {
+		for (int j = 0; j < PATCHES_Y; j++) {
+			patches[0][j].removeFromEngine(engine);
+		}
+		for (int i = 0; i < PATCHES_X - 1; i++) {
+			for (int j = 0; j < PATCHES_Y; j++) {
+				patches[i][j] = patches[i + 1][j];
+			}
+		}
+		for (int j = 0; j < PATCHES_Y; j++) {
+			patches[PATCHES_X - 1][j] = createPatch(patches[PATCHES_X - 2][j].x + 1, patches[PATCHES_X - 2][j].y);
+			patches[PATCHES_X - 1][j].addToEngine(engine);
 		}
 	}
 
@@ -194,7 +284,7 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private Patch createPatch(int xpatch, int ypatch) {
-		Patch patch = new Patch(PATCH_WIDTH, PATCH_HEIGHT, mazeGenerator.createPatch(xpatch, ypatch));
+		Patch patch = new Patch(xpatch, ypatch, mazeGenerator.createPatch(xpatch, ypatch));
 		for (int icell = 0; icell < PATCH_WIDTH; icell++) {
 			for (int jcell = 0; jcell < PATCH_HEIGHT; jcell++) {
 				if (patch.maze[icell][jcell] == MazeGenerator.WALL) {
