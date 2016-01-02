@@ -1,6 +1,7 @@
 package com.apricotjam.spacepanic.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
 
 public class PipeFluidComponent implements Component {
 	public static final int STATE_EMPTY = 0;
@@ -13,4 +14,5 @@ public class PipeFluidComponent implements Component {
 	public int jposExit = 0;
 	public byte exitMask = 0;
 	
+	public Entity parentPipe = null;
 }

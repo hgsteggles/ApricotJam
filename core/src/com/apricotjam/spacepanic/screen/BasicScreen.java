@@ -46,6 +46,11 @@ public abstract class BasicScreen implements Screen {
 
 	public void render(float delta) {
 		engine.update(delta);
+		
+		if (engine.getEntities().size() > 400) {
+			System.out.println("Too many entities.");
+			System.exit(0);
+		}
 	}
 
 	@Override
