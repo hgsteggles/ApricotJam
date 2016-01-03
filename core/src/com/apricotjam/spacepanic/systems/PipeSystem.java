@@ -1,10 +1,12 @@
 package com.apricotjam.spacepanic.systems;
 
+import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
+import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.generators.PipeWorld;
 import com.badlogic.ashley.core.Engine;
@@ -188,7 +190,7 @@ public class PipeSystem extends EntitySystem {
 						clickComp.active = false;
 					}
 					else {
-						// TODO: player fails.
+						getEngine().addEntity(PipeWorld.createErrorText());
 					}
 				}
 				else {
@@ -236,72 +238,13 @@ public class PipeSystem extends EntitySystem {
 					StateComponent stateComp = ComponentMappers.state.get(pipeFluid);
 					stateComp.timescale = solvedFluidSpeedup;
 				}
+				// Show connection LED text.
+				getEngine().addEntity(PipeWorld.createConnectionText());
+				// Stop timer;
+				TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
+				timerTickerComp.tickerActive = false;
+				timerTickerComp.finishActive = false;
 			}
 		}
-		
-		/*
-		// Check if the puzzle is solved.
-		int curr_i = start.x;
-		int curr_j = start.y;
-		
-		Entity tile = pipeTiles[start.x][start.y];
-		PipeTileComponent tileComp = ComponentMappers.pipetile.get(tile);
-		
-		// Find start pipe exit.
-		int lastPipeExitDir = 0;
-		for (int idir = 0; idir < 4; ++idir) {
-			if (connectedAtIndex(tileComp.mask, idir)) {
-				lastPipeExitDir = idir;
-				break;
-			}
-		}
-	
-		if (!startedSolutionAnimation) {
-			boolean solved = false;
-			
-			while (!solved) {
-				curr_i = curr_i + GridDeltas.get(lastPipeExitDir).x;
-				curr_j = curr_j + GridDeltas.get(lastPipeExitDir).y;
-				if (curr_i < 0 || curr_i >= GRID_LENGTH || curr_j < 0 || curr_j >= GRID_LENGTH) {
-					break;
-				}
-				
-				tile = pipeTiles[curr_i][curr_j];
-				tileComp = ComponentMappers.pipetile.get(tile);
-				
-				// Check if connected to previous pipe segment.
-				if (connectedAtIndex(tileComp.mask, oppositeDirectionIndex(lastPipeExitDir))) {
-					// If this is the exit tile then it is solved.
-					// If cross pipe, then the exit is opposite to entry. Else the exit is at 90 degrees.
-					if (curr_i == end.x && curr_j == end.y) {
-						solved = true;
-					}
-					else if (connectedAtIndex(tileComp.mask, lastPipeExitDir)) {
-						continue;
-					}
-					else if (connectedAtIndex(tileComp.mask, (lastPipeExitDir+1)%4)) {
-						lastPipeExitDir = (lastPipeExitDir+1)%4;
-						continue;
-					}
-					else if (connectedAtIndex(tileComp.mask, (lastPipeExitDir+3)%4)) {
-						lastPipeExitDir = (lastPipeExitDir+3)%4;
-						continue;
-					}
-				}
-				else {
-					break;
-				}
-			}
-			
-			if (solved) {
-				startedSolutionAnimation = true;
-				Entity entryPipe = pipeTiles[start.x][start.y];
-				byte entryMask = ComponentMappers.pipetile.get(entryPipe).mask;
-				getEngine().addEntity(createFluid(entryMask, oppositeDirectionIndex(directionFromMask(entryMask)), start.x, start.y));
-				//getEngine().addEntity(createSolvedText());
-				//resetTiles();
-			}
-		}
-		*/
 	}
 }

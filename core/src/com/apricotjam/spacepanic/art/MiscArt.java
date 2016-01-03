@@ -22,5 +22,7 @@ public class MiscArt {
 
 		fonts.put("retro", new BitmapFont(Gdx.files.internal("fonts/retro3.fnt"),
 										  Gdx.files.internal("fonts/retro3.png"), false));
+		fonts.put("led", new BitmapFont(Gdx.files.internal("fonts/led1.fnt"),
+				  Gdx.files.internal("fonts/led1.png"), false));
 	}
 }

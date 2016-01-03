@@ -20,10 +20,10 @@ public class TweenSystem extends IteratingSystem {
 		Array<TweenSpec> finished = new Array<TweenSpec>();
 		for (TweenSpec tws : twc.tweenSpecs) {
 			tws.time += deltaTime / tws.period;
-			tws.tweenInterface.applyTween(entity, tws.interp.apply(tws.start, tws.end, tws.time));
-			if (tws.time > tws.period) {
+			if (tws.time > 1) {
 				switch (tws.cycle) {
 					case ONCE:
+						tws.time = Math.min(tws.time, 1);
 						finished.add(tws);
 						break;
 					case LOOP:
@@ -37,6 +37,7 @@ public class TweenSystem extends IteratingSystem {
 						break;
 				}
 			}
+			tws.tweenInterface.applyTween(entity, tws.interp.apply(tws.start, tws.end, tws.time));
 		}
 		twc.tweenSpecs.removeAll(finished, false);
 		if (twc.tweenSpecs.size == 0) {
