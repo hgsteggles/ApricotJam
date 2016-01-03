@@ -163,6 +163,8 @@ public class MapSystem extends EntitySystem {
 		path = findPath(new Point(x, y));
 		if (path.size() > 0) {
 			moving = true;
+		} else {
+			moving = false;
 		}
 	}
 
