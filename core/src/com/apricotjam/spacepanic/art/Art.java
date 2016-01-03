@@ -16,6 +16,8 @@ public class Art {
 		ComputerArt.load(atlas);
 		MiscArt.load(atlas);
 		PipeGameArt.load(atlas);
+		
+		
 	}
 	
 	public static void dispose() {

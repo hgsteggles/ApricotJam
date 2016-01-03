@@ -4,10 +4,10 @@ import java.util.Comparator;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
-import com.apricotjam.spacepanic.components.AnimatedShaderComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.StateComponent;
+import com.apricotjam.spacepanic.components.ShaderComponent;
+import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.screen.BasicScreen;
@@ -15,6 +15,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -68,12 +69,20 @@ public class RenderingSystem extends SortedIteratingSystem {
 			float height = tex.size.y;
 			float originX = width * 0.5f;
 			float originY = height * 0.5f;
-
-			if (ComponentMappers.animatedshader.has(entity)) {
-				AnimatedShaderComponent animShaderComp = ComponentMappers.animatedshader.get(entity);
-				batch.setShader(animShaderComp.shader);
-				animShaderComp.shader.setUniformf("time", animShaderComp.time);
+			
+			ShaderComponent shaderComp = null;
+			if (ComponentMappers.shader.has(entity)) {
+				shaderComp = ComponentMappers.shader.get(entity);
+				
+				batch.setShader(shaderComp.shader);
+				
+				if (ComponentMappers.shadertime.has(entity)) {
+					ShaderTimeComponent shaderTimeComp = ComponentMappers.shadertime.get(entity);
+					shaderComp.shader.setUniformf("time", shaderTimeComp.time);
+				}
 			}
+			
+			batch.setColor(tex.color);
 			
 			batch.draw(tex.region,
 					   totalTransform.position.x - originX, totalTransform.position.y - originY,
@@ -83,6 +92,8 @@ public class RenderingSystem extends SortedIteratingSystem {
 					   totalTransform.rotation);
 			
 			batch.setShader(null);
+			batch.setColor(Color.WHITE);
+			
 		} else if (ComponentMappers.bitmapfont.has(entity)) {
 			batch.setProjectionMatrix(pixelcamera.combined);
 
@@ -106,6 +117,7 @@ public class RenderingSystem extends SortedIteratingSystem {
 			}
 
 			batch.setProjectionMatrix(worldCamera.combined);
+			
 		}
 	}
 

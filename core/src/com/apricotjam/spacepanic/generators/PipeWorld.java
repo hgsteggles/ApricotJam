@@ -1,8 +1,8 @@
 package com.apricotjam.spacepanic.generators;
 
+import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedAnimationData;
-import com.apricotjam.spacepanic.components.AnimatedShaderComponent;
 import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
@@ -10,12 +10,17 @@ import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.PipeComponent;
 import com.apricotjam.spacepanic.components.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
+import com.apricotjam.spacepanic.components.ShaderComponent;
+import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.EventInterface;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.systems.PipeSystem;
 import com.badlogic.ashley.core.Engine;
@@ -23,6 +28,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -31,6 +37,8 @@ public class PipeWorld {
 	private RandomXS128 rng = new RandomXS128(0);
 	
 	private Entity entryPipe, exitPipe;
+	private Entity connectionText;
+	private Entity timer;
 	
 	public void build(Engine engine) {
 		generator.generatePuzzle(4);
@@ -114,7 +122,13 @@ public class PipeWorld {
 		engine.addEntity(finalPipe);
 		
 		// Create timer.
-		engine.addEntity(createTimer(30));
+		timer = createTimer(30);
+		engine.addEntity(timer);
+		
+		// Create led display.
+		engine.addEntity(createLED_Panel());
+		//connectionText = createConnectionText("PENDING");
+		//engine.addEntity(connectionText);
 	}
 	
 	public Entity getEntryPipe() {
@@ -123,6 +137,14 @@ public class PipeWorld {
 	
 	public Entity getExitPipe() {
 		return exitPipe;
+	}
+	
+	public Entity getConnectionText() {
+		return connectionText;
+	}
+	
+	public Entity getTimer() {
+		return timer;
 	}
 	
 	private Entity createPipe(byte mask, int ipos, int jpos, boolean withinGrid) {
@@ -156,7 +178,7 @@ public class PipeWorld {
 			}
 		};
 		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
-
+		
 		pipe.add(pipeTileComp).add(textureComp).add(transComp).add(clickComp);
 
 		return pipe;
@@ -188,10 +210,13 @@ public class PipeWorld {
 		StateComponent stateComp = new StateComponent();
 		stateComp.set(PipeFluidComponent.STATE_FILLING);
 		
-		AnimatedShaderComponent animShaderComp = new AnimatedShaderComponent();
-		animShaderComp.shader = PipeGameArt.fluidShader;
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = SpacePanic.shaderManager.get("fluid");
 		
-		fluid.add(pipeFluidComp).add(textureComp).add(transComp).add(animComp).add(stateComp).add(animShaderComp);
+		ShaderTimeComponent shaderTimeComp = new ShaderTimeComponent();
+		
+		fluid.add(pipeFluidComp).add(textureComp).add(transComp).add(animComp).add(stateComp).add(shaderComp)
+			.add(shaderTimeComp);
 
 		return fluid;
 	}
@@ -231,6 +256,115 @@ public class PipeWorld {
 
 		entity.add(pipeComp).add(fontComp).add(transComp).add(tickComp);
 
+		return entity;
+	}
+	
+	public Entity createLED_Panel() {
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = PipeGameArt.ledBG;
+		texComp.color = new Color(Color.BLACK);
+		texComp.size.x = 4f;
+		texComp.size.y = 0.8f;
+		
+		TransformComponent transComp = new TransformComponent();
+		//transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		//transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
+		
+		float tileWidth = 1;
+		float tileHeight = 1;
+		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * tileWidth / 2f;
+		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * tileHeight / 2f;
+		float ipos = PipeSystem.GRID_LENGTH/2f - 0.5f;
+		int jpos = PipeSystem.GRID_LENGTH;
+		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, -1);
+		
+		Entity entity = new Entity();
+		entity.add(texComp).add(transComp);
+		
+		return entity;
+	}
+	
+	public static Entity createConnectionText() {
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "led";
+		fontComp.string = "CONNECTED";
+		fontComp.color = new Color(Color.GREEN);
+		fontComp.color.a = 0;
+		fontComp.centering = true;
+
+		TransformComponent transComp = new TransformComponent();
+		//transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		//transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
+		
+		float tileWidth = 1;
+		float tileHeight = 1;
+		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * tileWidth / 2f;
+		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * tileHeight / 2f;
+		float ipos = PipeSystem.GRID_LENGTH/2f - 0.5f;
+		int jpos = PipeSystem.GRID_LENGTH;
+		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 0.01f;
+		tweenSpec.end = 0.99f;
+		tweenSpec.period = 1.5f;
+		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
+		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
+				bfc.color.a = Math.min(a, 1);
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+		
+		Entity entity = new Entity();
+		entity.add(fontComp).add(transComp).add(tweenComp);
+		
+		return entity;
+	}
+	
+	public static Entity createErrorText() {
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "led";
+		fontComp.string = "ERROR";
+		fontComp.color = new Color(Color.RED);
+		fontComp.color.a = 0;
+		fontComp.centering = true;
+
+		TransformComponent transComp = new TransformComponent();
+		//transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		//transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
+		
+		float tileWidth = 1;
+		float tileHeight = 1;
+		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * tileWidth / 2f;
+		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * tileHeight / 2f;
+		float ipos = PipeSystem.GRID_LENGTH/2f - 0.5f;
+		int jpos = PipeSystem.GRID_LENGTH;
+		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 0.01f;
+		tweenSpec.end = 0.99f;
+		tweenSpec.period = 0.8f;
+		tweenSpec.cycle = TweenSpec.Cycle.REVERSE;
+		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
+				bfc.color.a = Math.min(a, 1);
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+		
+		Entity entity = new Entity();
+		entity.add(fontComp).add(transComp).add(tweenComp);
+		
 		return entity;
 	}
 }

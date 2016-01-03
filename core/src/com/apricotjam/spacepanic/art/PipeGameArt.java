@@ -2,8 +2,10 @@ package com.apricotjam.spacepanic.art;
 
 import com.apricotjam.spacepanic.systems.PipeSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
@@ -23,12 +25,16 @@ public class PipeGameArt {
 	
 	public static IntMap<RotatedRegionData> pipeRegions = new IntMap<RotatedRegionData>();
 	public static IntMap<IntMap<RotatedAnimationData>> fluidRegions = new IntMap<IntMap<RotatedAnimationData>>();
+	public static TextureRegion ledBG;
 	
 	public static ShaderProgram fluidShader;
 	public static String fluidVert;
 	public static String fluidFrag;
 	
 	public static void load(TextureAtlas atlas) {
+		// Load led bg.
+		ledBG = atlas.findRegion("white_pixel");
+		
 		// Load all pipes and fluid animations.
 		for (int i = 0; i < 16; ++i) {
 			// Load pipes.
