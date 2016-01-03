@@ -1,16 +1,19 @@
 package com.apricotjam.spacepanic.generators;
 
-import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedAnimationData;
+import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.HelmetPartComponent;
 import com.apricotjam.spacepanic.components.PipeComponent;
 import com.apricotjam.spacepanic.components.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
 import com.apricotjam.spacepanic.components.ShaderComponent;
+import com.apricotjam.spacepanic.components.ShaderLightingComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
@@ -121,14 +124,18 @@ public class PipeWorld {
 		
 		engine.addEntity(finalPipe);
 		
+		// Create pipe bg.
+		engine.addEntity(createFancyPipeBG());
+		
 		// Create timer.
 		timer = createTimer(30);
 		engine.addEntity(timer);
 		
 		// Create led display.
 		engine.addEntity(createLED_Panel());
-		//connectionText = createConnectionText("PENDING");
-		//engine.addEntity(connectionText);
+		
+		// Create helmet.
+		engine.addEntity(createHelmet());
 	}
 	
 	public Entity getEntryPipe() {
@@ -202,6 +209,7 @@ public class PipeWorld {
 		animComp.animations.put(PipeFluidComponent.STATE_FILLING, new Animation(pipeFluidComp.fillDuration/animData.regions.size, animData.regions));
 		
 		TextureComponent textureComp = new TextureComponent();
+		textureComp.color = new Color(0f, 0.1f, 1.0f, 0.5f);
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(pipeTransComp.position.x, pipeTransComp.position.y, -1);
@@ -211,7 +219,7 @@ public class PipeWorld {
 		stateComp.set(PipeFluidComponent.STATE_FILLING);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
-		shaderComp.shader = SpacePanic.shaderManager.get("fluid");
+		shaderComp.shader = Shaders.manager.get("fluid");
 		
 		ShaderTimeComponent shaderTimeComp = new ShaderTimeComponent();
 		
@@ -219,6 +227,51 @@ public class PipeWorld {
 			.add(shaderTimeComp);
 
 		return fluid;
+	}
+	
+	private Entity createPipeBG(int ipos, int jpos, boolean isBorder) {
+		TextureComponent textureComp = new TextureComponent();
+		textureComp.region = isBorder ? PipeGameArt.pipeBG : PipeGameArt.pipeBG;
+		textureComp.color = new Color(Color.WHITE);
+		textureComp.color.a = 0.5f;
+		
+		TransformComponent transComp = new TransformComponent();
+		float pipeWidth = textureComp.size.x;
+		float pipeHeight = textureComp.size.y;
+		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * pipeWidth / 2f;
+		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * pipeHeight / 2f;
+		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * pipeWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * pipeHeight, -2);
+		
+		Entity entity = new Entity();
+		entity.add(textureComp).add(transComp);
+		
+		return entity;
+	}
+	
+	private Entity createFancyPipeBG() {
+		TextureComponent textureComp = new TextureComponent();
+		textureComp.region = PipeGameArt.pipeBG;
+		textureComp.size.set(PipeSystem.GRID_LENGTH + 3, PipeSystem.GRID_LENGTH);
+		//textureComp.normal = MiscArt.rockNormalRegion;
+		textureComp.color = new Color(1.0f, 0.8f, 0.8f, 1.0f);
+		//textureComp.color.a = 0.5f;
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("light");
+		
+		ShaderLightingComponent shaderLightingComponent = new ShaderLightingComponent();
+		
+		TransformComponent transComp = new TransformComponent();
+		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH / 2f;
+		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH / 2f;
+		float posX = (BasicScreen.WORLD_WIDTH / 2f) - (PipeSystem.GRID_LENGTH/2f + 2 - (3 + PipeSystem.GRID_LENGTH)/2f);
+		float posY = (BasicScreen.WORLD_HEIGHT / 2f);
+		transComp.position.set(posX, posY, -2);
+		
+		Entity entity = new Entity();
+		entity.add(textureComp).add(shaderComp).add(shaderLightingComponent).add(transComp);
+		
+		return entity;
 	}
 	
 	private Entity createTimer(int duration) {
@@ -366,5 +419,24 @@ public class PipeWorld {
 		entity.add(fontComp).add(transComp).add(tweenComp);
 		
 		return entity;
+	}
+	
+	private Entity createHelmet() {
+		Entity e = new Entity();
+		e.add(new HelmetPartComponent());
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = HelmetUI.base;
+		texComp.size.x = BasicScreen.WORLD_WIDTH;
+		texComp.size.y = BasicScreen.WORLD_HEIGHT;
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		transComp.position.z = 1;
+		e.add(transComp);
+
+		return e;
 	}
 }

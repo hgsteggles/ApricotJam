@@ -1,24 +1,19 @@
 package com.apricotjam.spacepanic;
 
 import com.apricotjam.spacepanic.art.Art;
+import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.testscreen.PipeTestScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.thesecretpie.shader.ShaderManager;
 
 public class SpacePanic extends ApplicationAdapter {
 
 	public static final int WIDTH = 1280;
 	public static final int HEIGHT = 720;
-	
-	public static AssetManager assetManager;
-	public static ShaderManager shaderManager;
 	
 	private boolean video = false;
 	private float accum = 0;
@@ -29,12 +24,8 @@ public class SpacePanic extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		assetManager = new AssetManager();
-		shaderManager = new ShaderManager("shaders", assetManager);
-		ShaderProgram.pedantic = false;
-		shaderManager.add("fluid", Gdx.files.internal("default.vert"), Gdx.files.internal("fluid.frag"));
-		
 		Art.load();
+		Shaders.load();
 		InputManager.create();
 		//setScreen(new GameScreen(this));
 		//setScreen(new TitleScreen(this));
@@ -70,10 +61,7 @@ public class SpacePanic extends ApplicationAdapter {
 		if (screen != null) {
 			screen.dispose();
 		}
-		if (assetManager != null)
-			assetManager.dispose();
-		if (shaderManager != null)
-			shaderManager.dispose();
+		Shaders.dispose();
 	}
 
 	@Override

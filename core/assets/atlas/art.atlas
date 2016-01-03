@@ -87,609 +87,637 @@ filter: Nearest,Nearest
 repeat: none
 fluid1-0
   rotate: false
-  xy: 2, 95
+  xy: 68, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid1-0
   rotate: false
-  xy: 522, 485
+  xy: 522, 426
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid1-0
   rotate: false
-  xy: 392, 225
+  xy: 588, 492
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 fluid1-0
   rotate: false
-  xy: 2, 77
+  xy: 392, 198
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid1-0
   rotate: false
-  xy: 20, 95
+  xy: 426, 232
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid1-0
   rotate: false
-  xy: 522, 467
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid1-0
   rotate: false
-  xy: 540, 485
+  xy: 36, 36
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid1-0
   rotate: false
-  xy: 392, 207
+  xy: 68, 84
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid1-0
   rotate: false
-  xy: 410, 225
+  xy: 86, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid1-0
   rotate: false
-  xy: 2, 59
+  xy: 522, 408
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid1-0
   rotate: false
-  xy: 20, 77
+  xy: 540, 426
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid1-0
   rotate: false
-  xy: 38, 95
+  xy: 588, 474
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid1-0
   rotate: false
-  xy: 522, 449
+  xy: 606, 492
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 fluid1-0
   rotate: false
-  xy: 540, 467
+  xy: 392, 180
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 fluid1-0
   rotate: false
-  xy: 558, 485
+  xy: 444, 232
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
 fluid1-2
   rotate: false
-  xy: 558, 485
+  xy: 444, 232
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
 fluid1-2
   rotate: false
-  xy: 392, 189
+  xy: 68, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid1-2
   rotate: false
-  xy: 410, 207
+  xy: 86, 84
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid1-2
   rotate: false
-  xy: 428, 225
+  xy: 104, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 fluid1-2
   rotate: false
-  xy: 2, 41
+  xy: 522, 390
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid1-2
   rotate: false
-  xy: 20, 59
+  xy: 540, 408
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid1-2
   rotate: false
-  xy: 38, 77
+  xy: 558, 426
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid1-2
   rotate: false
-  xy: 56, 95
+  xy: 588, 456
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid1-2
   rotate: false
-  xy: 522, 431
+  xy: 606, 474
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid1-2
   rotate: false
-  xy: 540, 449
+  xy: 624, 492
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid1-2
   rotate: false
-  xy: 558, 467
+  xy: 392, 162
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid1-2
   rotate: false
-  xy: 576, 485
+  xy: 462, 232
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid1-2
   rotate: false
-  xy: 392, 171
+  xy: 86, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid1-2
   rotate: false
-  xy: 410, 189
+  xy: 104, 84
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 fluid1-2
   rotate: false
-  xy: 428, 207
+  xy: 122, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 fluid10-3
   rotate: false
-  xy: 446, 225
+  xy: 522, 372
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid15-3
   rotate: false
-  xy: 446, 225
+  xy: 522, 372
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid10-3
   rotate: false
-  xy: 2, 23
+  xy: 540, 390
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid15-3
   rotate: false
-  xy: 2, 23
+  xy: 540, 390
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 fluid10-3
   rotate: false
-  xy: 20, 41
+  xy: 558, 408
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid15-3
   rotate: false
-  xy: 20, 41
+  xy: 558, 408
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid10-3
   rotate: false
-  xy: 38, 59
+  xy: 606, 456
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid10-3
   rotate: false
-  xy: 56, 77
+  xy: 624, 474
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid10-3
   rotate: false
-  xy: 74, 95
+  xy: 642, 492
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid10-3
   rotate: false
-  xy: 522, 413
+  xy: 392, 144
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid10-3
   rotate: false
-  xy: 540, 431
+  xy: 480, 232
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid10-3
   rotate: false
-  xy: 558, 449
+  xy: 104, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid10-3
   rotate: false
-  xy: 576, 467
+  xy: 122, 84
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid10-3
   rotate: false
-  xy: 594, 485
+  xy: 140, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid10-3
   rotate: false
-  xy: 392, 153
+  xy: 522, 354
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 fluid10-3
   rotate: false
-  xy: 410, 171
+  xy: 540, 372
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 fluid10-3
   rotate: false
-  xy: 428, 189
+  xy: 558, 390
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
 fluid10-3
   rotate: false
-  xy: 446, 207
+  xy: 624, 456
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 15
 fluid15-3
   rotate: false
-  xy: 464, 225
+  xy: 642, 474
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid6-2
   rotate: false
-  xy: 464, 225
+  xy: 642, 474
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid15-3
   rotate: false
-  xy: 2, 5
+  xy: 660, 492
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid15-3
   rotate: false
-  xy: 20, 23
+  xy: 392, 126
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid15-3
   rotate: false
-  xy: 38, 41
+  xy: 498, 232
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid15-3
   rotate: false
-  xy: 56, 59
+  xy: 122, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid15-3
   rotate: false
-  xy: 74, 77
+  xy: 140, 84
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid15-3
   rotate: false
-  xy: 92, 95
+  xy: 158, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid15-3
   rotate: false
-  xy: 522, 395
+  xy: 522, 336
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid15-3
   rotate: false
-  xy: 540, 413
+  xy: 540, 354
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid15-3
   rotate: false
-  xy: 558, 431
+  xy: 558, 372
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 fluid15-3
   rotate: false
-  xy: 576, 449
+  xy: 642, 456
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 fluid15-3
   rotate: false
-  xy: 594, 467
+  xy: 660, 474
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
 fluid15-3
   rotate: false
-  xy: 612, 485
+  xy: 678, 492
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 15
 fluid15-3
   rotate: false
-  xy: 392, 135
+  xy: 140, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 16
 fluid6-2
   rotate: false
-  xy: 410, 153
+  xy: 158, 84
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid6-2
   rotate: false
-  xy: 428, 171
+  xy: 176, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 fluid6-2
   rotate: false
-  xy: 446, 189
+  xy: 522, 318
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid6-2
   rotate: false
-  xy: 464, 207
+  xy: 540, 336
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid6-2
   rotate: false
-  xy: 482, 225
+  xy: 558, 354
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid6-2
   rotate: false
-  xy: 20, 5
+  xy: 660, 456
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid6-2
   rotate: false
-  xy: 38, 23
+  xy: 678, 474
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid6-2
   rotate: false
-  xy: 56, 41
+  xy: 696, 492
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid6-2
   rotate: false
-  xy: 74, 59
+  xy: 158, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid6-2
   rotate: false
-  xy: 92, 77
+  xy: 176, 84
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid6-2
   rotate: false
-  xy: 110, 95
+  xy: 194, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid6-2
   rotate: false
-  xy: 522, 377
+  xy: 522, 300
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 pipe1
   rotate: false
-  xy: 2, 373
+  xy: 2, 380
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe10
   rotate: false
-  xy: 392, 373
+  xy: 392, 380
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe12
   rotate: false
-  xy: 262, 113
+  xy: 262, 120
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe15
   rotate: false
-  xy: 392, 243
+  xy: 392, 250
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe2
   rotate: false
-  xy: 2, 243
+  xy: 2, 250
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe3
   rotate: false
-  xy: 132, 373
+  xy: 132, 380
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe4
   rotate: false
-  xy: 2, 113
+  xy: 2, 120
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe5
   rotate: false
-  xy: 132, 243
+  xy: 132, 250
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe6
   rotate: false
-  xy: 262, 373
+  xy: 262, 380
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe8
   rotate: false
-  xy: 132, 113
+  xy: 132, 120
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe9
   rotate: false
-  xy: 262, 243
+  xy: 262, 250
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+pipe_bg
+  rotate: false
+  xy: 392, 216
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe_bg_border
+  rotate: false
+  xy: 2, 54
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+pipe_bg_old
+  rotate: false
+  xy: 522, 444
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+pipe_border
+  rotate: false
+  xy: 2, 20
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 white_pixel
   rotate: false
-  xy: 2, 2
+  xy: 410, 213
   size: 1, 1
   orig: 1, 1
   offset: 0, 0

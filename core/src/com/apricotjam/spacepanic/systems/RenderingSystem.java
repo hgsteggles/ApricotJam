@@ -7,6 +7,7 @@ import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.ShaderComponent;
+import com.apricotjam.spacepanic.components.ShaderLightingComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
@@ -80,16 +81,30 @@ public class RenderingSystem extends SortedIteratingSystem {
 					ShaderTimeComponent shaderTimeComp = ComponentMappers.shadertime.get(entity);
 					shaderComp.shader.setUniformf("time", shaderTimeComp.time);
 				}
+				if (ComponentMappers.shaderlight.has(entity)) {
+					ShaderLightingComponent shaderLightComp = ComponentMappers.shaderlight.get(entity);
+					shaderComp.shader.setUniformf("LightPos", shaderLightComp.lightPosition);
+				}
 			}
 			
 			batch.setColor(tex.color);
 			
-			batch.draw(tex.region,
-					   totalTransform.position.x - originX, totalTransform.position.y - originY,
-					   originX, originY,
-					   width, height,
-					   totalTransform.scale.x, totalTransform.scale.y,
-					   totalTransform.rotation);
+			if (tex.normal != null) {
+				tex.normal.getTexture().bind(1);
+				tex.region.getTexture().bind(0);
+				
+				batch.draw(tex.region.getTexture(), 
+						   totalTransform.position.x - originX, totalTransform.position.y - originY,
+					       width, height);
+			}
+			else {
+				batch.draw(tex.region,
+						   totalTransform.position.x - originX, totalTransform.position.y - originY,
+						   originX, originY,
+						   width, height,
+						   totalTransform.scale.x, totalTransform.scale.y,
+						   totalTransform.rotation);
+			}
 			
 			batch.setShader(null);
 			batch.setColor(Color.WHITE);

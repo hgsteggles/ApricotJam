@@ -1,6 +1,5 @@
 package com.apricotjam.spacepanic.systems;
 
-import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.PipeFluidComponent;
@@ -18,7 +17,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 
 public class PipeSystem extends EntitySystem {
-	public static final int GRID_LENGTH = 6;
+	public static final int GRID_LENGTH = 5;
 	public static final Array<GridPoint2> GridDeltas = createGridDeltas();
 	private ImmutableArray<Entity> pipeFluids, pipeTiles;
 	private PipeWorld world = new PipeWorld();
@@ -190,11 +189,13 @@ public class PipeSystem extends EntitySystem {
 						clickComp.active = false;
 					}
 					else {
-						getEngine().addEntity(PipeWorld.createErrorText());
+						if (!startedSolutionAnimation)
+							failed();
 					}
 				}
 				else {
-					// TODO: player fails.
+					if (!startedSolutionAnimation)
+						failed();
 				}
 			}
 		}
@@ -204,14 +205,14 @@ public class PipeSystem extends EntitySystem {
 			PipeTileComponent currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
 			int currExitDirection = directionFromMask(currPipeTileComp.mask);
 			
-			boolean solved = false;
+			boolean isSolved = false;
 			
-			while (!solved) {
+			while (!isSolved) {
 				currPipe = currPipeTileComp.neighbours[currExitDirection];
 				if (currPipe == null)
 					break;
 				else if (currPipe == world.getExitPipe()) {
-					solved = true;
+					isSolved = true;
 					break;
 				}
 				else {
@@ -225,26 +226,39 @@ public class PipeSystem extends EntitySystem {
 				}
 			}
 			
-			if (solved) {
-				System.out.println("solved");
+			if (isSolved) {
 				startedSolutionAnimation = true;
-				// Prevent user from rotating tiles.
-				for (Entity pipeTile : pipeTiles) {
-					ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
-					clickComp.active = false;
-				}
-				// Speed up the fluid filling.
-				for (Entity pipeFluid : pipeFluids) {
-					StateComponent stateComp = ComponentMappers.state.get(pipeFluid);
-					stateComp.timescale = solvedFluidSpeedup;
-				}
-				// Show connection LED text.
-				getEngine().addEntity(PipeWorld.createConnectionText());
-				// Stop timer;
-				TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
-				timerTickerComp.tickerActive = false;
-				timerTickerComp.finishActive = false;
+				solved();
 			}
 		}
+	}
+	
+	public void solved() {
+		// Prevent user from rotating tiles.
+		for (Entity pipeTile : pipeTiles) {
+			ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
+			clickComp.active = false;
+		}
+		// Speed up the fluid filling.
+		for (Entity pipeFluid : pipeFluids) {
+			StateComponent stateComp = ComponentMappers.state.get(pipeFluid);
+			stateComp.timescale = solvedFluidSpeedup;
+		}
+		// Show connection LED text.
+		getEngine().addEntity(PipeWorld.createConnectionText());
+		// Stop timer;
+		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
+		timerTickerComp.tickerActive = false;
+		timerTickerComp.finishActive = false;
+	}
+	
+	public void failed() {
+		// Prevent user from rotating tiles.
+		for (Entity pipeTile : pipeTiles) {
+			ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
+			clickComp.active = false;
+		}
+		// Show error LED text.
+		getEngine().addEntity(PipeWorld.createErrorText());
 	}
 }
