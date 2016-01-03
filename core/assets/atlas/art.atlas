@@ -722,3 +722,16 @@ white_pixel
   orig: 1, 1
   offset: 0, 0
   index: -1
+
+art5.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+mario
+  rotate: false
+  xy: 2, 2
+  size: 550, 323
+  orig: 550, 323
+  offset: 0, 0
+  index: -1

@@ -53,6 +53,16 @@ public class Shaders {
 		manager.setUniformf("Falloff", FALLOFF.x, FALLOFF.y, FALLOFF.z);
 		manager.setUniformf("Resolution", SpacePanic.WIDTH, SpacePanic.HEIGHT);
 		manager.end();
+		
+		manager.add("crt", Gdx.files.internal("crt.vert"), Gdx.files.internal("crt.frag"));
+		manager.begin("crt");
+		manager.setUniformf("time", 0f);
+		manager.setUniformf("tint", 1f, 1f, 0.85f);
+		//manager.setUniformf("offset", 0.003f);
+		manager.setUniformf("chromaticDispersion", -0.1f, -0.1f);
+		manager.setUniformf("Distortion", 0.0f);
+		manager.setUniformf("zoom", 1.0f);
+		manager.end();
 	}
 	
 	final static String VERT =  

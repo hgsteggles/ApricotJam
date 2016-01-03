@@ -69,6 +69,7 @@ public class PipeWorld {
 				}
 								
 				engine.addEntity(pipe);
+				engine.addEntity(createPipeBorder(i, j, false));
 				
 				pipeEntities[i][j] = pipe;
 			}
@@ -124,7 +125,7 @@ public class PipeWorld {
 		
 		engine.addEntity(finalPipe);
 		
-		// Create pipe bg.
+		// Create pipe bgs.
 		engine.addEntity(createFancyPipeBG());
 		
 		// Create timer.
@@ -229,21 +230,25 @@ public class PipeWorld {
 		return fluid;
 	}
 	
-	private Entity createPipeBG(int ipos, int jpos, boolean isBorder) {
+	private Entity createPipeBorder(int ipos, int jpos, boolean isBorder) {
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.region = isBorder ? PipeGameArt.pipeBG : PipeGameArt.pipeBG;
-		textureComp.color = new Color(Color.WHITE);
-		textureComp.color.a = 0.5f;
+		textureComp.region = PipeGameArt.pipeBorder;
+		textureComp.color = new Color(0f, 0f, 0f, 1f);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("light");
+		
+		ShaderLightingComponent shaderLightingComponent = new ShaderLightingComponent();
 		
 		TransformComponent transComp = new TransformComponent();
 		float pipeWidth = textureComp.size.x;
 		float pipeHeight = textureComp.size.y;
 		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * pipeWidth / 2f;
 		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * pipeHeight / 2f;
-		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * pipeWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * pipeHeight, -2);
+		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * pipeWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * pipeHeight, 1);
 		
 		Entity entity = new Entity();
-		entity.add(textureComp).add(transComp);
+		entity.add(textureComp).add(shaderComp).add(shaderLightingComponent).add(transComp);
 		
 		return entity;
 	}
@@ -262,8 +267,6 @@ public class PipeWorld {
 		ShaderLightingComponent shaderLightingComponent = new ShaderLightingComponent();
 		
 		TransformComponent transComp = new TransformComponent();
-		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH / 2f;
-		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH / 2f;
 		float posX = (BasicScreen.WORLD_WIDTH / 2f) - (PipeSystem.GRID_LENGTH/2f + 2 - (3 + PipeSystem.GRID_LENGTH)/2f);
 		float posY = (BasicScreen.WORLD_HEIGHT / 2f);
 		transComp.position.set(posX, posY, -2);
