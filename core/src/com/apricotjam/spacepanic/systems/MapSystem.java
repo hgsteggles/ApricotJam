@@ -6,6 +6,7 @@ import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.puzzle.MazeGenerator;
+import com.apricotjam.spacepanic.puzzle.Pathfinder;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -58,6 +59,7 @@ public class MapSystem extends EntitySystem {
 	private static final float XLIMIT = ((PATCHES_X / 2.0f) - 1.0f) * PATCH_WIDTH * ASTEROID_WIDTH;
 	private static final float YLIMIT = ((PATCHES_Y / 2.0f) - 1.0f) * PATCH_HEIGHT * ASTEROID_HEIGHT;
 
+	private static final int MAXPATH = 30;
 	private static final float SPEED = 5.0f;
 
 	float width;
@@ -71,12 +73,13 @@ public class MapSystem extends EntitySystem {
 	TransformComponent mapCentreTrans;
 	Entity playerIcon;
 
-	Vector2 target = new Vector2();
 	Vector2 playerPosition = new Vector2();
 	Vector2 offsetFromCentre = new Vector2(); //Distance player is from current centre patch, used to know when to rotate patches
+	ArrayList<Point> path = null;
 	boolean moving = false;
 
 	MazeGenerator mazeGenerator;
+	Pathfinder pathfinder;
 	Patch[][] patches;
 
 	public MapSystem(float width, float height) {
@@ -90,6 +93,8 @@ public class MapSystem extends EntitySystem {
 
 		mazeGenerator = new MazeGenerator(PATCH_WIDTH, PATCH_HEIGHT, PATHINESS);
 		patches = new Patch[PATCHES_X][PATCHES_Y];
+
+		pathfinder = new Pathfinder(PATCH_WIDTH * PATCHES_X, PATCH_HEIGHT * PATCHES_Y, MAXPATH);
 
 		for (int ipatch = 0; ipatch < PATCHES_X; ipatch++) {
 			for (int jpatch = 0; jpatch < PATCHES_Y; jpatch++) {
@@ -116,14 +121,17 @@ public class MapSystem extends EntitySystem {
 	@Override
 	public void update (float deltaTime) {
 		if (moving) {
-			Vector2 moveVector = target.cpy().sub(playerPosition);
+			Vector2 moveVector = new Vector2(path.get(0).x, path.get(0).y).sub(playerPosition);
 			float dist = moveVector.len();
 			Vector2 dir = moveVector.cpy().nor();
 			if (dist > SPEED * deltaTime) {
 				move(dir.x * SPEED * deltaTime, dir.y * SPEED * deltaTime);
 			} else  {
 				move(moveVector.x, moveVector.y);
-				moving = false;
+				path.remove(0);
+				if (path.size() == 0) {
+					moving = false;
+				}
 			}
 		}
 		checkPatches();
@@ -147,8 +155,30 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private void click(int x, int y) {
-		target.set(x, y);
-		moving = true;
+		path = findPath(new Point(x, y));
+		if (path.size() > 0) {
+			moving = true;
+		}
+	}
+
+	private ArrayList<Point> findPath(Point target) {
+		int xoff = patches[0][0].x * PATCH_WIDTH - (int)(PATCH_WIDTH / 2.0f);
+		int yoff = patches[0][0].y * PATCH_HEIGHT - (int)(PATCH_HEIGHT / 2.0f);
+		pathfinder.setOffset(xoff, yoff);
+
+		int[][] fullMaze = new int[PATCH_WIDTH * PATCHES_X][PATCH_HEIGHT * PATCHES_Y];
+		for (int ipatch = 0; ipatch < PATCHES_X; ipatch++) {
+			for (int jpatch = 0; jpatch < PATCHES_Y; jpatch++) {
+				for (int icell = 0; icell < PATCH_WIDTH; icell++) {
+					for (int jcell = 0; jcell < PATCH_HEIGHT; jcell++) {
+						fullMaze[ipatch * PATCH_WIDTH + icell][jpatch * PATCH_HEIGHT + jcell] = patches[ipatch][jpatch].maze[icell][jcell];
+					}
+				}
+			}
+		}
+
+		Point start = new Point((int)playerPosition.x, (int)playerPosition.y);
+		return pathfinder.calculatePath(fullMaze, start, target);
 	}
 
 	private void move(float dx, float dy) {

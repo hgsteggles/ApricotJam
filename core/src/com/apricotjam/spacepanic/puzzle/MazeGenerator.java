@@ -8,10 +8,10 @@ import java.util.HashMap;
 
 public class MazeGenerator {
 
-	public static final int UNEXPOSED = 0;
-	private static final int UNDETERMINED = 1;
-	public static final int PATH = 2;
-	public static final int WALL = 3;
+	public static final int PATH = 0;
+	public static final int WALL = 1;
+	public static final int UNEXPOSED = 2;
+	private static final int UNDETERMINED = 3;
 
 	private final long seed;
 	private RandomXS128 rng = new RandomXS128(0);
@@ -269,8 +269,8 @@ public class MazeGenerator {
 	}
 
 	public void printPatch(int[][] patch) {
-		for (int j = patchHeight; j >= 0; j--) {
-			for (int i = 0; i < patchWidth + 1; i++) {
+		for (int j = patchHeight -1; j >= 0; j--) {
+			for (int i = 0; i < patchWidth; i++) {
 				if (patch[i][j] == PATH) {
 					System.out.print(".");
 				} else {
@@ -282,8 +282,8 @@ public class MazeGenerator {
 	}
 
 	public void printPatch(int[][] patch, int[][] connectivity) {
-		for (int j = patchHeight; j >= 0; j--) {
-			for (int i = 0; i < patchWidth + 1; i++) {
+		for (int j = patchHeight - 1; j >= 0; j--) {
+			for (int i = 0; i < patchWidth; i++) {
 				if (patch[i][j] == PATH) {
 					System.out.print(connectivity[i][j]);
 				} else {
