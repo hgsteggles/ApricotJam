@@ -49,8 +49,8 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private static final float PATHINESS = 0.5f; //How likely each cell is to be a path on the patch boundaries
-	private static final float ASTEROID_WIDTH = 0.3f;
-	private static final float ASTEROID_HEIGHT = 0.3f;
+	private static final float ASTEROID_WIDTH = 0.5f;
+	private static final float ASTEROID_HEIGHT = 0.5f;
 	private static final int PATCH_WIDTH = 10;
 	private static final int PATCH_HEIGHT = 10;
 	private static final int PATCHES_X = 5;
@@ -160,12 +160,21 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private void click(int x, int y) {
-		path = findPath(new Point(x, y));
-		if (path.size() > 0) {
-			moving = true;
-		} else {
-			moving = false;
+		Point playerPoint = new Point((int)playerPosition.x, (int)playerPosition.y);
+		if (playerPoint.x == x && playerPoint.y == y) {
+			clickPlayer();
+			return;
 		}
+
+		ArrayList<Point> newPath = findPath(new Point(x, y));
+		if (newPath.size() > 0) {
+			path = newPath;
+			moving = true;
+		}
+	}
+
+	private void clickPlayer() {
+		moving = false;
 	}
 
 	private ArrayList<Point> findPath(Point target) {
