@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MapSystem extends EntitySystem {
 
@@ -82,6 +83,8 @@ public class MapSystem extends EntitySystem {
 	Pathfinder pathfinder;
 	Patch[][] patches;
 
+	Random rng;
+
 	public MapSystem(float width, float height) {
 		this.width = width;
 		this.height = height;
@@ -95,6 +98,8 @@ public class MapSystem extends EntitySystem {
 		patches = new Patch[PATCHES_X][PATCHES_Y];
 
 		pathfinder = new Pathfinder(PATCH_WIDTH * PATCHES_X, PATCH_HEIGHT * PATCHES_Y, MAXPATH);
+
+		rng = new Random();
 
 		for (int ipatch = 0; ipatch < PATCHES_X; ipatch++) {
 			for (int jpatch = 0; jpatch < PATCHES_Y; jpatch++) {
@@ -311,7 +316,7 @@ public class MapSystem extends EntitySystem {
 		asteroid.add(mpc);
 
 		TextureComponent texc = new TextureComponent();
-		texc.region = HelmetUI.speaker;
+		texc.region = ComputerArt.asteroids.get(rng.nextInt(ComputerArt.asteroids.size()));
 		texc.size.x = ASTEROID_WIDTH;
 		texc.size.y = ASTEROID_HEIGHT;
 		asteroid.add(texc);
