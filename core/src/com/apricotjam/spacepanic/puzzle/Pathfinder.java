@@ -47,6 +47,9 @@ public class Pathfinder {
 	public ArrayList<Point> calculatePath(int[][] maze, Point offsetStart, Point offestEnd) {
 		Point start = new Point(offsetStart.x - offset.x, offsetStart.y - offset.y);
 		Point end = new Point(offestEnd.x - offset.x, offestEnd.y - offset.y);
+		if (maze[end.x][end.y] == 1) {
+			return new ArrayList<Point>();
+		}
 		TreeNode root = new TreeNode(new Point(end.x, end.y), 0);
 		boolean[][] visited = new boolean[width][height];
 		ArrayList<TreeNode> toCheck = new ArrayList<TreeNode>();
