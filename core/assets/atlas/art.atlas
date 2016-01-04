@@ -20,33 +20,6 @@ title
   index: -1
 
 art2.png
-size: 2048,1024
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-comsSpeaker
-  rotate: false
-  xy: 2, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-helmetBase
-  rotate: false
-  xy: 2, 132
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-screw
-  rotate: false
-  xy: 1284, 820
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-
-art3.png
 size: 2048,2048
 format: RGBA8888
 filter: Nearest,Nearest
@@ -77,6 +50,33 @@ computerFrameSmall
   xy: 2, 2
   size: 640, 360
   orig: 640, 360
+  offset: 0, 0
+  index: -1
+
+art3.png
+size: 2048,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+comsSpeaker
+  rotate: false
+  xy: 2, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+helmetBase
+  rotate: false
+  xy: 2, 132
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+screw
+  rotate: false
+  xy: 1284, 820
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 
