@@ -54,6 +54,8 @@ public class Shaders {
 		manager.setUniformf("Resolution", SpacePanic.WIDTH, SpacePanic.HEIGHT);
 		manager.end();
 		
+		manager.createFB("fluid-light-fb");
+		
 		manager.add("crt", Gdx.files.internal("crt.vert"), Gdx.files.internal("crt.frag"));
 		manager.begin("crt");
 		manager.setUniformf("time", 0f);

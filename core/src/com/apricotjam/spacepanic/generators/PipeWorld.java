@@ -8,6 +8,8 @@ import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.FBO_Component;
+import com.apricotjam.spacepanic.components.FBO_ItemComponent;
 import com.apricotjam.spacepanic.components.HelmetPartComponent;
 import com.apricotjam.spacepanic.components.PipeComponent;
 import com.apricotjam.spacepanic.components.PipeFluidComponent;
@@ -30,6 +32,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
@@ -137,6 +140,9 @@ public class PipeWorld {
 		
 		// Create helmet.
 		engine.addEntity(createHelmet());
+		
+		// Create lighting fbo.
+		engine.addEntity(createFluidLightFBO());
 	}
 	
 	public Entity getEntryPipe() {
@@ -196,8 +202,6 @@ public class PipeWorld {
 		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipe);
 		TransformComponent pipeTransComp = ComponentMappers.transform.get(pipe);
 		
-		Entity fluid = new Entity();
-		
 		PipeFluidComponent pipeFluidComp = new PipeFluidComponent();
 		pipeFluidComp.filling = true;
 		pipeFluidComp.fillDuration = 4f;
@@ -209,8 +213,11 @@ public class PipeWorld {
 		AnimationComponent animComp = new AnimationComponent();
 		animComp.animations.put(PipeFluidComponent.STATE_FILLING, new Animation(pipeFluidComp.fillDuration/animData.regions.size, animData.regions));
 		
+		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
+		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("fluid-light-fb");
+		
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.color = new Color(0f, 0.1f, 1.0f, 0.5f);
+		textureComp.color = new Color(0.2f, 0.2f, 1.0f, 1f);
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(pipeTransComp.position.x, pipeTransComp.position.y, -1);
@@ -224,10 +231,12 @@ public class PipeWorld {
 		
 		ShaderTimeComponent shaderTimeComp = new ShaderTimeComponent();
 		
-		fluid.add(pipeFluidComp).add(textureComp).add(transComp).add(animComp).add(stateComp).add(shaderComp)
+		Entity entity = new Entity();
+		
+		entity.add(pipeFluidComp).add(fboItemComp).add(textureComp).add(transComp).add(animComp).add(stateComp).add(shaderComp)
 			.add(shaderTimeComp);
 
-		return fluid;
+		return entity;
 	}
 	
 	private Entity createPipeBorder(int ipos, int jpos, boolean isBorder) {
@@ -441,5 +450,32 @@ public class PipeWorld {
 		e.add(transComp);
 
 		return e;
+	}
+	
+	private Entity createFluidLightFBO() {
+		Entity e = new Entity();
+		
+		FBO_Component fboComp = new FBO_Component();
+		fboComp.FBO_ID = "fluid-light-fb";
+		fboComp.batch = Shaders.manager.getSpriteBatch("fluid-light-fb");
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("light");
+		
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = new TextureRegion();
+		texComp.size.set(BasicScreen.WORLD_WIDTH, BasicScreen.WORLD_HEIGHT);
+		texComp.color.a = 1.0f;
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		transComp.position.z = -1;
+		
+		Entity entity = new Entity();
+		entity.add(fboComp).add(shaderComp).add(texComp).add(transComp);
+		
+		return entity;
 	}
 }

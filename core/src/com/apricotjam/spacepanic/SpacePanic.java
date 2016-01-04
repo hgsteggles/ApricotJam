@@ -30,9 +30,9 @@ public class SpacePanic extends ApplicationAdapter {
 		InputManager.create();
 		//setScreen(new GameScreen(this));
 		//setScreen(new TitleScreen(this));
-		//setScreen(new PipeTestScreen(this));
+		setScreen(new PipeTestScreen(this));
 		//setScreen(new PipeFillTestScreen(this));
-		setScreen(new CRT_TestScreen(this));
+		//setScreen(new CRT_TestScreen(this));
 	}
 
 	@Override
