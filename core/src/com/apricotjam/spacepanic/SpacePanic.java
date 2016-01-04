@@ -5,6 +5,7 @@ import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
 import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.testscreen.CRT_TestScreen;
 import com.apricotjam.spacepanic.testscreen.PipeTestScreen;
 import com.apricotjam.spacepanic.screen.TitleScreen;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -29,10 +30,11 @@ public class SpacePanic extends ApplicationAdapter {
 		Shaders.load();
 		InputManager.create();
 		//setScreen(new GameScreen(this));
-		setScreen(new TitleScreen(this));
-		//setScreen(new PipeTestScreen(this));
+		//setScreen(new TitleScreen(this));
+		setScreen(new PipeTestScreen(this));
 		//setScreen(new PipeFillTestScreen(this));
 		//setScreen(new MapTestScreen(this));
+		//setScreen(new CRT_TestScreen(this));
 	}
 
 	@Override

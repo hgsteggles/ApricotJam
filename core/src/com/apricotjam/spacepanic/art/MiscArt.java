@@ -15,6 +15,8 @@ public class MiscArt {
 	public static Texture mainBackgroundScrollable;
 
 	public static ObjectMap<String, BitmapFont> fonts = new ObjectMap<String, BitmapFont>();
+	
+	public static TextureRegion marioRegion;
 
 	public static void load(TextureAtlas atlas) {
 		title = atlas.findRegion("title");
@@ -25,5 +27,7 @@ public class MiscArt {
 										  Gdx.files.internal("fonts/retro3.png"), false));
 		fonts.put("led", new BitmapFont(Gdx.files.internal("fonts/led1.fnt"),
 				  Gdx.files.internal("fonts/led1.png"), false));
+		
+		marioRegion = atlas.findRegion("mario");
 	}
 }

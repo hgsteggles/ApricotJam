@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -41,6 +42,7 @@ public class ShaderManager {
 	private ObjectMap<String, String> sourcesFrag;
 	private ObjectMap<String, FrameBuffer> frameBuffers;
 	private Array<String> openedFrameBuffers;
+	private ObjectMap<String, SpriteBatch> spriteBatches;
 	private String shaderDir;
 
 	protected ShaderProgram currentShader = null;
@@ -68,6 +70,7 @@ public class ShaderManager {
 		sourcesFrag = new ObjectMap<String, String>();
 		frameBuffers = new ObjectMap<String, FrameBuffer>();
 		openedFrameBuffers = new Array<String>(true, MAX_FRAMEBUFFERS);
+		spriteBatches = new ObjectMap<String, SpriteBatch>();
 		
 		screenCamera = new OrthographicCamera(Gdx.graphics.getWidth()+2, Gdx.graphics.getHeight()+2);
 		if (screenQuad == null)
@@ -116,6 +119,8 @@ public class ShaderManager {
 				fb.dispose();
 		    fb = new FrameBuffer(Format.RGBA8888, fbWidth,
 		    		fbHeight, hasDepth);
+		    
+		    spriteBatches.put(fbIdn, new SpriteBatch());
 		}
 		frameBuffers.put(fbIdn, fb);
 	}
@@ -682,6 +687,12 @@ public class ShaderManager {
 
 	private String appendGLESPrecisions(String shader) {
 		return appendGLESPrecisions(shader, "mediump");
+	}
+	
+	public SpriteBatch getSpriteBatch(String name) {
+		if (spriteBatches.containsKey(name))
+			return spriteBatches.get(name);
+		throw new GdxRuntimeException("No spritebatch named '" + name + "' in ShaderManager!");
 	}
 
 	/**
