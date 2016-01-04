@@ -40,9 +40,5 @@ public class TweenSystem extends IteratingSystem {
 			tws.tweenInterface.applyTween(entity, tws.interp.apply(tws.start, tws.end, tws.time));
 		}
 		twc.tweenSpecs.removeAll(finished, false);
-		if (twc.tweenSpecs.size == 0) {
-			entity.remove(TweenComponent.class);
-		}
-
 	}
 }
