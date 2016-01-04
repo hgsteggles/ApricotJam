@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		//TexturePacker.process("../../images", "atlas", "art");
+		TexturePacker.process("../../images", "atlas", "art");
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = SpacePanic.WIDTH;
