@@ -28,6 +28,7 @@ public class GameScreen extends BasicScreen {
 		add(new MovementSystem());
 		add(new ScrollSystem());
 		add(new GameSystem());
+		add(new ClickSystem());
 		add(new MapSystem(8.25f, 4.75f));
 
 		add(createBackground());

@@ -10,7 +10,7 @@ public class MazeGenerator {
 
 	public static final int PATH = 0;
 	public static final int WALL = 1;
-	public static final int UNEXPOSED = 2;
+	private static final int UNEXPOSED = 2;
 	private static final int UNDETERMINED = 3;
 
 	private final long seed;
@@ -139,7 +139,7 @@ public class MazeGenerator {
 			patch[choice.x][choice.y] = PATH;
 		}
 
-		//Remove extra boundaries
+		//Remove extra boundaries, and turn unexposed into paths
 		int[][] trimmedPatch = new int[patchWidth][patchHeight];
 		for (int i = 0; i < patchWidth; i++) {
 			for (int j = 0; j < patchHeight; j++) {

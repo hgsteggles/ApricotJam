@@ -47,7 +47,7 @@ public class Pathfinder {
 	public ArrayList<Point> calculatePath(int[][] maze, Point offsetStart, Point offestEnd) {
 		Point start = new Point(offsetStart.x - offset.x, offsetStart.y - offset.y);
 		Point end = new Point(offestEnd.x - offset.x, offestEnd.y - offset.y);
-		if (maze[end.x][end.y] == 1) {
+		if (!pathable(maze, end.x, end.y)) {
 			return new ArrayList<Point>();
 		}
 		TreeNode root = new TreeNode(new Point(end.x, end.y), 0);
@@ -74,7 +74,7 @@ public class Pathfinder {
 			if (x < 0 || x >= width || y < 0 || y >= height) {
 				continue;
 			}
-			if (maze[x][y] == 0 && !visited[x][y]) {
+			if (pathable(maze, x, y) && !visited[x][y]) {
 				TreeNode newNode = addNode(node, new Point(x, y));
 				toCheck.add(newNode);
 				visited[x][y] = true;
@@ -97,6 +97,10 @@ public class Pathfinder {
 			inode = inode.par;
 		}
 		return path;
+	}
+
+	private boolean pathable(int[][] maze, int x, int y) {
+		return maze[x][y] != 1;
 	}
 
 	public int getWidth() {
