@@ -91,6 +91,7 @@ public class MapSystem extends EntitySystem {
 		mapCentreTrans.position.x -= dx * ASTEROID_WIDTH;
 		mapCentreTrans.position.y -= dy * ASTEROID_HEIGHT;
 		playerPosition.add(dx, dy);
+		patchConveyor.move(dx, dy);
 	}
 
 	private void click(int x, int y) {
