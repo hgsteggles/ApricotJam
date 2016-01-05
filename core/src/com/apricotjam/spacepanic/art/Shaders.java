@@ -13,8 +13,8 @@ public class Shaders {
 	
 	//our constants...
 	public static final float DEFAULT_LIGHT_Z = 0.15f;
-	public static final float AMBIENT_INTENSITY = 0.5f;
-	public static final float LIGHT_INTENSITY = 0.2f;
+	public static final float AMBIENT_INTENSITY = 0.8f;
+	public static final float LIGHT_INTENSITY = 0.1f;
 	
 	public static final Vector3 LIGHT_POS = new Vector3(0f,0f,DEFAULT_LIGHT_Z);
 	
@@ -47,11 +47,11 @@ public class Shaders {
 		*/
 		
 		manager.add("light", Gdx.files.internal("light.vert"), Gdx.files.internal("light.frag"));
+		manager.registerResolutionShader("maskrect");
 		manager.begin("light");
 		manager.setUniformf("LightColor", LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, LIGHT_INTENSITY);
 		manager.setUniformf("AmbientColor", AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
 		manager.setUniformf("Falloff", FALLOFF.x, FALLOFF.y, FALLOFF.z);
-		manager.setUniformf("Resolution", SpacePanic.WIDTH, SpacePanic.HEIGHT);
 		manager.end();
 		
 		manager.createFB("fluid-light-fb");
@@ -65,6 +65,15 @@ public class Shaders {
 		manager.setUniformf("Distortion", 0.0f);
 		manager.setUniformf("zoom", 1.0f);
 		manager.end();
+		
+		manager.add("maskrect", Gdx.files.internal("default.vert"), Gdx.files.internal("mask.frag"));
+		manager.registerResolutionShader("maskrect");
+		manager.begin("maskrect");
+		manager.setUniformf("resolution", SpacePanic.WIDTH, SpacePanic.HEIGHT);
+		manager.setUniformf("maskRect", 0.25f, 0.25f, 0.5f, 0.5f);
+		manager.end();
+		
+		manager.resize(SpacePanic.WIDTH, SpacePanic.HEIGHT);
 	}
 	
 	final static String VERT =  

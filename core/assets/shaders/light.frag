@@ -13,7 +13,7 @@ uniform sampler2D u_texture;   //diffuse map
 uniform sampler2D u_normals;   //normal map
 
 //values used for shading algorithm...
-uniform vec2 Resolution;         //resolution of screen
+uniform vec2 resolution;         //resolution of screen
 uniform vec3 LightPos;           //light position, normalized
 uniform LOWP vec4 LightColor;    //light RGBA -- alpha is intensity
 uniform LOWP vec4 AmbientColor;  //ambient RGBA -- alpha is intensity 
@@ -24,10 +24,10 @@ void main() {
 	vec4 DiffuseColor = texture2D(u_texture, vTexCoord);
 	
 	//The delta position of light
-	vec3 LightDir = vec3(LightPos.xy - (gl_FragCoord.xy / Resolution.xy), LightPos.z);
+	vec3 LightDir = vec3(LightPos.xy - (gl_FragCoord.xy / resolution.xy), LightPos.z);
 	
 	//Correct for aspect ratio
-	LightDir.x *= Resolution.x / Resolution.y;
+	LightDir.x *= resolution.x / resolution.y;
 	
 	//Determine distance (used for attenuation) BEFORE we normalize our LightDir
 	float D = length(LightDir);

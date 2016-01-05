@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.PipeTileComponent;
+import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
 import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
@@ -177,6 +178,7 @@ public class PipeSystem extends EntitySystem {
 					if (connectedAtIndex(nextPipeTileComp.mask, entryDirection)) {
 						// Next pipe is connected, start filling.
 						Entity nextFluid = world.createFluid(nextPipe, entryDirection);
+						ComponentMappers.shadertime.get(nextFluid).time = ComponentMappers.shadertime.get(pipeFluid).time;
 						if (startedSolutionAnimation) {
 							StateComponent nextStateComp = ComponentMappers.state.get(nextFluid);
 							nextStateComp.timescale = solvedFluidSpeedup;
@@ -245,7 +247,7 @@ public class PipeSystem extends EntitySystem {
 			stateComp.timescale = solvedFluidSpeedup;
 		}
 		// Show connection LED text.
-		getEngine().addEntity(PipeWorld.createConnectionText());
+		getEngine().addEntity(PipeWorld.createSuccessText());
 		// Stop timer;
 		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
 		timerTickerComp.tickerActive = false;
