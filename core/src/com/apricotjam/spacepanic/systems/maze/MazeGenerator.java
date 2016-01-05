@@ -1,4 +1,4 @@
-package com.apricotjam.spacepanic.puzzle;
+package com.apricotjam.spacepanic.systems.maze;
 
 import com.badlogic.gdx.math.RandomXS128;
 
@@ -296,6 +296,14 @@ public class MazeGenerator {
 
 	private void setRandomState(long x, long y) {
 		rng.setState(seed + x, seed + y);
+	}
+
+	public int getPatchWidth() {
+		return patchWidth;
+	}
+
+	public int getPatchHeight() {
+		return patchHeight;
 	}
 
 }

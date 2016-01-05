@@ -1,16 +1,15 @@
 package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.systems.*;
+import com.apricotjam.spacepanic.systems.maze.MapSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 public class GameScreen extends BasicScreen {
 
