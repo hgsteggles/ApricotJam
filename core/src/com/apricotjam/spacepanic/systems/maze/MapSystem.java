@@ -2,6 +2,7 @@ package com.apricotjam.spacepanic.systems.maze;
 
 import com.apricotjam.spacepanic.art.ComputerArt;
 import com.apricotjam.spacepanic.art.HelmetUI;
+import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
@@ -123,10 +124,12 @@ public class MapSystem extends EntitySystem {
 		screen.add(mpc);
 
 		TextureComponent texc = new TextureComponent();
-		texc.region = ComputerArt.computer;
+		//texc.region = ComputerArt.computer;
 		texc.size.x = width;
 		texc.size.y = height;
 		screen.add(texc);
+
+		screen.add(Shaders.generateFBOComponent("map-screen-fb", texc));
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
@@ -162,7 +165,6 @@ public class MapSystem extends EntitySystem {
 		tranc.position.x = 0.0f;
 		tranc.position.y = 0.0f;
 		tranc.position.z = 0.0f;
-		tranc.parent = ComponentMappers.transform.get(screen);
 		mapCentre.add(tranc);
 
 		TweenComponent tc = new TweenComponent();
@@ -182,6 +184,10 @@ public class MapSystem extends EntitySystem {
 		texc.size.x = ASTEROID_WIDTH;
 		texc.size.y = ASTEROID_HEIGHT;
 		asteroid.add(texc);
+
+		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
+		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
+		asteroid.add(fboItemComp);
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = x;

@@ -1,8 +1,12 @@
 package com.apricotjam.spacepanic.art;
 
 import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.components.FBO_Component;
+import com.apricotjam.spacepanic.components.TextureComponent;
+import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.thesecretpie.shader.ShaderManager;
@@ -158,5 +162,16 @@ public class Shaders {
 			shaderAssets.dispose();
 		if (manager != null)
 			manager.dispose();
+	}
+
+	public static FBO_Component generateFBOComponent(String fbo_ID, TextureComponent textureComponent) {
+		int xsize = (int)(textureComponent.size.x * SpacePanic.WIDTH / BasicScreen.WORLD_WIDTH);
+		int ysize = (int)(textureComponent.size.y * SpacePanic.HEIGHT / BasicScreen.WORLD_HEIGHT);
+		manager.createFB(fbo_ID, xsize, ysize);
+		FBO_Component fbo_component = new FBO_Component();
+		fbo_component.FBO_ID = fbo_ID;
+		fbo_component.batch = Shaders.manager.getSpriteBatch(fbo_ID);
+		fbo_component.camera = new OrthographicCamera(textureComponent.size.x, textureComponent.size.y);
+		return fbo_component;
 	}
 }

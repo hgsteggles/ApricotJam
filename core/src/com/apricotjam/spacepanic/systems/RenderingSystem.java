@@ -89,7 +89,7 @@ public class RenderingSystem extends EntitySystem {
 		for (Entity entity : fboList) {
 			FBO_Component fboComp = ComponentMappers.fbo.get(entity);
 			Shaders.manager.beginFB(fboComp.FBO_ID);
-			fboComp.batch.setProjectionMatrix(worldCamera.combined);
+			fboComp.batch.setProjectionMatrix(fboComp.camera.combined);
 			fboComp.batch.begin();
 		}
 		Array<Entity> fboItemEntities = fboRenderQueue.getSortedEntities();
