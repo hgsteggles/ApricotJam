@@ -82,7 +82,7 @@ float srdnoise(in vec2 P, in float rot, out vec2 grad) {
 
 void main(void) {
   vec2 g1, g2;
-  vec2 p = 0.06*gl_FragCoord.xy;
+  vec2 p = 0.07*gl_FragCoord.xy;
   float mtime = 0.6*time;
   float n1 = srdnoise(p*0.5, 0.2*mtime, g1);
   float n2 = srdnoise(p*2.0 + g1*0.5, 0.51*mtime, g2);

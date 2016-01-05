@@ -72,10 +72,23 @@ public class PipeWorld {
 				}
 								
 				engine.addEntity(pipe);
-				engine.addEntity(createPipeBorder(i, j, false));
+				
+				// Create border.
+				int type = 0;
+				engine.addEntity(createPipeBorder(i, j, type));
 				
 				pipeEntities[i][j] = pipe;
 			}
+		}
+		
+		// Create borders.
+		for (int i = 0; i < PipeSystem.GRID_LENGTH; ++i) {
+			int type = 1;
+			engine.addEntity(createPipeBorder(i, -1, type));
+		}
+		for (int j = 0; j < PipeSystem.GRID_LENGTH; ++j) {
+			int type = 2;
+			engine.addEntity(createPipeBorder(PipeSystem.GRID_LENGTH, j, type));
 		}
 		
 		// Link up puzzle neighbours.
@@ -239,9 +252,12 @@ public class PipeWorld {
 		return entity;
 	}
 	
-	private Entity createPipeBorder(int ipos, int jpos, boolean isBorder) {
+	private Entity createPipeBorder(int ipos, int jpos, int type) {
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.region = PipeGameArt.pipeBorder;
+		if (type == 0)
+			textureComp.region = PipeGameArt.pipeBorder;
+		else
+			textureComp.region = PipeGameArt.pipeBorderTop;
 		textureComp.color = new Color(0f, 0f, 0f, 1f);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -255,6 +271,8 @@ public class PipeWorld {
 		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * pipeWidth / 2f;
 		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * pipeHeight / 2f;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * pipeWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * pipeHeight, 1);
+		if (type == 2)
+			transComp.rotation = 90f;
 		
 		Entity entity = new Entity();
 		entity.add(textureComp).add(shaderComp).add(shaderLightingComponent).add(transComp);
@@ -267,7 +285,7 @@ public class PipeWorld {
 		textureComp.region = PipeGameArt.pipeBG;
 		textureComp.size.set(PipeSystem.GRID_LENGTH + 3, PipeSystem.GRID_LENGTH);
 		//textureComp.normal = MiscArt.rockNormalRegion;
-		textureComp.color = new Color(1.0f, 0.8f, 0.8f, 1.0f);
+		textureComp.color = new Color(0.8f, 0.8f, 0.8f, 1.0f);
 		//textureComp.color.a = 0.5f;
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -349,10 +367,10 @@ public class PipeWorld {
 		return entity;
 	}
 	
-	public static Entity createConnectionText() {
+	public static Entity createSuccessText() {
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "led";
-		fontComp.string = "CONNECTED";
+		fontComp.string = "SUCCESS";
 		fontComp.color = new Color(Color.GREEN);
 		fontComp.color.a = 0;
 		fontComp.centering = true;
@@ -465,7 +483,7 @@ public class PipeWorld {
 		TextureComponent texComp = new TextureComponent();
 		texComp.region = new TextureRegion();
 		texComp.size.set(BasicScreen.WORLD_WIDTH, BasicScreen.WORLD_HEIGHT);
-		texComp.color.a = 1.0f;
+		texComp.color.a = 0.8f;
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();

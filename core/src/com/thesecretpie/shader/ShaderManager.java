@@ -44,6 +44,8 @@ public class ShaderManager {
 	private Array<String> openedFrameBuffers;
 	private ObjectMap<String, SpriteBatch> spriteBatches;
 	private String shaderDir;
+	
+	private Array<ShaderProgram> resolutionShaders;
 
 	protected ShaderProgram currentShader = null;
 	public String currentShaderIdn = null;
@@ -71,6 +73,7 @@ public class ShaderManager {
 		frameBuffers = new ObjectMap<String, FrameBuffer>();
 		openedFrameBuffers = new Array<String>(true, MAX_FRAMEBUFFERS);
 		spriteBatches = new ObjectMap<String, SpriteBatch>();
+		resolutionShaders = new Array<ShaderProgram>();
 		
 		screenCamera = new OrthographicCamera(Gdx.graphics.getWidth()+2, Gdx.graphics.getHeight()+2);
 		if (screenQuad == null)
@@ -428,6 +431,11 @@ public class ShaderManager {
 	 * @param resizeFramebuffers - whether all of the framebuffers should be recreated to match new screen size
 	 */
 	public void resize(int width, int height, boolean resizeFramebuffers) {
+		for (ShaderProgram shader : resolutionShaders) {
+			shader.begin();
+			shader.setUniformf("resolution", width, height);
+			shader.end();
+		}
 		//?????
 		if (resizeFramebuffers) {
 			Keys keys = frameBuffers.keys();
@@ -1052,4 +1060,9 @@ public class ShaderManager {
 					"Can't set uniform before calling begin()!");
 	}
 	
+	public void registerResolutionShader(String shaderID) {
+		ShaderProgram shader = shaders.get(shaderID);
+		if (shader != null)
+			resolutionShaders.add(shader);
+	}
 }

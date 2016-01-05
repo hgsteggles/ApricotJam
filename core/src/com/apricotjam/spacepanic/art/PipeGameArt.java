@@ -24,7 +24,7 @@ public class PipeGameArt {
 	public static IntMap<RotatedRegionData> pipeRegions = new IntMap<RotatedRegionData>();
 	public static IntMap<IntMap<RotatedAnimationData>> fluidRegions = new IntMap<IntMap<RotatedAnimationData>>();
 	public static TextureRegion ledBG;
-	public static TextureRegion pipeBorder;
+	public static TextureRegion pipeBorder, pipeBorderTop;
 	public static TextureRegion pipeBG;
 	
 	public static void load(TextureAtlas atlas) {
@@ -35,7 +35,8 @@ public class PipeGameArt {
 		
 		// Load pipe tile backgrounds.
 		pipeBG = whitePixel;
-		pipeBorder = atlas.findRegion("pipe_border");
+		pipeBorder = atlas.findRegion("pipe-border");
+		pipeBorderTop = atlas.findRegion("pipe-border-top");
 		
 		// Load all pipes and fluid animations.
 		for (int i = 0; i < 16; ++i) {
