@@ -117,6 +117,22 @@ public class RenderingSystem extends EntitySystem {
 	}
 	
 	private void render(Entity entity, SpriteBatch spriteBatch) {
+		ShaderComponent shaderComp = null;
+		if (ComponentMappers.shader.has(entity)) {
+			shaderComp = ComponentMappers.shader.get(entity);
+			
+			spriteBatch.setShader(shaderComp.shader);
+			
+			if (ComponentMappers.shadertime.has(entity)) {
+				ShaderTimeComponent shaderTimeComp = ComponentMappers.shadertime.get(entity);
+				shaderComp.shader.setUniformf("time", shaderTimeComp.time);
+			}
+			if (ComponentMappers.shaderlight.has(entity)) {
+				ShaderLightingComponent shaderLightComp = ComponentMappers.shaderlight.get(entity);
+				shaderComp.shader.setUniformf("LightPos", shaderLightComp.lightPosition);
+			}
+		}
+		
 		if (ComponentMappers.texture.has(entity)) {
 			TextureComponent tex = ComponentMappers.texture.get(entity);
 
@@ -131,22 +147,6 @@ public class RenderingSystem extends EntitySystem {
 			float height = tex.size.y;
 			float originX = width * 0.5f;
 			float originY = height * 0.5f;
-			
-			ShaderComponent shaderComp = null;
-			if (ComponentMappers.shader.has(entity)) {
-				shaderComp = ComponentMappers.shader.get(entity);
-				
-				spriteBatch.setShader(shaderComp.shader);
-				
-				if (ComponentMappers.shadertime.has(entity)) {
-					ShaderTimeComponent shaderTimeComp = ComponentMappers.shadertime.get(entity);
-					shaderComp.shader.setUniformf("time", shaderTimeComp.time);
-				}
-				if (ComponentMappers.shaderlight.has(entity)) {
-					ShaderLightingComponent shaderLightComp = ComponentMappers.shaderlight.get(entity);
-					shaderComp.shader.setUniformf("LightPos", shaderLightComp.lightPosition);
-				}
-			}
 			
 			spriteBatch.setColor(tex.color);
 			

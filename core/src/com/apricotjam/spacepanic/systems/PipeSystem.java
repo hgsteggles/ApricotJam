@@ -247,7 +247,8 @@ public class PipeSystem extends EntitySystem {
 			stateComp.timescale = solvedFluidSpeedup;
 		}
 		// Show connection LED text.
-		getEngine().addEntity(PipeWorld.createSuccessText());
+		//getEngine().addEntity(PipeWorld.createSuccessText());
+		getEngine().addEntity(HelmetSystem.addMarquee("SUCCESS"));
 		// Stop timer;
 		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
 		timerTickerComp.tickerActive = false;
@@ -261,6 +262,6 @@ public class PipeSystem extends EntitySystem {
 			clickComp.active = false;
 		}
 		// Show error LED text.
-		getEngine().addEntity(PipeWorld.createErrorText());
+		getEngine().addEntity(HelmetSystem.addMarquee("ERROR"));
 	}
 }

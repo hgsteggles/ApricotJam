@@ -149,10 +149,7 @@ public class PipeWorld {
 		engine.addEntity(timer);
 		
 		// Create led display.
-		engine.addEntity(createLED_Panel());
-		
-		// Create helmet.
-		engine.addEntity(createHelmet());
+		//engine.addEntity(createLED_Panel());
 		
 		// Create lighting fbo.
 		engine.addEntity(createFluidLightFBO());
@@ -320,7 +317,7 @@ public class PipeWorld {
 		float tileHeight = 1;
 		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * tileWidth / 2f;
 		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * tileHeight / 2f;
-		int ipos = -2;
+		float ipos = PipeSystem.GRID_LENGTH/2f - 0.5f;
 		int jpos = PipeSystem.GRID_LENGTH;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
 		
@@ -449,25 +446,6 @@ public class PipeWorld {
 		entity.add(fontComp).add(transComp).add(tweenComp);
 		
 		return entity;
-	}
-	
-	private Entity createHelmet() {
-		Entity e = new Entity();
-		e.add(new HelmetPartComponent());
-
-		TextureComponent texComp = new TextureComponent();
-		texComp.region = HelmetUI.base;
-		texComp.size.x = BasicScreen.WORLD_WIDTH;
-		texComp.size.y = BasicScreen.WORLD_HEIGHT;
-		e.add(texComp);
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = 1;
-		e.add(transComp);
-
-		return e;
 	}
 	
 	private Entity createFluidLightFBO() {
