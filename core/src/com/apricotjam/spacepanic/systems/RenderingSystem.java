@@ -166,8 +166,7 @@ public class RenderingSystem extends EntitySystem {
 						   totalTransform.scale.x, totalTransform.scale.y,
 						   totalTransform.rotation);
 			}
-			
-			spriteBatch.setShader(null);
+
 			spriteBatch.setColor(Color.WHITE);
 			
 		} else if (ComponentMappers.bitmapfont.has(entity)) {
@@ -195,6 +194,8 @@ public class RenderingSystem extends EntitySystem {
 			spriteBatch.setProjectionMatrix(worldCamera.combined);
 			
 		}
+		
+		spriteBatch.setShader(null);
 	}
 
 	private static class DepthComparator implements Comparator<Entity> {

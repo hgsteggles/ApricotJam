@@ -1,4 +1,4 @@
-package com.apricotjam.spacepanic.systems;
+package com.apricotjam.spacepanic.systems.pipes;
 
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
@@ -8,7 +8,7 @@ import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
 import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
-import com.apricotjam.spacepanic.generators.PipeWorld;
+import com.apricotjam.spacepanic.systems.HelmetSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;

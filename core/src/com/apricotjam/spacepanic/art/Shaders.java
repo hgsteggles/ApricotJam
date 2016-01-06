@@ -58,8 +58,6 @@ public class Shaders {
 		manager.setUniformf("Falloff", FALLOFF.x, FALLOFF.y, FALLOFF.z);
 		manager.end();
 		
-		manager.createFB("fluid-light-fb");
-		
 		manager.add("crt", Gdx.files.internal("crt.vert"), Gdx.files.internal("crt.frag"));
 		manager.begin("crt");
 		manager.setUniformf("time", 0f);
