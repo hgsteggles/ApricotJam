@@ -20,27 +20,34 @@ title
   index: -1
 
 art2.png
-size: 2048,1024
+size: 2048,2048
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 comsSpeaker
   rotate: false
-  xy: 2, 2
+  xy: 1284, 1350
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+fog
+  rotate: false
+  xy: 2, 758
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
 helmetBase
   rotate: false
-  xy: 2, 132
+  xy: 2, 36
   size: 1280, 720
   orig: 1280, 720
   offset: 0, 0
   index: -1
 screw
   rotate: false
-  xy: 1284, 820
+  xy: 2, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

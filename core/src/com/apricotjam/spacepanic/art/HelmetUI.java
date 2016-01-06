@@ -21,6 +21,8 @@ public class HelmetUI {
 
 	public static AtlasRegion screw;
 	public static AtlasRegion speaker;
+	
+	public static AtlasRegion fog;
 
 	public static void load(TextureAtlas atlas) {
 		fullOverlay = atlas.findRegion("mainOverlay");
@@ -39,5 +41,7 @@ public class HelmetUI {
 
 		screw = atlas.findRegion("screw");
 		speaker = atlas.findRegion("comsSpeaker");
+		
+		fog = atlas.findRegion("fog");
 	}
 }

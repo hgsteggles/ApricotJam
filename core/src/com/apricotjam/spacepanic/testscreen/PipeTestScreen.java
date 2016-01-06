@@ -5,10 +5,12 @@ import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.systems.AnimatedShaderSystem;
 import com.apricotjam.spacepanic.systems.AnimationSystem;
 import com.apricotjam.spacepanic.systems.ClickSystem;
-import com.apricotjam.spacepanic.systems.HelmetSystem;
+import com.apricotjam.spacepanic.systems.MovementSystem;
+import com.apricotjam.spacepanic.systems.ScrollSystem;
 import com.apricotjam.spacepanic.systems.ShaderLightingSystem;
 import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 
 public class PipeTestScreen extends BasicScreen {
@@ -18,6 +20,8 @@ public class PipeTestScreen extends BasicScreen {
 
 		add(new HelmetSystem());
 		add(new PipeSystem());
+		add(new MovementSystem());
+		add(new ScrollSystem());
 		add(new ClickSystem());
 		add(new TweenSystem());
 		add(new AnimationSystem());

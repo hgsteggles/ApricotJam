@@ -226,7 +226,7 @@ public class PipeWorld {
 		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("fluid-light-fb");
 		
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.color = new Color(0.2f, 0.2f, 1.0f, 1f);
+		textureComp.color.set(0.2f, 0.2f, 1.0f, 1f);
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(pipeTransComp.position.x, pipeTransComp.position.y, -1);
@@ -254,7 +254,7 @@ public class PipeWorld {
 			textureComp.region = PipeGameArt.pipeBorder;
 		else
 			textureComp.region = PipeGameArt.pipeBorderTop;
-		textureComp.color = new Color(0f, 0f, 0f, 1f);
+		textureComp.color.set(0f, 0f, 0f, 1f);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("light");
@@ -281,7 +281,7 @@ public class PipeWorld {
 		textureComp.region = PipeGameArt.pipeBG;
 		textureComp.size.set(PipeSystem.GRID_LENGTH + 3, PipeSystem.GRID_LENGTH);
 		//textureComp.normal = MiscArt.rockNormalRegion;
-		textureComp.color = new Color(0.8f, 0.8f, 0.8f, 1.0f);
+		textureComp.color.set(0.8f, 0.8f, 0.8f, 1.0f);
 		//textureComp.color.a = 0.5f;
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -308,7 +308,7 @@ public class PipeWorld {
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
 		fontComp.string = PipeSystem.createTimerString(duration);
-		fontComp.color = Color.WHITE;
+		fontComp.color.set(Color.WHITE);
 		fontComp.centering = true;
 
 		TransformComponent transComp = new TransformComponent();
@@ -335,115 +335,6 @@ public class PipeWorld {
 
 		entity.add(pipeComp).add(fontComp).add(transComp).add(tickComp);
 
-		return entity;
-	}
-	
-	public Entity createLED_Panel() {
-		TextureComponent texComp = new TextureComponent();
-		texComp.region = PipeGameArt.ledBG;
-		texComp.color = new Color(Color.BLACK);
-		texComp.size.x = 4f;
-		texComp.size.y = 0.8f;
-		
-		TransformComponent transComp = new TransformComponent();
-		//transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		//transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
-		
-		float tileWidth = 1;
-		float tileHeight = 1;
-		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * tileWidth / 2f;
-		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * tileHeight / 2f;
-		float ipos = PipeSystem.GRID_LENGTH/2f - 0.5f;
-		int jpos = PipeSystem.GRID_LENGTH;
-		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, -1);
-		
-		Entity entity = new Entity();
-		entity.add(texComp).add(transComp);
-		
-		return entity;
-	}
-	
-	public static Entity createSuccessText() {
-		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "led";
-		fontComp.string = "SUCCESS";
-		fontComp.color = new Color(Color.GREEN);
-		fontComp.color.a = 0;
-		fontComp.centering = true;
-
-		TransformComponent transComp = new TransformComponent();
-		//transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		//transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
-		
-		float tileWidth = 1;
-		float tileHeight = 1;
-		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * tileWidth / 2f;
-		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * tileHeight / 2f;
-		float ipos = PipeSystem.GRID_LENGTH/2f - 0.5f;
-		int jpos = PipeSystem.GRID_LENGTH;
-		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
-		
-		TweenComponent tweenComp = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = 0.01f;
-		tweenSpec.end = 0.99f;
-		tweenSpec.period = 1.5f;
-		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
-		tweenSpec.interp = Interpolation.linear;
-		tweenSpec.tweenInterface = new TweenInterface() {
-			@Override
-			public void applyTween(Entity e, float a) {
-				BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
-				bfc.color.a = Math.min(a, 1);
-			}
-		};
-		tweenComp.tweenSpecs.add(tweenSpec);
-		
-		Entity entity = new Entity();
-		entity.add(fontComp).add(transComp).add(tweenComp);
-		
-		return entity;
-	}
-	
-	public static Entity createErrorText() {
-		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "led";
-		fontComp.string = "ERROR";
-		fontComp.color = new Color(Color.RED);
-		fontComp.color.a = 0;
-		fontComp.centering = true;
-
-		TransformComponent transComp = new TransformComponent();
-		//transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		//transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
-		
-		float tileWidth = 1;
-		float tileHeight = 1;
-		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * tileWidth / 2f;
-		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * tileHeight / 2f;
-		float ipos = PipeSystem.GRID_LENGTH/2f - 0.5f;
-		int jpos = PipeSystem.GRID_LENGTH;
-		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
-		
-		TweenComponent tweenComp = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = 0.01f;
-		tweenSpec.end = 0.99f;
-		tweenSpec.period = 0.8f;
-		tweenSpec.cycle = TweenSpec.Cycle.REVERSE;
-		tweenSpec.interp = Interpolation.linear;
-		tweenSpec.tweenInterface = new TweenInterface() {
-			@Override
-			public void applyTween(Entity e, float a) {
-				BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
-				bfc.color.a = Math.min(a, 1);
-			}
-		};
-		tweenComp.tweenSpecs.add(tweenSpec);
-		
-		Entity entity = new Entity();
-		entity.add(fontComp).add(transComp).add(tweenComp);
-		
 		return entity;
 	}
 	
