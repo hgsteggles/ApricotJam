@@ -138,6 +138,13 @@ public class MapSystem extends EntitySystem {
 
 		screen.add(Shaders.generateFBOComponent("map-screen-fb", texc));
 
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("crt");
+		screen.add(shaderComp);
+
+		ShaderTimeComponent shaderTimeComp = new ShaderTimeComponent();
+		screen.add(shaderTimeComp);
+
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;

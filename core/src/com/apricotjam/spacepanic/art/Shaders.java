@@ -66,7 +66,7 @@ public class Shaders {
 		manager.setUniformf("tint", 1f, 1f, 0.85f);
 		//manager.setUniformf("offset", 0.003f);
 		manager.setUniformf("chromaticDispersion", -0.1f, -0.1f);
-		manager.setUniformf("Distortion", 0.0f);
+		manager.setUniformf("Distortion", 0.3f);
 		manager.setUniformf("zoom", 1.0f);
 		manager.end();
 		
