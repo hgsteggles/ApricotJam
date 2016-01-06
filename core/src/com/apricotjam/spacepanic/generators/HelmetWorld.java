@@ -117,6 +117,9 @@ public class HelmetWorld {
 		fontComp.color = new Color(Color.GREEN);
 		fontComp.color.a = 1f;
 		fontComp.centering = true;
+		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
+		layout.setText(MiscArt.fonts.get(fontComp.font), text);
+		fontComp.layout = layout;
 		
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("led");
@@ -126,8 +129,6 @@ public class HelmetWorld {
 		Shaders.manager.setUniformf("maskRect", normX, normY, MARQUEE_W/BasicScreen.WORLD_WIDTH, MARQUEE_H/BasicScreen.WORLD_HEIGHT);
 		Shaders.manager.end();
 		
-		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
-		layout.setText(MiscArt.fonts.get(fontComp.font), text);
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 
@@ -145,7 +146,9 @@ public class HelmetWorld {
 			@Override
 			public void applyTween(Entity e, float a) {
 				TransformComponent tc = ComponentMappers.transform.get(e);
-				tc.position.x = MARQUEE_X - (MARQUEE_W + width)/2f + a*(MARQUEE_W + width);
+				BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e); 
+				float w = bfc.layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;
+				tc.position.x = MARQUEE_X - (MARQUEE_W + w)/2f + a*(MARQUEE_W + w);
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
