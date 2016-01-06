@@ -13,6 +13,8 @@ public class MapArt {
 
 	public static AtlasRegion playerIcon;
 
+	public static ArrayList<AtlasRegion> resourceIcons;
+
 	public static void load(TextureAtlas atlas) {
 		computerBackground = atlas.findRegion("computerBackground");
 		computerFrame = atlas.findRegion("computerFrame");
@@ -23,6 +25,12 @@ public class MapArt {
 		asteroids.add(atlas.findRegion("asteroid3"));
 
 		playerIcon = atlas.findRegion("playerIcon");
+
+		resourceIcons = new ArrayList<AtlasRegion>();
+		resourceIcons.add(atlas.findRegion("resource0Icon"));
+		resourceIcons.add(atlas.findRegion("resource1Icon"));
+		resourceIcons.add(atlas.findRegion("resource2Icon"));
+		resourceIcons.add(atlas.findRegion("resource3Icon"));
 	}
 
 }

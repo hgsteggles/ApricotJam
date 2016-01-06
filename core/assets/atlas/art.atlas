@@ -66,6 +66,34 @@ playerIcon
   orig: 64, 64
   offset: 0, 0
   index: -1
+resource0Icon
+  rotate: false
+  xy: 644, 168
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resource1Icon
+  rotate: false
+  xy: 774, 298
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resource2Icon
+  rotate: false
+  xy: 1060, 648
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resource3Icon
+  rotate: false
+  xy: 1190, 842
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 
 art3.png
 size: 2048,1024
