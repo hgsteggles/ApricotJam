@@ -5,7 +5,7 @@ import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.systems.*;
-import com.apricotjam.spacepanic.systems.maze.MapSystem;
+import com.apricotjam.spacepanic.systems.map.MapSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

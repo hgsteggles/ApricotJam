@@ -3,7 +3,7 @@ package com.apricotjam.spacepanic.testscreen;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.systems.*;
-import com.apricotjam.spacepanic.systems.maze.MapSystem;
+import com.apricotjam.spacepanic.systems.map.MapSystem;
 
 public class MapTestScreen extends BasicScreen {
 	public MapTestScreen(SpacePanic spacePanic) {

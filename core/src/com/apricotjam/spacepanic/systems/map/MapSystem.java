@@ -1,9 +1,11 @@
-package com.apricotjam.spacepanic.systems.maze;
+package com.apricotjam.spacepanic.systems.map;
 
 import com.apricotjam.spacepanic.art.MapArt;
-import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
+import com.apricotjam.spacepanic.components.mapComponents.ResourceComponent;
+import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
@@ -33,6 +35,7 @@ public class MapSystem extends EntitySystem {
 
 	Entity screen;
 	TransformComponent screenTrans;
+	MapScreenComponent mapScreenComponent;
 	Entity screenBackground;
 	Entity screenFrame;
 	Entity mapCentre;
@@ -43,18 +46,26 @@ public class MapSystem extends EntitySystem {
 	ArrayList<Point> path = null;
 	boolean moving = false;
 
-	MazeGenerator mazeGenerator = new MazeGenerator(Patch.PATCH_WIDTH, Patch.PATCH_HEIGHT, PATHINESS);
+	MazeGenerator mazeGenerator;
+	ResourceGenerator resourceGenerator;
 	Pathfinder pathfinder = new Pathfinder(Patch.PATCH_WIDTH * PatchConveyor.PATCHES_X, Patch.PATCH_HEIGHT * PatchConveyor.PATCHES_Y, MAXPATH);
 	PatchConveyor patchConveyor;
 
 	Random rng = new Random();
 
 	public MapSystem(float width, float height) {
+		this(width, height, System.nanoTime());
+	}
+
+	public MapSystem(float width, float height, long seed) {
+		System.out.println("Seed: " + seed);
+
 		this.width = width;
 		this.height = height;
 
 		screen = createScreen();
 		screenTrans = ComponentMappers.transform.get(screen);
+		mapScreenComponent = ComponentMappers.mapscreen.get(screen);
 
 		screenBackground = createScreenBackground();
 		screenFrame = createScreenFrame();
@@ -63,7 +74,10 @@ public class MapSystem extends EntitySystem {
 		mapCentreTrans = ComponentMappers.transform.get(mapCentre);
 		playerIcon = createPlayerIcon();
 
-		patchConveyor = new PatchConveyor(mazeGenerator, this);
+		mazeGenerator = new MazeGenerator(seed, PATHINESS);
+		resourceGenerator = new ResourceGenerator(seed);
+
+		patchConveyor = new PatchConveyor(mazeGenerator, resourceGenerator, this);
 	}
 
 	@Override
@@ -93,6 +107,7 @@ public class MapSystem extends EntitySystem {
 				}
 			}
 		}
+		checkForEncounter();
 		patchConveyor.update(engine);
 	}
 
@@ -104,21 +119,38 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private void click(int x, int y) {
-		Point playerPoint = new Point((int)playerPosition.x, (int)playerPosition.y);
-		if (playerPoint.x == x && playerPoint.y == y) {
-			clickPlayer();
-			return;
-		}
+		if (mapScreenComponent.currentState == MapScreenComponent.State.EXPLORING) {
+			Point playerPoint = new Point((int)playerPosition.x, (int)playerPosition.y);
+			if (playerPoint.x == x && playerPoint.y == y) {
+				clickPlayer();
+				return;
+			}
 
-		ArrayList<Point> newPath = findPath(new Point(x, y));
-		if (newPath.size() > 0) {
-			path = newPath;
-			moving = true;
+			ArrayList<Point> newPath = findPath(new Point(x, y));
+			if (newPath.size() > 0) {
+				path = newPath;
+				moving = true;
+			}
 		}
 	}
 
 	private void clickPlayer() {
 		moving = false;
+		for (int i = 0; i < resourceGenerator.nres.length; i++) {
+			System.out.print(resourceGenerator.nres[i] + ", ");
+		}
+		System.out.print("\n");
+	}
+
+	private void checkForEncounter() {
+		Point playerPoint = new Point((int)playerPosition.x, (int)playerPosition.y);
+		Resource r = patchConveyor.popResourceAtLocation(playerPoint, engine);
+		if (r != Resource.NONE) {
+			/*mapScreenComponent.encounterResource = r;
+			mapScreenComponent.currentState = MapScreenComponent.State.ENCOUNTER;
+			moving = false;*/
+			System.out.println("Look! A " + r);
+		}
 	}
 
 	private ArrayList<Point> findPath(Point target) {
@@ -130,8 +162,10 @@ public class MapSystem extends EntitySystem {
 	private Entity createScreen() {
 		Entity screen = new Entity();
 
+		MapScreenComponent mscomp = new MapScreenComponent();
+		screen.add(mscomp);
+
 		TextureComponent texc = new TextureComponent();
-		//texc.region = MapArt.computer;
 		texc.size.x = width;
 		texc.size.y = height;
 		screen.add(texc);
@@ -248,6 +282,48 @@ public class MapSystem extends EntitySystem {
 		return asteroid;
 	}
 
+	public Entity createResourceIcon(float x, float y, Resource resource) {
+		Entity resourceIcon = new Entity();
+
+		ResourceComponent resourceComponent = new ResourceComponent();
+		resourceComponent.resource = resource;
+		resourceIcon.add(resourceComponent);
+
+
+		TextureComponent texc = new TextureComponent();
+		texc.region = MapArt.asteroids.get(rng.nextInt(MapArt.asteroids.size()));
+		switch (resource) {
+			case OXYGEN:
+				texc.region = MapArt.resourceIcons.get(0);
+				break;
+			case OIL:
+				texc.region = MapArt.resourceIcons.get(1);
+				break;
+			case RESOURCE2:
+				texc.region = MapArt.resourceIcons.get(2);
+				break;
+			case RESOURCE3:
+				texc.region = MapArt.resourceIcons.get(3);
+				break;
+		}
+		texc.size.x = ASTEROID_WIDTH;
+		texc.size.y = ASTEROID_HEIGHT;
+		resourceIcon.add(texc);
+
+		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
+		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
+		resourceIcon.add(fboItemComp);
+
+		TransformComponent tranc = new TransformComponent();
+		tranc.position.x = x;
+		tranc.position.y = y;
+		tranc.position.z = 1.0f;
+		tranc.parent = mapCentreTrans;
+		resourceIcon.add(tranc);
+
+		return resourceIcon;
+	}
+
 	private Entity createPlayerIcon() {
 		Entity playerIcon = new Entity();
 
@@ -264,7 +340,7 @@ public class MapSystem extends EntitySystem {
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = 0.0f;
 		tranc.position.y = 0.0f;
-		tranc.position.z = 1.0f;
+		tranc.position.z = 2.0f;
 		playerIcon.add(tranc);
 
 		return playerIcon;

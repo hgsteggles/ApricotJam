@@ -1,4 +1,4 @@
-package com.apricotjam.spacepanic.systems.maze;
+package com.apricotjam.spacepanic.systems.map;
 
 import java.awt.*;
 import java.util.ArrayList;

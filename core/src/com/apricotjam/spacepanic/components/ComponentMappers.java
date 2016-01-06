@@ -1,6 +1,10 @@
 package com.apricotjam.spacepanic.components;
 
+import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
+import com.apricotjam.spacepanic.components.mapComponents.ResourceComponent;
 import com.badlogic.ashley.core.ComponentMapper;
+
+import java.awt.*;
 
 public class ComponentMappers {
 	public static ComponentMapper<TransformComponent> transform = ComponentMapper.getFor(TransformComponent.class);
@@ -23,4 +27,6 @@ public class ComponentMappers {
 	public static ComponentMapper<ShaderLightingComponent> shaderlight = ComponentMapper.getFor(ShaderLightingComponent.class);
 	public static ComponentMapper<FBO_Component> fbo = ComponentMapper.getFor(FBO_Component.class);
 	public static ComponentMapper<FBO_ItemComponent> fboitem = ComponentMapper.getFor(FBO_ItemComponent.class);
+	public static ComponentMapper<MapScreenComponent> mapscreen = ComponentMapper.getFor(MapScreenComponent.class);
+	public static ComponentMapper<ResourceComponent> resource = ComponentMapper.getFor(ResourceComponent.class);
 }
