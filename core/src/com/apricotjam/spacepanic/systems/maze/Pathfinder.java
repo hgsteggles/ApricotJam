@@ -1,4 +1,4 @@
-package com.apricotjam.spacepanic.puzzle;
+package com.apricotjam.spacepanic.systems.maze;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -24,16 +24,8 @@ public class Pathfinder {
 	private int height;
 	private int maxDistance;
 
-	public Point getOffset() {
-		return offset;
-	}
-
 	public void setOffset(Point offset) {
 		this.offset = offset;
-	}
-
-	public void setOffset(int x, int y) {
-		this.offset.move(x, y);
 	}
 
 	private Point offset = new Point();

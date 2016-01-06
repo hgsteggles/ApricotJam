@@ -20,36 +20,50 @@ title
   index: -1
 
 art2.png
-size: 2048,2048
+size: 2048,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-computer
+asteroid
+  rotate: false
+  xy: 1060, 844
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+asteroid2
+  rotate: false
+  xy: 644, 234
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+asteroid3
+  rotate: false
+  xy: 1060, 714
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+computerBackground
+  rotate: false
+  xy: 2, 2
+  size: 640, 360
+  orig: 640, 360
+  offset: 0, 0
+  index: -1
+computerFrame
   rotate: false
   xy: 2, 364
   size: 1056, 608
   orig: 1056, 608
   offset: 0, 0
   index: -1
-computerBackground
+playerIcon
   rotate: false
-  xy: 1284, 1334
-  size: 640, 360
-  orig: 640, 360
-  offset: 0, 0
-  index: -1
-computerFrameLarge
-  rotate: false
-  xy: 2, 974
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-computerFrameSmall
-  rotate: false
-  xy: 2, 2
-  size: 640, 360
-  orig: 640, 360
+  xy: 1190, 908
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
 
@@ -731,28 +745,14 @@ white_pixel
   index: -1
 
 art5.png
-size: 512,256
+size: 1024,512
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Linear
 repeat: none
-asteroid
+mario
   rotate: false
   xy: 2, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-asteroid2
-  rotate: false
-  xy: 132, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-asteroid3
-  rotate: false
-  xy: 262, 2
-  size: 128, 128
-  orig: 128, 128
+  size: 550, 323
+  orig: 550, 323
   offset: 0, 0
   index: -1
