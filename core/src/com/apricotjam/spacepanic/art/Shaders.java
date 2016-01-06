@@ -51,14 +51,12 @@ public class Shaders {
 		*/
 		
 		manager.add("light", Gdx.files.internal("light.vert"), Gdx.files.internal("light.frag"));
-		manager.registerResolutionShader("maskrect");
+		manager.registerResolutionShader("light");
 		manager.begin("light");
 		manager.setUniformf("LightColor", LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, LIGHT_INTENSITY);
 		manager.setUniformf("AmbientColor", AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
 		manager.setUniformf("Falloff", FALLOFF.x, FALLOFF.y, FALLOFF.z);
 		manager.end();
-		
-		manager.createFB("fluid-light-fb");
 		
 		manager.add("crt", Gdx.files.internal("crt.vert"), Gdx.files.internal("crt.frag"));
 		manager.begin("crt");
@@ -73,9 +71,11 @@ public class Shaders {
 		manager.add("maskrect", Gdx.files.internal("default.vert"), Gdx.files.internal("mask.frag"));
 		manager.registerResolutionShader("maskrect");
 		manager.begin("maskrect");
-		manager.setUniformf("resolution", SpacePanic.WIDTH, SpacePanic.HEIGHT);
 		manager.setUniformf("maskRect", 0.25f, 0.25f, 0.5f, 0.5f);
 		manager.end();
+		
+		manager.add("led", Gdx.files.internal("default.vert"), Gdx.files.internal("mask.frag"));
+		manager.registerResolutionShader("led");
 		
 		manager.resize(SpacePanic.WIDTH, SpacePanic.HEIGHT);
 	}

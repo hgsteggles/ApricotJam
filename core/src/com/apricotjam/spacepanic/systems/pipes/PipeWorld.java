@@ -1,4 +1,4 @@
-package com.apricotjam.spacepanic.generators;
+package com.apricotjam.spacepanic.systems.pipes;
 
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.PipeGameArt;
@@ -27,7 +27,6 @@ import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.EventInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.systems.PipeSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
@@ -47,6 +46,9 @@ public class PipeWorld {
 	private Entity timer;
 	
 	public void build(Engine engine) {
+		// Create fluid lighting fbo.
+		engine.addEntity(createFluidLightFBO());
+		
 		generator.generatePuzzle(4);
 		byte[][] maskGrid = generator.getMaskGrid();
 		
@@ -149,13 +151,7 @@ public class PipeWorld {
 		engine.addEntity(timer);
 		
 		// Create led display.
-		engine.addEntity(createLED_Panel());
-		
-		// Create helmet.
-		engine.addEntity(createHelmet());
-		
-		// Create lighting fbo.
-		engine.addEntity(createFluidLightFBO());
+		//engine.addEntity(createLED_Panel());
 	}
 	
 	public Entity getEntryPipe() {
@@ -246,7 +242,7 @@ public class PipeWorld {
 		
 		Entity entity = new Entity();
 		
-		entity.add(pipeFluidComp).add(fboItemComp).add(textureComp).add(transComp).add(animComp).add(stateComp).add(shaderComp)
+		entity.add(pipeFluidComp).add(textureComp).add(transComp).add(animComp).add(stateComp).add(shaderComp)
 			.add(shaderTimeComp);
 
 		return entity;
@@ -320,7 +316,7 @@ public class PipeWorld {
 		float tileHeight = 1;
 		float gridOffsetX = BasicScreen.WORLD_WIDTH / 2f - PipeSystem.GRID_LENGTH * tileWidth / 2f;
 		float gridOffsetY = BasicScreen.WORLD_HEIGHT / 2f - PipeSystem.GRID_LENGTH * tileHeight / 2f;
-		int ipos = -2;
+		float ipos = PipeSystem.GRID_LENGTH/2f - 0.5f;
 		int jpos = PipeSystem.GRID_LENGTH;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * tileWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * tileHeight, 0);
 		
@@ -451,31 +447,8 @@ public class PipeWorld {
 		return entity;
 	}
 	
-	private Entity createHelmet() {
-		Entity e = new Entity();
-		e.add(new HelmetPartComponent());
-
-		TextureComponent texComp = new TextureComponent();
-		texComp.region = HelmetUI.base;
-		texComp.size.x = BasicScreen.WORLD_WIDTH;
-		texComp.size.y = BasicScreen.WORLD_HEIGHT;
-		e.add(texComp);
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = 1;
-		e.add(transComp);
-
-		return e;
-	}
-	
 	private Entity createFluidLightFBO() {
 		Entity e = new Entity();
-		
-		FBO_Component fboComp = new FBO_Component();
-		fboComp.FBO_ID = "fluid-light-fb";
-		fboComp.batch = Shaders.manager.getSpriteBatch("fluid-light-fb");
 		
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("light");
@@ -485,10 +458,12 @@ public class PipeWorld {
 		texComp.size.set(BasicScreen.WORLD_WIDTH, BasicScreen.WORLD_HEIGHT);
 		texComp.color.a = 0.8f;
 		e.add(texComp);
+		
+		FBO_Component fboComp = Shaders.generateFBOComponent("fluid-light-fb", texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		transComp.position.x = 0;
+		transComp.position.y = 0;
 		transComp.position.z = -1;
 		
 		Entity entity = new Entity();

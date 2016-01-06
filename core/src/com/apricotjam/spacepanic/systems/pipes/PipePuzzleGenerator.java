@@ -1,6 +1,5 @@
-package com.apricotjam.spacepanic.generators;
+package com.apricotjam.spacepanic.systems.pipes;
 
-import com.apricotjam.spacepanic.systems.PipeSystem;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;

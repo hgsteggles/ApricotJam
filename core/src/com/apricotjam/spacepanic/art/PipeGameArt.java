@@ -1,6 +1,6 @@
 package com.apricotjam.spacepanic.art;
 
-import com.apricotjam.spacepanic.systems.PipeSystem;
+import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

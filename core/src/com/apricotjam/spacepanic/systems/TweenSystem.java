@@ -27,7 +27,7 @@ public class TweenSystem extends IteratingSystem {
 						finished.add(tws);
 						break;
 					case LOOP:
-						tws.time -= tws.period;
+						tws.time -= 1;
 						break;
 					case REVERSE:
 						tws.time -= tws.period;
