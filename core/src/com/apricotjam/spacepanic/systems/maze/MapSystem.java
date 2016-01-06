@@ -1,6 +1,6 @@
 package com.apricotjam.spacepanic.systems.maze;
 
-import com.apricotjam.spacepanic.art.ComputerArt;
+import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.*;
@@ -33,6 +33,8 @@ public class MapSystem extends EntitySystem {
 
 	Entity screen;
 	TransformComponent screenTrans;
+	Entity screenBackground;
+	Entity screenFrame;
 	Entity mapCentre;
 	TransformComponent mapCentreTrans;
 	Entity playerIcon;
@@ -50,8 +52,13 @@ public class MapSystem extends EntitySystem {
 	public MapSystem(float width, float height) {
 		this.width = width;
 		this.height = height;
+
 		screen = createScreen();
 		screenTrans = ComponentMappers.transform.get(screen);
+
+		screenBackground = createScreenBackground();
+		screenFrame = createScreenFrame();
+
 		mapCentre = createMapCentre();
 		mapCentreTrans = ComponentMappers.transform.get(mapCentre);
 		playerIcon = createPlayerIcon();
@@ -63,6 +70,8 @@ public class MapSystem extends EntitySystem {
 	public void addedToEngine(Engine engine) {
 		this.engine = engine;
 		engine.addEntity(screen);
+		engine.addEntity(screenBackground);
+		engine.addEntity(screenFrame);
 		engine.addEntity(mapCentre);
 		engine.addEntity(playerIcon);
 		patchConveyor.addToEngine(engine);
@@ -121,11 +130,8 @@ public class MapSystem extends EntitySystem {
 	private Entity createScreen() {
 		Entity screen = new Entity();
 
-		MapPartComponent mpc = new MapPartComponent();
-		screen.add(mpc);
-
 		TextureComponent texc = new TextureComponent();
-		//texc.region = ComputerArt.computer;
+		//texc.region = MapArt.computer;
 		texc.size.x = width;
 		texc.size.y = height;
 		screen.add(texc);
@@ -156,11 +162,49 @@ public class MapSystem extends EntitySystem {
 		return screen;
 	}
 
+	private Entity createScreenBackground() {
+		Entity screenBackground = new Entity();
+
+		TransformComponent tranc = new TransformComponent();
+		tranc.position.x = 0.0f;
+		tranc.position.y = 0.0f;
+		tranc.position.z = 0.0f;
+		screenBackground.add(tranc);
+
+		TextureComponent texc = new TextureComponent();
+		texc.region = MapArt.computerBackground;
+		texc.size.x = width;
+		texc.size.y = height;
+		screenBackground.add(texc);
+
+		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
+		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
+		screenBackground.add(fboItemComp);
+
+		return screenBackground;
+	}
+
+	private Entity createScreenFrame() {
+		Entity screenFrame = new Entity();
+
+		TransformComponent tranc = new TransformComponent();
+		tranc.position.x = 0.0f;
+		tranc.position.y = 0.0f;
+		tranc.position.z = 0.0f;
+		tranc.parent = screenTrans;
+		screenFrame.add(tranc);
+
+		TextureComponent texc = new TextureComponent();
+		texc.region = MapArt.computerFrame;
+		texc.size.x = width;
+		texc.size.y = height;
+		screenFrame.add(texc);
+
+		return screenFrame;
+	}
+
 	private Entity createMapCentre() {
 		Entity mapCentre = new Entity();
-
-		MapPartComponent mpc = new MapPartComponent();
-		mapCentre.add(mpc);
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = 0.0f;
@@ -177,11 +221,8 @@ public class MapSystem extends EntitySystem {
 	public Entity createAsteroid(float x, float y) {
 		Entity asteroid = new Entity();
 
-		MapPartComponent mpc = new MapPartComponent();
-		asteroid.add(mpc);
-
 		TextureComponent texc = new TextureComponent();
-		texc.region = ComputerArt.asteroids.get(rng.nextInt(ComputerArt.asteroids.size()));
+		texc.region = MapArt.asteroids.get(rng.nextInt(MapArt.asteroids.size()));
 		texc.size.x = ASTEROID_WIDTH;
 		texc.size.y = ASTEROID_HEIGHT;
 		asteroid.add(texc);
@@ -193,7 +234,7 @@ public class MapSystem extends EntitySystem {
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = x;
 		tranc.position.y = y;
-		tranc.position.z = 0.0f;
+		tranc.position.z = 1.0f;
 		tranc.parent = mapCentreTrans;
 		asteroid.add(tranc);
 
@@ -203,20 +244,20 @@ public class MapSystem extends EntitySystem {
 	private Entity createPlayerIcon() {
 		Entity playerIcon = new Entity();
 
-		MapPartComponent mpc = new MapPartComponent();
-		playerIcon.add(mpc);
-
 		TextureComponent texc = new TextureComponent();
-		texc.region = HelmetUI.screw;
+		texc.region = MapArt.playerIcon;
 		texc.size.x = ASTEROID_WIDTH * 0.8f;
 		texc.size.y = ASTEROID_HEIGHT * 0.8f;
 		playerIcon.add(texc);
 
+		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
+		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
+		playerIcon.add(fboItemComp);
+
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = 0.0f;
 		tranc.position.y = 0.0f;
-		tranc.position.z = 0.0f;
-		tranc.parent = ComponentMappers.transform.get(screen);
+		tranc.position.z = 1.0f;
 		playerIcon.add(tranc);
 
 		return playerIcon;

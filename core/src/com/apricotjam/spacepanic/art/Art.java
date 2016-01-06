@@ -13,7 +13,7 @@ public class Art {
 		Art.atlas = new TextureAtlas(Gdx.files.internal("atlas/art.atlas"));
 
 		HelmetUI.load(atlas);
-		ComputerArt.load(atlas);
+		MapArt.load(atlas);
 		MiscArt.load(atlas);
 		PipeGameArt.load(atlas);
 		
