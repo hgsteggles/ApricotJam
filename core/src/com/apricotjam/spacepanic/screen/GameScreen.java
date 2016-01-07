@@ -4,16 +4,20 @@ import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 
 public class GameScreen extends BasicScreen {
 
-	public static float OVERLAYZ = 1000.0f;
+	Entity mapSystemEntity;
+
 	public static Vector2[] SCREWLOCATIONS = {
 		new Vector2(1.5f, 6.45f),
 		new Vector2(0.85f, 3.05f),
@@ -26,18 +30,58 @@ public class GameScreen extends BasicScreen {
 		add(new RenderingSystem(spriteBatch, worldCamera));
 		add(new MovementSystem());
 		add(new ScrollSystem());
-		add(new GameSystem());
 		add(new ClickSystem());
-		add(new MapSystem(8.25f, 4.75f));
 		add(new AnimatedShaderSystem());
+		add(new TweenSystem());
+
+		addMapSystem();
 
 		add(createBackground());
-		add(createOverlayBase());
+	}
 
-		for (Vector2 v : SCREWLOCATIONS) {
-			add(createScrew(v.x, v.y, false));
-			add(createScrew(v.x, v.y, true));
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+
+		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
+		if (msc.currentState == MapScreenComponent.State.ENCOUNTER) {
+			System.out.println("Look! A " + msc.encounterResource);
+			msc.currentState = MapScreenComponent.State.PAUSED;
+			TweenSpec ts = new TweenSpec();
+			ts.start = 0.0f;
+			ts.end = 360.0f;
+			ts.cycle = TweenSpec.Cycle.ONCE;
+			ts.interp = Interpolation.linear;
+			ts.period = 2.0f;
+			ts.tweenInterface = new TweenInterface() {
+				@Override
+				public void applyTween(Entity e, float a) {
+					ComponentMappers.transform.get(e).rotation = a;
+				}
+
+				@Override
+				public void endTween(Entity e) {
+					ComponentMappers.mapscreen.get(e).currentState = MapScreenComponent.State.EXPLORING;
+				}
+			};
+			ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(ts);
 		}
+	}
+
+	private void addMapSystem() {
+		mapSystemEntity = new Entity();
+
+		mapSystemEntity.add(new MapScreenComponent());
+
+		TransformComponent tranc = new TransformComponent();
+		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		mapSystemEntity.add(tranc);
+
+		mapSystemEntity.add(new TweenComponent());
+
+		add(mapSystemEntity);
+		add(new MapSystem(mapSystemEntity, 8.25f, 4.75f));
 	}
 
 	private Entity createBackground() {
@@ -66,48 +110,6 @@ public class GameScreen extends BasicScreen {
 		e.add(transComp);
 		e.add(movementComp);
 		e.add(scrollComp);
-
-		return e;
-	}
-
-	private Entity createOverlayBase() {
-		Entity e = new Entity();
-		e.add(new HelmetPartComponent());
-
-		TextureComponent texComp = new TextureComponent();
-		texComp.region = HelmetUI.base;
-		texComp.size.x = BasicScreen.WORLD_WIDTH;
-		texComp.size.y = BasicScreen.WORLD_HEIGHT;
-		e.add(texComp);
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = OVERLAYZ;
-		e.add(transComp);
-
-		return e;
-	}
-
-	public Entity createScrew(float x, float y, boolean mirror) {
-		Entity e = new Entity();
-		e.add(new HelmetPartComponent());
-
-		TextureComponent texComp = new TextureComponent();
-		texComp.region = HelmetUI.screw;
-		texComp.size.x = 0.3f;
-		texComp.size.y = 0.3f;
-		e.add(texComp);
-
-		TransformComponent transformComponent = new TransformComponent();
-		if (mirror) {
-			transformComponent.position.x = BasicScreen.WORLD_WIDTH - x;
-		} else {
-			transformComponent.position.x = x;
-		}
-		transformComponent.position.y = y;
-		transformComponent.position.z = OVERLAYZ + 1;
-		e.add(transformComponent);
 
 		return e;
 	}

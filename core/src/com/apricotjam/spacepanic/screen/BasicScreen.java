@@ -22,7 +22,7 @@ public abstract class BasicScreen implements Screen {
 	protected OrthographicCamera worldCamera;
 	protected SpriteBatch spriteBatch;
 
-	private Engine engine;
+	protected Engine engine;
 
 	public BasicScreen(SpacePanic spacePanic) {
 		this.spacePanic = spacePanic;

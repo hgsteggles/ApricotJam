@@ -33,9 +33,11 @@ public class MapSystem extends EntitySystem {
 
 	Engine engine = null;
 
+	Entity masterEntity;
+	MapScreenComponent mapScreenComponent;
+
 	Entity screen;
 	TransformComponent screenTrans;
-	MapScreenComponent mapScreenComponent;
 	Entity screenBackground;
 	Entity screenFrame;
 	Entity mapCentre;
@@ -53,19 +55,20 @@ public class MapSystem extends EntitySystem {
 
 	Random rng = new Random();
 
-	public MapSystem(float width, float height) {
-		this(width, height, System.nanoTime());
+	public MapSystem(Entity masterEntity, float width, float height) {
+		this(masterEntity, width, height, System.nanoTime());
 	}
 
-	public MapSystem(float width, float height, long seed) {
+	public MapSystem(Entity masterEntity, float width, float height, long seed) {
 		System.out.println("Seed: " + seed);
 
+		this.masterEntity = masterEntity;
 		this.width = width;
 		this.height = height;
 
 		screen = createScreen();
 		screenTrans = ComponentMappers.transform.get(screen);
-		mapScreenComponent = ComponentMappers.mapscreen.get(screen);
+		mapScreenComponent = ComponentMappers.mapscreen.get(masterEntity);
 
 		screenBackground = createScreenBackground();
 		screenFrame = createScreenFrame();
@@ -146,10 +149,9 @@ public class MapSystem extends EntitySystem {
 		Point playerPoint = new Point((int)playerPosition.x, (int)playerPosition.y);
 		Resource r = patchConveyor.popResourceAtLocation(playerPoint, engine);
 		if (r != Resource.NONE) {
-			/*mapScreenComponent.encounterResource = r;
+			mapScreenComponent.encounterResource = r;
 			mapScreenComponent.currentState = MapScreenComponent.State.ENCOUNTER;
-			moving = false;*/
-			System.out.println("Look! A " + r);
+			moving = false;
 		}
 	}
 
@@ -180,9 +182,10 @@ public class MapSystem extends EntitySystem {
 		screen.add(shaderTimeComp);
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		tranc.position.x = 0.0f;
+		tranc.position.y = 0.0f;
 		tranc.position.z = 0.0f;
+		tranc.parent = ComponentMappers.transform.get(masterEntity);
 		screen.add(tranc);
 
 		ClickComponent cc = new ClickComponent();
@@ -191,7 +194,8 @@ public class MapSystem extends EntitySystem {
 			@Override
 			public void onClick(Entity entity) {
 				Vector2 pos = new Vector2(InputManager.screenInput.getPointerDownLocation());
-				pos.sub(screenTrans.position.x, screenTrans.position.y);
+				TransformComponent tc = screenTrans.getTotalTransform();
+				pos.sub(tc.position.x, tc.position.y);
 				pos.sub(mapCentreTrans.position.x, mapCentreTrans.position.y);
 				pos.x /= ASTEROID_WIDTH;
 				pos.y /= ASTEROID_HEIGHT;

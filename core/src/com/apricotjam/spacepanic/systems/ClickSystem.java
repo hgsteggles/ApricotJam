@@ -26,7 +26,8 @@ public class ClickSystem extends IteratingSystem {
 		Vector2 pos = new Vector2(InputManager.screenInput.getPointerLocation());
 		boolean inside = false;
 		if (ComponentMappers.transform.has(entity)) {
-			TransformComponent tc = ComponentMappers.transform.get(entity);
+			TransformComponent transc = ComponentMappers.transform.get(entity);
+			TransformComponent tc = transc.getTotalTransform();
 			inside = isInside(bc, pos.x - tc.position.x, pos.y - tc.position.y);
 		} else {
 			inside = isInside(bc, pos.x, pos.y);

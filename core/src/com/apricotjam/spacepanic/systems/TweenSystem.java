@@ -21,6 +21,7 @@ public class TweenSystem extends IteratingSystem {
 		for (TweenSpec tws : twc.tweenSpecs) {
 			tws.time += deltaTime / tws.period;
 			if (tws.time > 1) {
+				tws.tweenInterface.endTween(entity);
 				switch (tws.cycle) {
 					case ONCE:
 						tws.time = Math.min(tws.time, 1);

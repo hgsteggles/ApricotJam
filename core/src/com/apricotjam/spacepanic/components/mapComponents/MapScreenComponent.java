@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Component;
 
 public class MapScreenComponent implements Component {
 	public enum State {
-		EXPLORING, ENCOUNTER
+		EXPLORING, ENCOUNTER, PAUSED
 	}
 
 	public State currentState = State.EXPLORING;
