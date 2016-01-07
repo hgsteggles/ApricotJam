@@ -1,8 +1,8 @@
 package com.apricotjam.spacepanic.art;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class HelmetUI {
 
@@ -22,6 +22,8 @@ public class HelmetUI {
 	public static AtlasRegion screw;
 	public static AtlasRegion speaker;
 	
+	public static AtlasRegion sidepanelLeft;
+	public static TextureRegion sidepanelRight;
 	public static AtlasRegion fog;
 
 	public static void load(TextureAtlas atlas) {
@@ -42,6 +44,9 @@ public class HelmetUI {
 		screw = atlas.findRegion("screw");
 		speaker = atlas.findRegion("comsSpeaker");
 		
+		sidepanelLeft = atlas.findRegion("sidepanel");
+		sidepanelRight = new TextureRegion(sidepanelLeft);
+		sidepanelRight.flip(true, false);
 		fog = atlas.findRegion("fog");
 	}
 }

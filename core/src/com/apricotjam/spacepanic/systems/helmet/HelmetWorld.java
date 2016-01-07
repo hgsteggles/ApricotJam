@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.art.PipeGameArt;
+import com.apricotjam.spacepanic.art.PipeGameArt.RotatedRegionData;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
@@ -30,10 +31,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
-	public static float LEDBG_X = BasicScreen.WORLD_WIDTH*(17f/20f);
-	public static float LEDBG_Y = BasicScreen.WORLD_HEIGHT*(1f/12f);
-	public static float LEDBG_W = 4f;
-	public static float LEDBG_H = 0.8f;
+	public static float HELMET_Z = 10f;
+	public static float LEDBG_X = BasicScreen.WORLD_WIDTH*(71f/80f);
+	public static float LEDBG_Y = BasicScreen.WORLD_HEIGHT*(10f/80f);
+	public static float LEDBG_W = 3f;
+	public static float LEDBG_H = 0.7f;
+	
+	private float PIPE_SIZE = 0.8f;
 	
 	public void build(Engine engine) {
 		// Create star background.
@@ -42,6 +46,32 @@ public class HelmetWorld {
 		engine.addEntity(createHelmet());
 		// Create helmet features.
 		// TODO
+		engine.addEntity(createSidePanel(true));
+		engine.addEntity(createSidePanel(false));
+		
+		float bottomRightPipeX = 0.04f*BasicScreen.WORLD_WIDTH;
+		float bottomRightPipeY = 0.04f*BasicScreen.WORLD_HEIGHT;
+		float pipeHeight = 0.6f*PIPE_SIZE;
+		
+		Entity[] pipes1 = createPipeLine(5, bottomRightPipeX, bottomRightPipeY);
+		Entity[] pipes2 = createPipeLine(4, bottomRightPipeX, bottomRightPipeY + pipeHeight);
+		Entity[] pipes3 = createPipeLine(3, bottomRightPipeX, bottomRightPipeY + 2*pipeHeight);
+		Entity[] pipes4 = createPipeLine(2, bottomRightPipeX, bottomRightPipeY + 3*pipeHeight);
+		
+		for (Entity pipe : pipes1)
+			engine.addEntity(pipe);
+		for (Entity pipe : pipes2)
+			engine.addEntity(pipe);
+		for (Entity pipe : pipes3)
+			engine.addEntity(pipe);
+		for (Entity pipe : pipes4)
+			engine.addEntity(pipe);
+		
+		engine.addEntity(createPipeCap(bottomRightPipeX + 5*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY));
+		engine.addEntity(createPipeCap(bottomRightPipeX + 4*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + pipeHeight));
+		engine.addEntity(createPipeCap(bottomRightPipeX + 3*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + 2*pipeHeight));
+		engine.addEntity(createPipeCap(bottomRightPipeX + 2*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + 3*pipeHeight));
+		
 		engine.addEntity(createFog());
 		
 		// Create black marquee.
@@ -62,7 +92,7 @@ public class HelmetWorld {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = -10.0f;
+		transComp.position.z = -1000;
 
 		MovementComponent movementComp = new MovementComponent();
 		movementComp.rotationalVelocity = 1.0f;
@@ -91,9 +121,75 @@ public class HelmetWorld {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = 10;
+		transComp.position.z = HELMET_Z;
 		e.add(transComp);
 
+		return e;
+	}
+	
+	private Entity createSidePanel(boolean isLeft) {
+		Entity e = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = isLeft ? HelmetUI.sidepanelLeft : HelmetUI.sidepanelRight;
+		texComp.size.x = texComp.region.getRegionWidth()*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;
+		texComp.size.y = texComp.region.getRegionHeight()*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT;
+		texComp.color.set(0.75f, 0.75f, 0.75f, 1f);
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = isLeft ? texComp.size.x/2f : BasicScreen.WORLD_WIDTH - texComp.size.x/2f;
+		transComp.position.y = texComp.size.y/2f;
+		transComp.position.z = HELMET_Z + 1;
+		e.add(transComp);
+
+		return e;
+	}
+	
+	private Entity[] createPipeLine(int size, float x, float y) {
+		Entity[] pipes = new Entity[size];
+		
+		for (int i = 0; i < size; ++i)
+			pipes[i] = createPipeSegment((byte)(10), x + i*PIPE_SIZE, y);
+		
+		return pipes;
+	}
+	
+	private Entity createPipeSegment(byte mask, float x, float y) {
+		Entity e = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		RotatedRegionData rotRegionData = PipeGameArt.pipeRegions.get(mask);
+		texComp.region = rotRegionData.region;
+		texComp.size.x = PIPE_SIZE;
+		texComp.size.y = PIPE_SIZE;
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = x;
+		transComp.position.y = y;
+		transComp.position.z = HELMET_Z + 2;
+		transComp.rotation = rotRegionData.rotation;
+		e.add(transComp);
+
+		return e;
+	}
+	
+	private Entity createPipeCap(float x, float y) {
+		Entity e = new Entity();
+		
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = PipeGameArt.pipeCap;
+		texComp.size.x = PIPE_SIZE;
+		texComp.size.y = PIPE_SIZE;
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = x;
+		transComp.position.y = y;
+		transComp.position.z = HELMET_Z + 3;
+		e.add(transComp);
+		
 		return e;
 	}
 	
@@ -109,7 +205,7 @@ public class HelmetWorld {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = 9;
+		transComp.position.z = HELMET_Z - 1;
 		e.add(transComp);
 		
 		TweenComponent tweenComp = new TweenComponent();
@@ -117,7 +213,7 @@ public class HelmetWorld {
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 0.0f;
 		tweenSpec.end = 1.0f;
-		tweenSpec.period = 2f;
+		tweenSpec.period = 1.2f;
 		tweenSpec.cycle = TweenSpec.Cycle.REVERSE;
 		tweenSpec.interp = Interpolation.fade;
 		tweenSpec.tweenInterface = new TweenInterface() {
@@ -141,7 +237,7 @@ public class HelmetWorld {
 		texComp.size.y = LEDBG_H;
 		
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, 11f);
+		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 2);
 		
 		Entity entity = new Entity();
 		entity.add(texComp).add(transComp);
@@ -172,7 +268,7 @@ public class HelmetWorld {
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, 20f);
+		transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, HELMET_Z + 3);
 		
 		TweenComponent tweenComp = new TweenComponent();
 		
@@ -231,10 +327,8 @@ public class HelmetWorld {
 		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
 		Shaders.manager.end();
 		
-		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
-		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, 20f);
+		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 3);
 		
 		TweenComponent tweenComp = new TweenComponent();
 		
@@ -294,7 +388,7 @@ public class HelmetWorld {
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, 20f);
+		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 3);
 		
 		TweenComponent tweenComp = new TweenComponent();
 		
