@@ -17,10 +17,10 @@ public class Shaders {
 	
 	//our constants...
 	public static final float DEFAULT_LIGHT_Z = 0.15f;
-	public static final float AMBIENT_INTENSITY = 0.8f;
-	public static final float LIGHT_INTENSITY = 0.1f;
+	public static final float AMBIENT_INTENSITY = 0.6f;
+	public static final float LIGHT_INTENSITY = 1.0f*0.4f;
 	
-	public static final Vector3 LIGHT_POS = new Vector3(0f,0f,DEFAULT_LIGHT_Z);
+	public static final Vector3 LIGHT_POS = new Vector3(0.5f, 0.5f, DEFAULT_LIGHT_Z);
 	
 	//Light RGB and intensity (alpha)
 	public static final Vector3 LIGHT_COLOR = new Vector3(1f, 1.0f, 1.0f);
@@ -29,7 +29,7 @@ public class Shaders {
 	public static final Vector3 AMBIENT_COLOR = new Vector3(1.0f, 1.0f, 1f);
 
 	//Attenuation coefficients for light falloff
-	public static final Vector3 FALLOFF = new Vector3(0.4f, 0.2f*3f, 0.1f*20f);
+	public static final Vector3 FALLOFF = new Vector3(0.4f, 0.25f*3f, 0.10f*20f);
 	
 	static public void load() {
 		shaderAssets = new AssetManager();
@@ -39,23 +39,22 @@ public class Shaders {
 		
 		manager.add("fluid", Gdx.files.internal("default.vert"), Gdx.files.internal("fluid.frag"));
 		
-		/*
-		manager.add("light-norm", Gdx.files.internal("light.vert"), Gdx.files.internal("light-norm.frag"));
-		manager.begin("light-norm");
-		manager.setUniformi("u_normals", 1);
-		manager.setUniformf("LightColor", LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, LIGHT_INTENSITY);
-		manager.setUniformf("AmbientColor", AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
-		manager.setUniformf("Falloff", FALLOFF.x, FALLOFF.y, FALLOFF.z);
-		manager.setUniformf("Resolution", SpacePanic.WIDTH, SpacePanic.HEIGHT);
-		manager.end();
-		*/
-		
 		manager.add("light", Gdx.files.internal("light.vert"), Gdx.files.internal("light.frag"));
 		manager.registerResolutionShader("light");
 		manager.begin("light");
 		manager.setUniformf("LightColor", LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, LIGHT_INTENSITY);
 		manager.setUniformf("AmbientColor", AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
 		manager.setUniformf("Falloff", FALLOFF.x, FALLOFF.y, FALLOFF.z);
+		manager.setUniformf("LightPos", LIGHT_POS.x, LIGHT_POS.y, LIGHT_POS.z);
+		manager.end();
+		
+		manager.add("helmet-light", Gdx.files.internal("light.vert"), Gdx.files.internal("light.frag"));
+		manager.registerResolutionShader("helmet-light");
+		manager.begin("helmet-light");
+		manager.setUniformf("LightColor", LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, 1.0f*0.4f);
+		manager.setUniformf("AmbientColor", AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, 0.6f);
+		manager.setUniformf("Falloff", 0.4f, 0.25f*3f, 0.10f*20f);
+		manager.setUniformf("LightPos", LIGHT_POS.x, LIGHT_POS.y, LIGHT_POS.z);
 		manager.end();
 		
 		manager.add("crt", Gdx.files.internal("crt.vert"), Gdx.files.internal("crt.frag"));

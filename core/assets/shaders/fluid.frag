@@ -82,11 +82,11 @@ float srdnoise(in vec2 P, in float rot, out vec2 grad) {
 
 void main(void) {
   vec2 g1, g2;
-  vec2 p = 0.07*gl_FragCoord.xy;
-  float mtime = 0.6*time;
+  vec2 p = 0.06*gl_FragCoord.xy;
+  float mtime = 0.5*time;
   float n1 = srdnoise(p*0.5, 0.2*mtime, g1);
   float n2 = srdnoise(p*2.0 + g1*0.5, 0.51*mtime, g2);
   float n3 = srdnoise(p*4.0 + g1*0.5 + g2*0.25, 0.77*mtime, g2);
   float mask = texture2D(u_texture, v_texCoords).a;
-  gl_FragColor = vec4(v_color.xyz + 0.8*vec3(n1+0.75*n2+0.5*n3), mask*v_color.a);
+  gl_FragColor = vec4(v_color.rgb + 0.6*vec3(n1+0.75*n2+0.5*n3), mask*v_color.a);
 }

@@ -24,19 +24,28 @@ public class PipeGameArt {
 	public static IntMap<RotatedRegionData> pipeRegions = new IntMap<RotatedRegionData>();
 	public static IntMap<IntMap<RotatedAnimationData>> fluidRegions = new IntMap<IntMap<RotatedAnimationData>>();
 	public static TextureRegion ledBG;
-	public static TextureRegion pipeBorder, pipeBorderTop;
-	public static TextureRegion pipeBG;
+	public static TextureRegion pipeBG_Centre, pipeBG_Corner;
+	public static TextureRegion[] pipeBG_Side = new TextureRegion[4];
+	public static TextureRegion pipeCapLeft, pipeCapRight;
+	
+	public static TextureRegion whitePixel;
 	
 	public static void load(TextureAtlas atlas) {
 		// Load led bg.
-		TextureRegion whitePixel = atlas.findRegion("white_pixel");
+		whitePixel = atlas.findRegion("white_pixel");
 		
 		ledBG = whitePixel;
 		
 		// Load pipe tile backgrounds.
-		pipeBG = whitePixel;
-		pipeBorder = atlas.findRegion("pipe-border");
-		pipeBorderTop = atlas.findRegion("pipe-border-top");
+		pipeBG_Centre = atlas.findRegion("pipe-bg-1");
+		for (int i = 0; i < pipeBG_Side.length; ++i)
+			pipeBG_Side[i] = atlas.findRegion("circuit-" + Integer.toString(i + 1));
+		pipeBG_Corner = atlas.findRegion("circuit-" + Integer.toString(pipeBG_Side.length + 1));
+		
+		// Load pipe cap.
+		pipeCapRight = atlas.findRegion("pipe-cap");
+		pipeCapLeft = new TextureRegion(pipeCapRight);
+		pipeCapLeft.flip(true, false);
 		
 		// Load all pipes and fluid animations.
 		for (int i = 0; i < 16; ++i) {

@@ -8,7 +8,8 @@ import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
 import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
-import com.apricotjam.spacepanic.systems.HelmetSystem;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
+import com.apricotjam.spacepanic.systems.helmet.HelmetWorld;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -203,29 +204,38 @@ public class PipeSystem extends EntitySystem {
 		}
 		
 		if (!startedSolutionAnimation) {
-			Entity currPipe = world.getEntryPipe();
-			PipeTileComponent currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
-			int currExitDirection = directionFromMask(currPipeTileComp.mask);
+			boolean isSolved = true;
 			
-			boolean isSolved = false;
-			
-			while (!isSolved) {
-				currPipe = currPipeTileComp.neighbours[currExitDirection];
-				if (currPipe == null)
-					break;
-				else if (currPipe == world.getExitPipe()) {
-					isSolved = true;
-					break;
-				}
-				else {
-					currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
-					int currEntryDirection = oppositeDirectionIndex(currExitDirection);
-					
-					if (!connectedAtIndex(currPipeTileComp.mask, currEntryDirection))
+			for (int ipipe = 0; ipipe < world.getEntryPoints().size; ++ipipe) {
+				Entity currPipe = world.getEntryPipes().get(ipipe);
+				PipeTileComponent currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
+				int currExitDirection = directionFromMask(currPipeTileComp.mask);
+				
+				boolean isCurrPipeSolved = false;
+				
+				while (!isCurrPipeSolved) {
+					currPipe = currPipeTileComp.neighbours[currExitDirection];
+					if (currPipe == null)
 						break;
-					else
-						currExitDirection = exitFromEntryDirection(currPipeTileComp.mask, currEntryDirection);
+					else if (currPipe == world.getExitPipes().get(ipipe)) {
+						isCurrPipeSolved = true;
+						break;
+					}
+					else {
+						currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
+						int currEntryDirection = oppositeDirectionIndex(currExitDirection);
+						
+						if (!connectedAtIndex(currPipeTileComp.mask, currEntryDirection))
+							break;
+						else
+							currExitDirection = exitFromEntryDirection(currPipeTileComp.mask, currEntryDirection);
+					}
 				}
+				
+				if (!isCurrPipeSolved) {
+					isSolved = false;
+					break;
+				}	
 			}
 			
 			if (isSolved) {
@@ -247,8 +257,7 @@ public class PipeSystem extends EntitySystem {
 			stateComp.timescale = solvedFluidSpeedup;
 		}
 		// Show connection LED text.
-		//getEngine().addEntity(PipeWorld.createSuccessText());
-		getEngine().addEntity(HelmetSystem.addMarquee("SUCCESS"));
+		getEngine().addEntity(HelmetWorld.createAppearLED("SUCCESS"));
 		// Stop timer;
 		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
 		timerTickerComp.tickerActive = false;
@@ -261,7 +270,11 @@ public class PipeSystem extends EntitySystem {
 			ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
 			clickComp.active = false;
 		}
-		// Show error LED text.
-		getEngine().addEntity(HelmetSystem.addMarquee("ERROR"));
+		// Show connection LED text.
+		getEngine().addEntity(HelmetWorld.createFlashLED("ERROR"));
+		// Stop timer;
+		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
+		timerTickerComp.tickerActive = false;
+		timerTickerComp.finishActive = false;
 	}
 }

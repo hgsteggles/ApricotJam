@@ -9,16 +9,17 @@ import com.apricotjam.spacepanic.screen.TitleScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.RandomXS128;
 
 public class SpacePanic extends ApplicationAdapter {
-
-	public static final int WIDTH = 1280;
-	public static final int HEIGHT = 720;
+	static public final int WIDTH = 1280;
+	static public final int HEIGHT = 720;
+	static public RandomXS128 rng = new RandomXS128(0);
 	
 	private boolean video = false;
 	private float accum = 0;
 	private float frame_time = 1.0f/30f;
-	private int nprints = (int)(20f/frame_time);
+	private int nprints = (int)(1f/frame_time);
 
 	private BasicScreen screen;
 

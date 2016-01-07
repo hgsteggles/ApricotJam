@@ -31,7 +31,7 @@ public class TweenSystem extends IteratingSystem {
 						tws.time -= 1;
 						break;
 					case REVERSE:
-						tws.time -= tws.period;
+						tws.time -= 1;
 						float temp = tws.start;
 						tws.start = tws.end;
 						tws.end = temp;

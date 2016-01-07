@@ -10,5 +10,5 @@ public class TextureComponent implements Component {
 	public TextureRegion region = null;
 	public TextureRegion normal = null;
 	public boolean centre = true;
-	public Color color = Color.WHITE;
+	public Color color = new Color(Color.WHITE);
 }
