@@ -204,29 +204,38 @@ public class PipeSystem extends EntitySystem {
 		}
 		
 		if (!startedSolutionAnimation) {
-			Entity currPipe = world.getEntryPipe();
-			PipeTileComponent currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
-			int currExitDirection = directionFromMask(currPipeTileComp.mask);
+			boolean isSolved = true;
 			
-			boolean isSolved = false;
-			
-			while (!isSolved) {
-				currPipe = currPipeTileComp.neighbours[currExitDirection];
-				if (currPipe == null)
-					break;
-				else if (currPipe == world.getExitPipe()) {
-					isSolved = true;
-					break;
-				}
-				else {
-					currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
-					int currEntryDirection = oppositeDirectionIndex(currExitDirection);
-					
-					if (!connectedAtIndex(currPipeTileComp.mask, currEntryDirection))
+			for (int ipipe = 0; ipipe < world.getEntryPoints().size; ++ipipe) {
+				Entity currPipe = world.getEntryPipes().get(ipipe);
+				PipeTileComponent currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
+				int currExitDirection = directionFromMask(currPipeTileComp.mask);
+				
+				boolean isCurrPipeSolved = false;
+				
+				while (!isCurrPipeSolved) {
+					currPipe = currPipeTileComp.neighbours[currExitDirection];
+					if (currPipe == null)
 						break;
-					else
-						currExitDirection = exitFromEntryDirection(currPipeTileComp.mask, currEntryDirection);
+					else if (currPipe == world.getExitPipes().get(ipipe)) {
+						isCurrPipeSolved = true;
+						break;
+					}
+					else {
+						currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
+						int currEntryDirection = oppositeDirectionIndex(currExitDirection);
+						
+						if (!connectedAtIndex(currPipeTileComp.mask, currEntryDirection))
+							break;
+						else
+							currExitDirection = exitFromEntryDirection(currPipeTileComp.mask, currEntryDirection);
+					}
 				}
+				
+				if (!isCurrPipeSolved) {
+					isSolved = false;
+					break;
+				}	
 			}
 			
 			if (isSolved) {

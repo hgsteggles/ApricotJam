@@ -48,6 +48,15 @@ public class Shaders {
 		manager.setUniformf("LightPos", LIGHT_POS.x, LIGHT_POS.y, LIGHT_POS.z);
 		manager.end();
 		
+		manager.add("helmet-light", Gdx.files.internal("light.vert"), Gdx.files.internal("light.frag"));
+		manager.registerResolutionShader("helmet-light");
+		manager.begin("helmet-light");
+		manager.setUniformf("LightColor", LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, 1.0f*0.4f);
+		manager.setUniformf("AmbientColor", AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, 0.6f);
+		manager.setUniformf("Falloff", 0.4f, 0.25f*3f, 0.10f*20f);
+		manager.setUniformf("LightPos", LIGHT_POS.x, LIGHT_POS.y, LIGHT_POS.z);
+		manager.end();
+		
 		manager.add("crt", Gdx.files.internal("crt.vert"), Gdx.files.internal("crt.frag"));
 		manager.begin("crt");
 		manager.setUniformf("time", 0f);

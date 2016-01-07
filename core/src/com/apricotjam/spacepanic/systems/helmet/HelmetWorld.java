@@ -139,6 +139,10 @@ public class HelmetWorld {
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
 		transComp.position.z = HELMET_Z;
 		e.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("helmet-light");
+		e.add(shaderComp);
 
 		return e;
 	}
@@ -157,6 +161,10 @@ public class HelmetWorld {
 		transComp.position.y = -0.06f*BasicScreen.WORLD_HEIGHT;
 		transComp.position.z = HELMET_Z + 1;
 		e.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("helmet-light");
+		e.add(shaderComp);
 
 		return e;
 	}
@@ -175,6 +183,10 @@ public class HelmetWorld {
 		transComp.position.y = y;
 		transComp.position.z = HELMET_Z + 1;
 		e.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("helmet-light");
+		e.add(shaderComp);
 
 		return e;
 	}
@@ -194,6 +206,10 @@ public class HelmetWorld {
 		transComp.position.y = texComp.size.y/2f;
 		transComp.position.z = HELMET_Z + 1;
 		e.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("helmet-light");
+		e.add(shaderComp);
 
 		return e;
 	}
@@ -213,6 +229,10 @@ public class HelmetWorld {
 		transComp.position.y = texComp.size.y/2f + (16f/720f)*BasicScreen.WORLD_HEIGHT;
 		transComp.position.z = HELMET_Z + 2;
 		e.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("helmet-light");
+		e.add(shaderComp);
 
 		return e;
 	}
@@ -339,17 +359,22 @@ public class HelmetWorld {
 	}
 	
 	private Entity createLED_Panel() {
+		Entity entity = new Entity();
+		
 		TextureComponent texComp = new TextureComponent();
 		texComp.region = PipeGameArt.ledBG;
 		texComp.color = new Color(Color.BLACK);
 		texComp.size.x = LEDBG_W;
 		texComp.size.y = LEDBG_H;
+		entity.add(texComp);
 		
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 3);
+		entity.add(transComp);
 		
-		Entity entity = new Entity();
-		entity.add(texComp).add(transComp);
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("helmet-light");
+		entity.add(shaderComp);
 		
 		return entity;
 	}
