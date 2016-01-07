@@ -2,6 +2,7 @@ package com.apricotjam.spacepanic.systems.helmet;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.HelmetUI;
+import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedRegionData;
@@ -32,49 +33,64 @@ import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
 	public static float HELMET_Z = 10f;
-	public static float LEDBG_X = BasicScreen.WORLD_WIDTH*(71f/80f);
-	public static float LEDBG_Y = BasicScreen.WORLD_HEIGHT*(10f/80f);
+	public static float LEDBG_X = (71f/80f)*BasicScreen.WORLD_WIDTH;
+	public static float LEDBG_Y = (6f/80f)*BasicScreen.WORLD_HEIGHT;
 	public static float LEDBG_W = 3f;
 	public static float LEDBG_H = 0.7f;
 	
-	private float PIPE_SIZE = 0.8f;
+	private float PIPE_SIZE = 0.6f;
+	
+	private TransformComponent resourcePanelTransform;
 	
 	public void build(Engine engine) {
 		// Create star background.
 		engine.addEntity(createStarBackground());
+		
 		// Create helmet.
 		engine.addEntity(createHelmet());
+		
 		// Create helmet features.
-		// TODO
+		//// Panels.
 		engine.addEntity(createSidePanel(true));
 		engine.addEntity(createSidePanel(false));
+		Entity resourcePanel = createResourcePanel();
+		resourcePanelTransform = ComponentMappers.transform.get(resourcePanel);
+		engine.addEntity(resourcePanel);
 		
-		float bottomRightPipeX = 0.04f*BasicScreen.WORLD_WIDTH;
-		float bottomRightPipeY = 0.04f*BasicScreen.WORLD_HEIGHT;
-		float pipeHeight = 0.6f*PIPE_SIZE;
+		//// Screws.
+		engine.addEntity(createScrew((46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((48f/1280f)*BasicScreen.WORLD_WIDTH, (560f/720f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((439f/1280f)*BasicScreen.WORLD_WIDTH, (699f/720f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((1.0f - 46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((1.0f - 48f/1280f)*BasicScreen.WORLD_WIDTH, (560f/720f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((1.0f - 439f/1280f)*BasicScreen.WORLD_WIDTH, (699f/720f)*BasicScreen.WORLD_HEIGHT));
 		
-		Entity[] pipes1 = createPipeLine(5, bottomRightPipeX, bottomRightPipeY);
-		Entity[] pipes2 = createPipeLine(4, bottomRightPipeX, bottomRightPipeY + pipeHeight);
-		Entity[] pipes3 = createPipeLine(3, bottomRightPipeX, bottomRightPipeY + 2*pipeHeight);
-		Entity[] pipes4 = createPipeLine(2, bottomRightPipeX, bottomRightPipeY + 3*pipeHeight);
+		//// Speaker.
+		engine.addEntity(createSpeaker());
 		
-		for (Entity pipe : pipes1)
-			engine.addEntity(pipe);
-		for (Entity pipe : pipes2)
-			engine.addEntity(pipe);
-		for (Entity pipe : pipes3)
-			engine.addEntity(pipe);
-		for (Entity pipe : pipes4)
-			engine.addEntity(pipe);
+		float bottomRightPipeX = (0.005f-0.045703125f)*BasicScreen.WORLD_WIDTH;
+		float bottomRightPipeY = -0.069722221f*BasicScreen.WORLD_HEIGHT;
+		float pipeHeight = 0.7f*PIPE_SIZE;
+		int bottomPipeLength = 4;
 		
-		engine.addEntity(createPipeCap(bottomRightPipeX + 5*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY));
-		engine.addEntity(createPipeCap(bottomRightPipeX + 4*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + pipeHeight));
-		engine.addEntity(createPipeCap(bottomRightPipeX + 3*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + 2*pipeHeight));
-		engine.addEntity(createPipeCap(bottomRightPipeX + 2*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + 3*pipeHeight));
+		for (int i = 0; i < 4; ++i) {
+			Entity[] pipes1 = createPipeLine(bottomPipeLength - i, bottomRightPipeX, bottomRightPipeY + i*pipeHeight);
+			for (Entity pipe : pipes1)
+				engine.addEntity(pipe);
+			
+			//// Pipe caps.
+			engine.addEntity(createPipeCap(bottomRightPipeX + (bottomPipeLength - i)*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + i*pipeHeight, false));
+			engine.addEntity(createPipeCap(bottomRightPipeX - PIPE_SIZE + (1f/16f)*PIPE_SIZE, bottomRightPipeY + i*pipeHeight, true));
+			
+			//// Resource icons.
+			engine.addEntity(createResourceIcon(bottomRightPipeX - 1.5f*PIPE_SIZE, bottomRightPipeY + i*pipeHeight, i));
+		}
 		
+		//// Fog.
 		engine.addEntity(createFog());
 		
 		// Create black marquee.
+		engine.addEntity(createLED_PanelShadow());
 		engine.addEntity(createLED_Panel());
 	}
 	
@@ -127,6 +143,42 @@ public class HelmetWorld {
 		return e;
 	}
 	
+	private Entity createSpeaker() {
+		Entity e = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = HelmetUI.speaker;
+		texComp.size.x = 2f;
+		texComp.size.y = 2f;
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = 0.5f*BasicScreen.WORLD_WIDTH;
+		transComp.position.y = -0.06f*BasicScreen.WORLD_HEIGHT;
+		transComp.position.z = HELMET_Z + 1;
+		e.add(transComp);
+
+		return e;
+	}
+	
+	private Entity createScrew(float x, float y) {
+		Entity e = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = HelmetUI.screw;
+		texComp.size.x = 0.4f;
+		texComp.size.y = 0.4f;
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = x;
+		transComp.position.y = y;
+		transComp.position.z = HELMET_Z + 1;
+		e.add(transComp);
+
+		return e;
+	}
+	
 	private Entity createSidePanel(boolean isLeft) {
 		Entity e = new Entity();
 
@@ -141,6 +193,25 @@ public class HelmetWorld {
 		transComp.position.x = isLeft ? texComp.size.x/2f : BasicScreen.WORLD_WIDTH - texComp.size.x/2f;
 		transComp.position.y = texComp.size.y/2f;
 		transComp.position.z = HELMET_Z + 1;
+		e.add(transComp);
+
+		return e;
+	}
+	
+	private Entity createResourcePanel() {
+		Entity e = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = HelmetUI.resourcePanel;
+		texComp.size.x = texComp.region.getRegionWidth()*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;
+		texComp.size.y = texComp.region.getRegionHeight()*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT;
+		texComp.color.set(0.5f, 0.5f, 0.5f, 1f);
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = texComp.size.x/2f + (16f/1280f)*BasicScreen.WORLD_WIDTH;
+		transComp.position.y = texComp.size.y/2f + (16f/720f)*BasicScreen.WORLD_HEIGHT;
+		transComp.position.z = HELMET_Z + 2;
 		e.add(transComp);
 
 		return e;
@@ -168,18 +239,19 @@ public class HelmetWorld {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = x;
 		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 2;
+		transComp.position.z = HELMET_Z + 3;
 		transComp.rotation = rotRegionData.rotation;
+		transComp.parent = resourcePanelTransform;
 		e.add(transComp);
 
 		return e;
 	}
 	
-	private Entity createPipeCap(float x, float y) {
+	private Entity createPipeCap(float x, float y, boolean isLeft) {
 		Entity e = new Entity();
 		
 		TextureComponent texComp = new TextureComponent();
-		texComp.region = PipeGameArt.pipeCap;
+		texComp.region = isLeft ? PipeGameArt.pipeCapLeft : PipeGameArt.pipeCapRight;
 		texComp.size.x = PIPE_SIZE;
 		texComp.size.y = PIPE_SIZE;
 		e.add(texComp);
@@ -187,7 +259,27 @@ public class HelmetWorld {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = x;
 		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 3;
+		transComp.position.z = HELMET_Z + 4;
+		transComp.parent = resourcePanelTransform;
+		e.add(transComp);
+		
+		return e;
+	}
+	
+	private Entity createResourceIcon(float x, float y, int index) {
+		Entity e = new Entity();
+		
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = MapArt.resourceIcons.get(index);
+		texComp.size.x = 0.6f*PIPE_SIZE;
+		texComp.size.y = 0.6f*PIPE_SIZE;
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = x;
+		transComp.position.y = y;
+		transComp.position.z = HELMET_Z + 4;
+		transComp.parent = resourcePanelTransform;
 		e.add(transComp);
 		
 		return e;
@@ -229,6 +321,23 @@ public class HelmetWorld {
 		return e;
 	}
 	
+	private Entity createLED_PanelShadow() {
+		float offset = 0.003f*BasicScreen.WORLD_WIDTH;
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = PipeGameArt.whitePixel;
+		texComp.color.set(0.4f, 0.4f, 0.4f, 1.0f);
+		texComp.size.x = LEDBG_W + offset;
+		texComp.size.y = LEDBG_H + offset;
+		
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.set(LEDBG_X - 0.5f*offset, LEDBG_Y - 0.5f*offset, HELMET_Z + 2);
+		
+		Entity entity = new Entity();
+		entity.add(texComp).add(transComp);
+		
+		return entity;
+	}
+	
 	private Entity createLED_Panel() {
 		TextureComponent texComp = new TextureComponent();
 		texComp.region = PipeGameArt.ledBG;
@@ -237,7 +346,7 @@ public class HelmetWorld {
 		texComp.size.y = LEDBG_H;
 		
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 2);
+		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 3);
 		
 		Entity entity = new Entity();
 		entity.add(texComp).add(transComp);
@@ -268,7 +377,7 @@ public class HelmetWorld {
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, HELMET_Z + 3);
+		transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, HELMET_Z + 4);
 		
 		TweenComponent tweenComp = new TweenComponent();
 		
@@ -328,7 +437,7 @@ public class HelmetWorld {
 		Shaders.manager.end();
 		
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 3);
+		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
 		
 		TweenComponent tweenComp = new TweenComponent();
 		
@@ -388,7 +497,7 @@ public class HelmetWorld {
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 3);
+		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
 		
 		TweenComponent tweenComp = new TweenComponent();
 		
@@ -415,7 +524,6 @@ public class HelmetWorld {
 			@Override
 			public void dispatchEvent(Entity entity) {
 				entity.remove(TweenComponent.class);
-				System.out.println("HERE");
 			}
 		};
 		tickComp.start();

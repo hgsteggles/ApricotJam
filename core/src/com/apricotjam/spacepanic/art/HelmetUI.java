@@ -24,6 +24,7 @@ public class HelmetUI {
 	
 	public static AtlasRegion sidepanelLeft;
 	public static TextureRegion sidepanelRight;
+	public static TextureRegion resourcePanel;
 	public static AtlasRegion fog;
 
 	public static void load(TextureAtlas atlas) {
@@ -47,6 +48,7 @@ public class HelmetUI {
 		sidepanelLeft = atlas.findRegion("sidepanel");
 		sidepanelRight = new TextureRegion(sidepanelLeft);
 		sidepanelRight.flip(true, false);
+		resourcePanel = atlas.findRegion("resource-panel");
 		fog = atlas.findRegion("fog");
 	}
 }

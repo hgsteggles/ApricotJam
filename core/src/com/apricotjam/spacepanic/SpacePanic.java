@@ -23,7 +23,7 @@ public class SpacePanic extends ApplicationAdapter {
 	private boolean video = false;
 	private float accum = 0;
 	private float frame_time = 1.0f/30f;
-	private int nprints = (int)(20f/frame_time);
+	private int nprints = (int)(1f/frame_time);
 
 	private BasicScreen screen;
 

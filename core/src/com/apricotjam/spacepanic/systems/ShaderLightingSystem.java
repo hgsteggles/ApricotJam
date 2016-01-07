@@ -22,7 +22,5 @@ public class ShaderLightingSystem extends IteratingSystem {
 		
 		slc.lightPosition.x = (pos.x)/BasicScreen.WORLD_WIDTH;
 		slc.lightPosition.y = (pos.y)/BasicScreen.WORLD_HEIGHT;
-		
-		System.out.println("HERE");
 	}
 }

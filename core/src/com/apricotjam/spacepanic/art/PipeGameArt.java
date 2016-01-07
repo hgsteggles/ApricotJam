@@ -26,7 +26,7 @@ public class PipeGameArt {
 	public static TextureRegion ledBG;
 	public static TextureRegion pipeBG_Centre, pipeBG_Corner;
 	public static TextureRegion[] pipeBG_Side = new TextureRegion[4];
-	public static TextureRegion pipeCap;
+	public static TextureRegion pipeCapLeft, pipeCapRight;
 	
 	public static TextureRegion whitePixel;
 	
@@ -43,7 +43,9 @@ public class PipeGameArt {
 		pipeBG_Corner = atlas.findRegion("circuit-" + Integer.toString(pipeBG_Side.length + 1));
 		
 		// Load pipe cap.
-		pipeCap = atlas.findRegion("pipe-cap");
+		pipeCapRight = atlas.findRegion("pipe-cap");
+		pipeCapLeft = new TextureRegion(pipeCapRight);
+		pipeCapLeft.flip(true, false);
 		
 		// Load all pipes and fluid animations.
 		for (int i = 0; i < 16; ++i) {
