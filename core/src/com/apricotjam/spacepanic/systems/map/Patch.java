@@ -31,15 +31,18 @@ public class Patch {
 		for (int icell = 0; icell < PATCH_WIDTH; icell++) {
 			for (int jcell = 0; jcell < PATCH_HEIGHT; jcell++) {
 				if (maze[icell][jcell] == MazeGenerator.WALL) {
-					float xast = (icell - (PATCH_WIDTH  / 2.0f) + (x * PATCH_WIDTH * 1.0f)) * MapSystem.ASTEROID_WIDTH;
-					float yast = (jcell - (PATCH_HEIGHT / 2.0f) + (y * PATCH_HEIGHT * 1.0f)) * MapSystem.ASTEROID_HEIGHT;
+					float xast = (icell - (PATCH_WIDTH  / 2.0f) + (x * PATCH_WIDTH)) * MapSystem.ASTEROID_WIDTH;
+					float yast = (jcell - (PATCH_HEIGHT / 2.0f) + (y * PATCH_HEIGHT)) * MapSystem.ASTEROID_HEIGHT;
 					asteroids.add(mapSystem.createAsteroid(xast, yast));
 				}
 
 				if (resourceArray[icell][jcell] != Resource.NONE) {
-					float xicon = (icell - (PATCH_WIDTH  / 2.0f) + (x * PATCH_WIDTH * 1.0f)) * MapSystem.ASTEROID_WIDTH;
-					float yicon = (jcell - (PATCH_HEIGHT / 2.0f) + (y * PATCH_HEIGHT * 1.0f)) * MapSystem.ASTEROID_HEIGHT;
-					resources.put(new Point(icell, jcell), mapSystem.createResourceIcon(xicon, yicon, resourceArray[icell][jcell]));
+					Point pos = new Point(x * PATCH_WIDTH + icell - (PATCH_WIDTH / 2), y * PATCH_HEIGHT - (PATCH_HEIGHT / 2) + jcell);
+					if (!mapSystem.isResourceUsed(pos)) {
+						float xicon = pos.x * MapSystem.ASTEROID_WIDTH;
+						float yicon = pos.y * MapSystem.ASTEROID_HEIGHT;
+						resources.put(new Point(icell, jcell), mapSystem.createResourceIcon(xicon, yicon, resourceArray[icell][jcell]));
+					}
 				}
 			}
 		}

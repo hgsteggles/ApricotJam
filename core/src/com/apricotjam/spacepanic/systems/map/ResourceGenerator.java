@@ -10,7 +10,7 @@ public class ResourceGenerator {
 	private static final float[] RESOURCE_PROB = {0.6f, 0.2f, 0.15f, 0.05f};
 	//private static final float[] RESOURCE_PROB = {0.25f, 0.25f, 0.25f, 0.25f};
 	private static final float[] CUMULATIVE_RESOURCE_PROB = new float[4];
-	private static int MAX_RESOURCES = 4;
+	private static int MAX_RESOURCES_PER_PATCH = 4;
 
 	public int[] nres = {0, 0, 0 ,0};
 
@@ -42,7 +42,7 @@ public class ResourceGenerator {
 			}
 		}
 
-		int nResources = rng.nextInt(MAX_RESOURCES + 1);
+		int nResources = rng.nextInt(MAX_RESOURCES_PER_PATCH + 1);
 		if (potentialLocations.size() < nResources) {
 			for (Point p: potentialLocations) {
 				resources[p.x][p.y] = rollResource();

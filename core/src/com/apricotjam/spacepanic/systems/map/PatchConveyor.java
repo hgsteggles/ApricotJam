@@ -14,8 +14,8 @@ public class PatchConveyor {
 	public static final int PATCHES_Y = 5;
 
 	//Limits before patches are rotated
-	private static final float XLIMIT = ((PATCHES_X / 2.0f) - 1.0f) * Patch.PATCH_WIDTH * MapSystem.ASTEROID_WIDTH;
-	private static final float YLIMIT = ((PATCHES_Y / 2.0f) - 1.0f) * Patch.PATCH_HEIGHT * MapSystem.ASTEROID_HEIGHT;
+	private static final float XLIMIT = ((PATCHES_X / 2.0f) - 1.0f) * Patch.PATCH_WIDTH;
+	private static final float YLIMIT = ((PATCHES_Y / 2.0f) - 1.0f) * Patch.PATCH_HEIGHT;
 
 	Patch[][] patches;
 	MazeGenerator mazeGenerator;

@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 
 public class MapSystem extends EntitySystem {
@@ -28,31 +30,33 @@ public class MapSystem extends EntitySystem {
 	private static final int MAXPATH = 30;
 	private static final float SPEED = 5.0f;
 
-	float width;
-	float height;
+	private float width;
+	private float height;
 
-	Engine engine = null;
+	private Engine engine = null;
 
-	Entity masterEntity;
-	MapScreenComponent mapScreenComponent;
+	private Entity masterEntity;
+	private MapScreenComponent mapScreenComponent;
 
-	Entity screen;
-	TransformComponent screenTrans;
-	Entity screenBackground;
-	Entity screenFrame;
-	Entity mapCentre;
-	TransformComponent mapCentreTrans;
-	Entity playerIcon;
+	private Entity screen;
+	private TransformComponent screenTrans;
+	private Entity screenBackground;
+	private Entity screenFrame;
+	private Entity mapCentre;
+	private TransformComponent mapCentreTrans;
+	private Entity playerIcon;
 
-	ArrayList<Point> path = null;
-	boolean moving = false;
+	private ArrayList<Point> path = null;
+	private boolean moving = false;
 
-	MazeGenerator mazeGenerator;
-	ResourceGenerator resourceGenerator;
-	Pathfinder pathfinder = new Pathfinder(Patch.PATCH_WIDTH * PatchConveyor.PATCHES_X, Patch.PATCH_HEIGHT * PatchConveyor.PATCHES_Y, MAXPATH);
-	PatchConveyor patchConveyor;
+	private MazeGenerator mazeGenerator;
+	private ResourceGenerator resourceGenerator;
+	private Pathfinder pathfinder = new Pathfinder(Patch.PATCH_WIDTH * PatchConveyor.PATCHES_X, Patch.PATCH_HEIGHT * PatchConveyor.PATCHES_Y, MAXPATH);
+	private PatchConveyor patchConveyor;
 
-	Random rng = new Random();
+	private HashSet<Point> usedResources = new HashSet<Point>();
+
+	private Random rng = new Random();
 
 	public MapSystem(Entity masterEntity, float width, float height) {
 		this(masterEntity, width, height, System.nanoTime());
@@ -152,6 +156,7 @@ public class MapSystem extends EntitySystem {
 		Point playerPoint = getPlayerPoint(mapScreenComponent.playerPosition);
 		Resource r = patchConveyor.popResourceAtLocation(playerPoint, engine);
 		if (r != Resource.NONE) {
+			usedResources.add(new Point(playerPoint));
 			mapScreenComponent.encounterResource = r;
 			mapScreenComponent.currentState = MapScreenComponent.State.ENCOUNTER;
 			moving = false;
@@ -162,6 +167,10 @@ public class MapSystem extends EntitySystem {
 		pathfinder.setOffset(patchConveyor.getOffset());
 		Point start = getPlayerPoint(mapScreenComponent.playerPosition);
 		return pathfinder.calculatePath(patchConveyor.getFullMaze(), start, target);
+	}
+
+	public boolean isResourceUsed(Point pos) {
+		return usedResources.contains(pos);
 	}
 
 	private Entity createScreen() {
