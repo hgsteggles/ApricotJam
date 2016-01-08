@@ -34,6 +34,7 @@ public class GameScreen extends BasicScreen {
 		add(new ClickSystem());
 		add(new AnimatedShaderSystem());
 		add(new TweenSystem());
+		add(new LineSystem());
 
 		addMapSystem();
 

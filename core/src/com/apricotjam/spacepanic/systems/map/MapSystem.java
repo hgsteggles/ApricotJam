@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.systems.map;
 
+import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.*;
@@ -8,27 +9,26 @@ import com.apricotjam.spacepanic.components.mapComponents.ResourceComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
-import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
 public class MapSystem extends EntitySystem {
 
 	private static final float PATHINESS = 0.5f; //How likely each cell is to be a path on the patch boundaries
-	public static final float ASTEROID_WIDTH = 0.5f;
-	public static final float ASTEROID_HEIGHT = 0.5f;
+	public static final float ASTEROID_SIZE = 0.5f;
 
-	private static final int MAXPATH = 30;
-	private static final float SPEED = 5.0f;
+	private static final float SPEED = 3.0f;
 
 	private float width;
 	private float height;
@@ -46,13 +46,12 @@ public class MapSystem extends EntitySystem {
 	private TransformComponent mapCentreTrans;
 	private Entity playerIcon;
 
-	private ArrayList<Point> path = null;
 	private boolean moving = false;
 
 	private MazeGenerator mazeGenerator;
 	private ResourceGenerator resourceGenerator;
-	private Pathfinder pathfinder = new Pathfinder(Patch.PATCH_WIDTH * PatchConveyor.PATCHES_X, Patch.PATCH_HEIGHT * PatchConveyor.PATCHES_Y, MAXPATH);
 	private PatchConveyor patchConveyor;
+	private Path path;
 
 	private HashSet<Point> usedResources = new HashSet<Point>();
 
@@ -82,8 +81,8 @@ public class MapSystem extends EntitySystem {
 
 		mazeGenerator = new MazeGenerator(seed, PATHINESS);
 		resourceGenerator = new ResourceGenerator(seed);
-
 		patchConveyor = new PatchConveyor(mazeGenerator, resourceGenerator, this);
+		path = new Path(patchConveyor, this);
 	}
 
 	@Override
@@ -95,33 +94,40 @@ public class MapSystem extends EntitySystem {
 		engine.addEntity(mapCentre);
 		engine.addEntity(playerIcon);
 		patchConveyor.addToEngine(engine);
+		path.addToEngine(engine);
 	}
 
 	@Override
 	public void update (float deltaTime) {
 		if (moving) {
-			Vector2 moveVector = new Vector2(path.get(0).x, path.get(0).y).sub(mapScreenComponent.playerPosition);
+			Vector2 moveVector =path.getNext().cpy().sub(mapScreenComponent.playerPosition);
 			float dist = moveVector.len();
 			Vector2 dir = moveVector.cpy().nor();
 			if (dist > SPEED * deltaTime) {
 				move(dir.x * SPEED * deltaTime, dir.y * SPEED * deltaTime);
 			} else  {
 				move(moveVector.x, moveVector.y);
-				path.remove(0);
+				path.legComplete(engine);
 				if (path.size() == 0) {
-					moving = false;
+					stop();
 				}
 			}
+			path.update(engine);
 		}
 		checkForEncounter();
 		patchConveyor.update(engine);
 	}
 
 	private void move(float dx, float dy) {
-		mapCentreTrans.position.x -= dx * ASTEROID_WIDTH;
-		mapCentreTrans.position.y -= dy * ASTEROID_HEIGHT;
+		mapCentreTrans.position.x -= dx * ASTEROID_SIZE;
+		mapCentreTrans.position.y -= dy * ASTEROID_SIZE;
 		mapScreenComponent.playerPosition.add(dx, dy);
 		patchConveyor.move(dx, dy);
+	}
+
+	private void stop() {
+		path.clear(engine);
+		moving = false;
 	}
 
 	private Point getPlayerPoint(Vector2 pos) {
@@ -136,16 +142,17 @@ public class MapSystem extends EntitySystem {
 				return;
 			}
 
-			ArrayList<Point> newPath = findPath(new Point(x, y));
-			if (newPath.size() > 0) {
-				path = newPath;
+			boolean success = path.calculateNew(engine, getPlayerPoint(mapScreenComponent.playerPosition), new Point(x, y));
+			if (success) {
 				moving = true;
+			} else {
+				engine.addEntity(createCrossBad(x, y));
 			}
 		}
 	}
 
 	private void clickPlayer() {
-		moving = false;
+		stop();
 		for (int i = 0; i < resourceGenerator.nres.length; i++) {
 			System.out.print(resourceGenerator.nres[i] + ", ");
 		}
@@ -159,18 +166,16 @@ public class MapSystem extends EntitySystem {
 			usedResources.add(new Point(playerPoint));
 			mapScreenComponent.encounterResource = r;
 			mapScreenComponent.currentState = MapScreenComponent.State.ENCOUNTER;
-			moving = false;
+			stop();
 		}
-	}
-
-	private ArrayList<Point> findPath(Point target) {
-		pathfinder.setOffset(patchConveyor.getOffset());
-		Point start = getPlayerPoint(mapScreenComponent.playerPosition);
-		return pathfinder.calculatePath(patchConveyor.getFullMaze(), start, target);
 	}
 
 	public boolean isResourceUsed(Point pos) {
 		return usedResources.contains(pos);
+	}
+
+	public MapScreenComponent getMapScreenComponent() {
+		return mapScreenComponent;
 	}
 
 	private Entity createScreen() {
@@ -209,8 +214,8 @@ public class MapSystem extends EntitySystem {
 				TransformComponent tc = screenTrans.getTotalTransform();
 				pos.sub(tc.position.x, tc.position.y);
 				pos.sub(mapCentreTrans.position.x, mapCentreTrans.position.y);
-				pos.x /= ASTEROID_WIDTH;
-				pos.y /= ASTEROID_HEIGHT;
+				pos.x /= ASTEROID_SIZE;
+				pos.y /= ASTEROID_SIZE;
 				click(Math.round(pos.x), Math.round(pos.y));
 			}
 		};
@@ -280,8 +285,8 @@ public class MapSystem extends EntitySystem {
 
 		TextureComponent texc = new TextureComponent();
 		texc.region = MapArt.asteroids.get(rng.nextInt(MapArt.asteroids.size()));
-		texc.size.x = ASTEROID_WIDTH;
-		texc.size.y = ASTEROID_HEIGHT;
+		texc.size.x = ASTEROID_SIZE;
+		texc.size.y = ASTEROID_SIZE;
 		asteroid.add(texc);
 
 		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
@@ -322,8 +327,8 @@ public class MapSystem extends EntitySystem {
 				texc.region = MapArt.resourceIcons.get(3);
 				break;
 		}
-		texc.size.x = ASTEROID_WIDTH;
-		texc.size.y = ASTEROID_HEIGHT;
+		texc.size.x = ASTEROID_SIZE;
+		texc.size.y = ASTEROID_SIZE;
 		resourceIcon.add(texc);
 
 		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
@@ -345,8 +350,8 @@ public class MapSystem extends EntitySystem {
 
 		TextureComponent texc = new TextureComponent();
 		texc.region = MapArt.playerIcon;
-		texc.size.x = ASTEROID_WIDTH * 0.8f;
-		texc.size.y = ASTEROID_HEIGHT * 0.8f;
+		texc.size.x = ASTEROID_SIZE * 0.8f;
+		texc.size.y = ASTEROID_SIZE * 0.8f;
 		playerIcon.add(texc);
 
 		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
@@ -356,10 +361,124 @@ public class MapSystem extends EntitySystem {
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = 0.0f;
 		tranc.position.y = 0.0f;
-		tranc.position.z = 2.0f;
+		tranc.position.z = 2.5f;
 		playerIcon.add(tranc);
 
 		return playerIcon;
+	}
+
+	public Entity createLine(Vector2 start, Vector2 end, float lineWidth, Texture tex) {
+		Vector2 startWorld = start.cpy().scl(ASTEROID_SIZE);
+		Vector2 endWorld = end.cpy().scl(ASTEROID_SIZE);
+		lineWidth *= ASTEROID_SIZE;
+
+		Entity line = new Entity();
+
+		LineComponent linec = new LineComponent();
+		linec.start = startWorld;
+		linec.end = endWorld;
+		line.add(linec);
+
+		TransformComponent tranc = new TransformComponent();
+		tranc.position.z = 2.0f;
+		tranc.parent = mapCentreTrans;
+		line.add(tranc);
+
+		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
+		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
+		line.add(fboItemComp);
+
+		TextureComponent texc = new TextureComponent();
+		texc.size.y = lineWidth;
+		texc.region = Art.createTextureRegion(tex);
+		line.add(texc);
+
+		return line;
+	}
+
+	public Entity createCrossGood(float x, float y) {
+		Entity cross = new Entity();
+
+		TextureComponent texc = new TextureComponent();
+		texc.region = MapArt.crossGood;
+		texc.size.x = ASTEROID_SIZE * 0.8f;
+		texc.size.y = ASTEROID_SIZE * 0.8f;
+		cross.add(texc);
+
+		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
+		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
+		cross.add(fboItemComp);
+
+		TransformComponent tranc = new TransformComponent();
+		tranc.position.x = x * ASTEROID_SIZE;
+		tranc.position.y = y * ASTEROID_SIZE;
+		tranc.position.z = 3.0f;
+		tranc.parent = mapCentreTrans;
+		cross.add(tranc);
+
+		TweenComponent tweenc = new TweenComponent();
+		TweenSpec ts = new TweenSpec();
+		ts.start = 0.1f;
+		ts.end = 1.0f;
+		ts.interp = Interpolation.bounceOut;
+		ts.period = 0.5f;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				TransformComponent tc = ComponentMappers.transform.get(e);
+				tc.scale.x = a;
+				tc.scale.y = a;
+			}
+		};
+		tweenc.tweenSpecs.add(ts);
+		cross.add(tweenc);
+
+		return cross;
+	}
+
+	public Entity createCrossBad(float x, float y) {
+		Entity cross = new Entity();
+
+		TextureComponent texc = new TextureComponent();
+		texc.region = MapArt.crossBad;
+		texc.size.x = ASTEROID_SIZE * 0.8f;
+		texc.size.y = ASTEROID_SIZE * 0.8f;
+		cross.add(texc);
+
+		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
+		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
+		cross.add(fboItemComp);
+
+		TransformComponent tranc = new TransformComponent();
+		tranc.position.x = x * ASTEROID_SIZE;
+		tranc.position.y = y * ASTEROID_SIZE;
+		tranc.position.z = 3.0f;
+		tranc.parent = mapCentreTrans;
+		cross.add(tranc);
+
+		TweenComponent tweenc = new TweenComponent();
+		TweenSpec ts = new TweenSpec();
+		ts.start = 0.1f;
+		ts.end = 1.0f;
+		ts.interp = Interpolation.bounceOut;
+		ts.period = 0.5f;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				TransformComponent tc = ComponentMappers.transform.get(e);
+				tc.scale.x = a;
+				tc.scale.y = a;
+			}
+
+			@Override
+			public void endTween(Entity e) {
+				engine.removeEntity(e);
+			}
+		};
+		tweenc.tweenSpecs.add(ts);
+		cross.add(tweenc);
+
+		return cross;
 	}
 
 }

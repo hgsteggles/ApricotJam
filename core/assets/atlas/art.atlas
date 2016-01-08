@@ -20,6 +20,103 @@ title
   index: -1
 
 art2.png
+size: 2048,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+asteroid
+  rotate: false
+  xy: 1060, 850
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+asteroid2
+  rotate: false
+  xy: 644, 240
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+asteroid3
+  rotate: false
+  xy: 1060, 720
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+computerBackground
+  rotate: false
+  xy: 2, 8
+  size: 640, 360
+  orig: 640, 360
+  offset: 0, 0
+  index: -1
+computerFrame
+  rotate: false
+  xy: 2, 370
+  size: 1056, 608
+  orig: 1056, 608
+  offset: 0, 0
+  index: -1
+mapcross01
+  rotate: false
+  xy: 1190, 914
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+mapcross02
+  rotate: false
+  xy: 644, 174
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+mapline01
+  rotate: false
+  xy: 2, 2
+  size: 12, 4
+  orig: 12, 4
+  offset: 0, 0
+  index: -1
+playerIcon
+  rotate: false
+  xy: 774, 304
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resource0Icon
+  rotate: false
+  xy: 1060, 654
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resource1Icon
+  rotate: false
+  xy: 1190, 848
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resource2Icon
+  rotate: false
+  xy: 1256, 914
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resource3Icon
+  rotate: false
+  xy: 644, 108
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+
+art3.png
 size: 2048,2048
 format: RGBA8888
 filter: Nearest,Nearest
@@ -64,82 +161,6 @@ sidepanel
   xy: 1284, 1408
   size: 402, 181
   orig: 402, 181
-  offset: 0, 0
-  index: -1
-
-art3.png
-size: 2048,1024
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-asteroid
-  rotate: false
-  xy: 1060, 844
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-asteroid2
-  rotate: false
-  xy: 644, 234
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-asteroid3
-  rotate: false
-  xy: 1060, 714
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-computerBackground
-  rotate: false
-  xy: 2, 2
-  size: 640, 360
-  orig: 640, 360
-  offset: 0, 0
-  index: -1
-computerFrame
-  rotate: false
-  xy: 2, 364
-  size: 1056, 608
-  orig: 1056, 608
-  offset: 0, 0
-  index: -1
-playerIcon
-  rotate: false
-  xy: 1190, 908
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-resource0Icon
-  rotate: false
-  xy: 644, 168
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-resource1Icon
-  rotate: false
-  xy: 774, 298
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-resource2Icon
-  rotate: false
-  xy: 1060, 648
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-resource3Icon
-  rotate: false
-  xy: 1190, 842
-  size: 64, 64
-  orig: 64, 64
   offset: 0, 0
   index: -1
 

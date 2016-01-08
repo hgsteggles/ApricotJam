@@ -29,4 +29,5 @@ public class ComponentMappers {
 	public static ComponentMapper<FBO_ItemComponent> fboitem = ComponentMapper.getFor(FBO_ItemComponent.class);
 	public static ComponentMapper<MapScreenComponent> mapscreen = ComponentMapper.getFor(MapScreenComponent.class);
 	public static ComponentMapper<ResourceComponent> resource = ComponentMapper.getFor(ResourceComponent.class);
+	public static ComponentMapper<LineComponent> line = ComponentMapper.getFor(LineComponent.class);
 }
