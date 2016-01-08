@@ -44,7 +44,6 @@ public class MapSystem extends EntitySystem {
 	TransformComponent mapCentreTrans;
 	Entity playerIcon;
 
-	Vector2 playerPosition = new Vector2();
 	ArrayList<Point> path = null;
 	boolean moving = false;
 
@@ -97,7 +96,7 @@ public class MapSystem extends EntitySystem {
 	@Override
 	public void update (float deltaTime) {
 		if (moving) {
-			Vector2 moveVector = new Vector2(path.get(0).x, path.get(0).y).sub(playerPosition);
+			Vector2 moveVector = new Vector2(path.get(0).x, path.get(0).y).sub(mapScreenComponent.playerPosition);
 			float dist = moveVector.len();
 			Vector2 dir = moveVector.cpy().nor();
 			if (dist > SPEED * deltaTime) {
@@ -117,13 +116,17 @@ public class MapSystem extends EntitySystem {
 	private void move(float dx, float dy) {
 		mapCentreTrans.position.x -= dx * ASTEROID_WIDTH;
 		mapCentreTrans.position.y -= dy * ASTEROID_HEIGHT;
-		playerPosition.add(dx, dy);
+		mapScreenComponent.playerPosition.add(dx, dy);
 		patchConveyor.move(dx, dy);
+	}
+
+	private Point getPlayerPoint(Vector2 pos) {
+		return new Point((int)(pos.x), (int)(pos.y));
 	}
 
 	private void click(int x, int y) {
 		if (mapScreenComponent.currentState == MapScreenComponent.State.EXPLORING) {
-			Point playerPoint = new Point((int)playerPosition.x, (int)playerPosition.y);
+			Point playerPoint = getPlayerPoint(mapScreenComponent.playerPosition);
 			if (playerPoint.x == x && playerPoint.y == y) {
 				clickPlayer();
 				return;
@@ -146,7 +149,7 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private void checkForEncounter() {
-		Point playerPoint = new Point((int)playerPosition.x, (int)playerPosition.y);
+		Point playerPoint = getPlayerPoint(mapScreenComponent.playerPosition);
 		Resource r = patchConveyor.popResourceAtLocation(playerPoint, engine);
 		if (r != Resource.NONE) {
 			mapScreenComponent.encounterResource = r;
@@ -157,7 +160,7 @@ public class MapSystem extends EntitySystem {
 
 	private ArrayList<Point> findPath(Point target) {
 		pathfinder.setOffset(patchConveyor.getOffset());
-		Point start = new Point((int)playerPosition.x, (int)playerPosition.y);
+		Point start = getPlayerPoint(mapScreenComponent.playerPosition);
 		return pathfinder.calculatePath(patchConveyor.getFullMaze(), start, target);
 	}
 
