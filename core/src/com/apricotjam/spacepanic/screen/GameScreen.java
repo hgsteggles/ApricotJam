@@ -16,7 +16,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameScreen extends BasicScreen {
 
+	public static float BACKGROUND_MOVEMENT_FACTOR = 0.1f;
+
 	Entity mapSystemEntity;
+	TextureComponent backgroundTexComp;
 
 	public static Vector2[] SCREWLOCATIONS = {
 		new Vector2(1.5f, 6.45f),
@@ -28,8 +31,6 @@ public class GameScreen extends BasicScreen {
 		super(spacePanic);
 
 		add(new RenderingSystem(spriteBatch, worldCamera));
-		add(new MovementSystem());
-		add(new ScrollSystem());
 		add(new ClickSystem());
 		add(new AnimatedShaderSystem());
 		add(new TweenSystem());
@@ -65,7 +66,21 @@ public class GameScreen extends BasicScreen {
 				}
 			};
 			ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(ts);
+		} else if (msc.currentState == MapScreenComponent.State.EXPLORING) {
+			setBackgroundPosition();
 		}
+	}
+
+	private void setBackgroundPosition() {
+		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
+		float width = backgroundTexComp.region.getRegionWidth();
+		float height = backgroundTexComp.region.getRegionHeight();
+		float x = msc.playerPosition.x * BACKGROUND_MOVEMENT_FACTOR * width / backgroundTexComp.size.x;
+		float y = msc.playerPosition.y * BACKGROUND_MOVEMENT_FACTOR * height / backgroundTexComp.size.y;
+		backgroundTexComp.region.setRegionX(-1 * (int)(x));
+		backgroundTexComp.region.setRegionWidth((int)width);
+		backgroundTexComp.region.setRegionY(-1 * (int)(y));
+		backgroundTexComp.region.setRegionHeight((int)height);
 	}
 
 	private void addMapSystem() {
@@ -87,29 +102,21 @@ public class GameScreen extends BasicScreen {
 	private Entity createBackground() {
 		Entity e = new Entity();
 
-		TextureComponent texComp = new TextureComponent();
+		backgroundTexComp = new TextureComponent();
 		Texture tex = MiscArt.mainBackgroundScrollable;
 		float texToCorner = (float)Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
-		texComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
+		backgroundTexComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
 
-		texComp.size.x = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
-		texComp.size.y = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
+		backgroundTexComp.size.x = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
+		backgroundTexComp.size.y = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
 		transComp.position.z = -1.0f;
 
-		MovementComponent movementComp = new MovementComponent();
-		movementComp.rotationalVelocity = 5.0f;
-
-		ScrollComponent scrollComp = new ScrollComponent();
-		scrollComp.speed.x = 0.5f;
-
-		e.add(texComp);
+		e.add(backgroundTexComp);
 		e.add(transComp);
-		e.add(movementComp);
-		e.add(scrollComp);
 
 		return e;
 	}
