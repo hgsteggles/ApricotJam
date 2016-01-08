@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class LineSystem extends IteratingSystem {
 	public LineSystem() {
-		super(Family.all(LineComponent.class).one(TextureComponent.class, TransformComponent.class).get());
+		super(Family.all(LineComponent.class).one(TextureComponent.class, TransformComponent.class).get(), -1);
 	}
 
 	@Override
