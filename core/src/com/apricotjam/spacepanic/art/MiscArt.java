@@ -22,6 +22,7 @@ public class MiscArt {
 		title = atlas.findRegion("title");
 		mainBackground = atlas.findRegion("mainBackground");
 		mainBackgroundScrollable = Art.loadTexture("mainBackground.png");
+		mainBackgroundScrollable.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		fonts.put("retro", new BitmapFont(Gdx.files.internal("fonts/retro3.fnt"),
 										  Gdx.files.internal("fonts/retro3.png"), false));

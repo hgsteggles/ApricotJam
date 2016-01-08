@@ -91,7 +91,7 @@ public class GameScreen extends BasicScreen {
 		Texture tex = MiscArt.mainBackgroundScrollable;
 		float texToCorner = (float)Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
 		texComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
-		tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
 		texComp.size.x = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
 		texComp.size.y = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
 
