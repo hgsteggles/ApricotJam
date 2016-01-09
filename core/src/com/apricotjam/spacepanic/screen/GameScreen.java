@@ -7,7 +7,9 @@ import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
+import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,12 +23,6 @@ public class GameScreen extends BasicScreen {
 	Entity mapSystemEntity;
 	TextureComponent backgroundTexComp;
 
-	public static Vector2[] SCREWLOCATIONS = {
-		new Vector2(1.5f, 6.45f),
-		new Vector2(0.85f, 3.05f),
-		new Vector2(4.3f, 1.05f)
-	};
-
 	public GameScreen(SpacePanic spacePanic) {
 		super(spacePanic);
 
@@ -35,7 +31,14 @@ public class GameScreen extends BasicScreen {
 		add(new AnimatedShaderSystem());
 		add(new TweenSystem());
 		add(new LineSystem());
+		add(new MovementSystem());
+		add(new ScrollSystem());
+		add(new AnimationSystem());;
+		add(new ShaderLightingSystem());
+		add(new TickerSystem());
 
+		add(new HelmetSystem());
+		add(new PipeSystem());
 		addMapSystem();
 
 		add(createBackground());
@@ -78,7 +81,7 @@ public class GameScreen extends BasicScreen {
 		float height = backgroundTexComp.region.getRegionHeight();
 		float x = msc.playerPosition.x * BACKGROUND_MOVEMENT_FACTOR * width / backgroundTexComp.size.x;
 		float y = msc.playerPosition.y * BACKGROUND_MOVEMENT_FACTOR * height / backgroundTexComp.size.y;
-		backgroundTexComp.region.setRegionX(-1 * (int)(x));
+		backgroundTexComp.region.setRegionX((int)(x));
 		backgroundTexComp.region.setRegionWidth((int)width);
 		backgroundTexComp.region.setRegionY(-1 * (int)(y));
 		backgroundTexComp.region.setRegionHeight((int)height);
@@ -90,8 +93,9 @@ public class GameScreen extends BasicScreen {
 		mapSystemEntity.add(new MapScreenComponent());
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f + 3.0f;
 		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		tranc.position.z = 10.0f;
 		mapSystemEntity.add(tranc);
 
 		mapSystemEntity.add(new TweenComponent());
@@ -114,7 +118,7 @@ public class GameScreen extends BasicScreen {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = -1.0f;
+		transComp.position.z = -1000.0f;
 
 		e.add(backgroundTexComp);
 		e.add(transComp);

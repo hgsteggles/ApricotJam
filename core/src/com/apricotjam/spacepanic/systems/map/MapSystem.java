@@ -239,9 +239,7 @@ public class MapSystem extends EntitySystem {
 		texc.size.y = height;
 		screenBackground.add(texc);
 
-		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
-		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
-		screenBackground.add(fboItemComp);
+		screenBackground.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		return screenBackground;
 	}
@@ -289,9 +287,7 @@ public class MapSystem extends EntitySystem {
 		texc.size.y = ASTEROID_SIZE;
 		asteroid.add(texc);
 
-		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
-		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
-		asteroid.add(fboItemComp);
+		asteroid.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = x;
@@ -331,9 +327,7 @@ public class MapSystem extends EntitySystem {
 		texc.size.y = ASTEROID_SIZE;
 		resourceIcon.add(texc);
 
-		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
-		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
-		resourceIcon.add(fboItemComp);
+		resourceIcon.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = x;
@@ -354,9 +348,7 @@ public class MapSystem extends EntitySystem {
 		texc.size.y = ASTEROID_SIZE * 0.8f;
 		playerIcon.add(texc);
 
-		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
-		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
-		playerIcon.add(fboItemComp);
+		playerIcon.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = 0.0f;
@@ -384,9 +376,7 @@ public class MapSystem extends EntitySystem {
 		tranc.parent = mapCentreTrans;
 		line.add(tranc);
 
-		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
-		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
-		line.add(fboItemComp);
+		line.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		TextureComponent texc = new TextureComponent();
 		texc.size.y = lineWidth;
@@ -405,9 +395,7 @@ public class MapSystem extends EntitySystem {
 		texc.size.y = ASTEROID_SIZE * 0.8f;
 		cross.add(texc);
 
-		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
-		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
-		cross.add(fboItemComp);
+		cross.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = x * ASTEROID_SIZE;
@@ -445,9 +433,7 @@ public class MapSystem extends EntitySystem {
 		texc.size.y = ASTEROID_SIZE * 0.8f;
 		cross.add(texc);
 
-		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
-		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("map-screen-fb");
-		cross.add(fboItemComp);
+		cross.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = x * ASTEROID_SIZE;

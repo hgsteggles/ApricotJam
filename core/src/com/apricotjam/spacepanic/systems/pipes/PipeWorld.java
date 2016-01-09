@@ -55,7 +55,7 @@ public class PipeWorld {
 		// Create fluid lighting fbo.
 		engine.addEntity(createFluidFBO());
 		
-		generator.generatePuzzle(5, 3);
+		generator.generatePuzzle(5, 1);
 		byte[][] maskGrid = generator.getMaskGrid();
 		
 		Entity[][] pipeEntities = new Entity[PipeSystem.GRID_LENGTH][PipeSystem.GRID_LENGTH];
@@ -307,10 +307,8 @@ public class PipeWorld {
 		AnimationComponent animComp = new AnimationComponent();
 		animComp.animations.put(PipeFluidComponent.STATE_FILLING, new Animation(pipeFluidComp.fillDuration/animData.regions.size, animData.regions));
 		entity.add(animComp);
-		
-		FBO_ItemComponent fboItemComp = new FBO_ItemComponent();
-		fboItemComp.fboBatch = Shaders.manager.getSpriteBatch("fluid-fb");
-		entity.add(fboItemComp);
+
+		entity.add(Shaders.generateFBOItemComponent("fluid-fb"));
 		
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("fluid");

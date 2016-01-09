@@ -2,6 +2,7 @@ package com.apricotjam.spacepanic.art;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.components.FBO_Component;
+import com.apricotjam.spacepanic.components.FBO_ItemComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.gdx.Gdx;
@@ -172,5 +173,12 @@ public class Shaders {
 		fbo_component.batch = Shaders.manager.getSpriteBatch(fbo_ID);
 		fbo_component.camera = new OrthographicCamera(textureComponent.size.x, textureComponent.size.y);
 		return fbo_component;
+	}
+
+	public static FBO_ItemComponent generateFBOItemComponent(String fbo_ID) {
+		FBO_ItemComponent fbo_itemComponent = new FBO_ItemComponent();
+		fbo_itemComponent.fboID = fbo_ID;
+		fbo_itemComponent.fboBatch = manager.getSpriteBatch(fbo_ID);
+		return fbo_itemComponent;
 	}
 }

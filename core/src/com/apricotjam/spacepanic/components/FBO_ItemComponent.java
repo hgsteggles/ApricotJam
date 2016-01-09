@@ -5,4 +5,5 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class FBO_ItemComponent implements Component {
 	public SpriteBatch fboBatch = null;
+	public String fboID = "";
 }

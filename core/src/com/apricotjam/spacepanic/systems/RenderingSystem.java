@@ -1,8 +1,10 @@
 package com.apricotjam.spacepanic.systems;
 
 import java.util.Comparator;
+import java.util.HashMap;
 
 import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
@@ -14,12 +16,14 @@ import com.apricotjam.spacepanic.components.ShaderLightingComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -46,7 +50,7 @@ public class RenderingSystem extends EntitySystem {
 		
 		fboRenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class)
 				.one(TextureComponent.class, BitmapFontComponent.class)
-				.get(), new DepthComparator());
+				.get(), new DepthFBOComparator());
 		
 		screenRenderQueue = new SortedEntityList(Family.all(TransformComponent.class)
 				.one(TextureComponent.class, BitmapFontComponent.class)
@@ -84,28 +88,30 @@ public class RenderingSystem extends EntitySystem {
 		// Update cameras.
 		worldCamera.update();
 		pixelcamera.update();
-		
-		// Render to frame buffers.
+
+		//Create FBO index
+		HashMap<String, Entity> fboIndex = new HashMap<String, Entity>();
 		for (Entity entity : fboList) {
 			FBO_Component fboComp = ComponentMappers.fbo.get(entity);
-			Shaders.manager.beginFB(fboComp.FBO_ID);
-			fboComp.batch.setProjectionMatrix(fboComp.camera.combined);
-			fboComp.batch.begin();
+			fboIndex.put(fboComp.FBO_ID, entity);
 		}
-		Array<Entity> fboItemEntities = fboRenderQueue.getSortedEntities();
-		for (Entity entity : fboItemEntities) {
+
+		//Render items to FBOs
+		String currentFBO = "";
+		Array<Entity> fboEntities = fboRenderQueue.getSortedEntities();
+		for (Entity entity : fboEntities) {
 			FBO_ItemComponent fboItemComp = ComponentMappers.fboitem.get(entity);
+			if (!fboItemComp.fboID.equals(currentFBO)) {
+				if (!currentFBO.equals("")) {
+					endFBO(currentFBO, fboIndex);
+				}
+				currentFBO = fboItemComp.fboID;
+				startFBO(currentFBO, fboIndex);
+			}
 			render(entity, fboItemComp.fboBatch);
 		}
-		for (Entity entity : fboList) {
-			FBO_Component fboComp = ComponentMappers.fbo.get(entity);
-			fboComp.batch.end();
-			Shaders.manager.endFB();
-			TextureComponent textComp = ComponentMappers.texture.get(entity);
-			textComp.region = new TextureRegion(Shaders.manager.getFBTexture(fboComp.FBO_ID));
-			textComp.region.flip(false, true);
-		}
-		
+		endFBO(currentFBO, fboIndex);
+
 		// Render to screen.
 		batch.setProjectionMatrix(worldCamera.combined);
 		batch.begin();
@@ -115,11 +121,27 @@ public class RenderingSystem extends EntitySystem {
 		}
 		batch.end();
 	}
+
+	private void startFBO(String id, HashMap<String, Entity> fboIndex) {
+		FBO_Component fboComp = ComponentMappers.fbo.get(fboIndex.get(id));
+		Shaders.manager.beginFB(fboComp.FBO_ID);
+		fboComp.batch.setProjectionMatrix(fboComp.camera.combined);
+		fboComp.batch.begin();
+	}
+
+	private void endFBO(String id, HashMap<String, Entity> fboIndex) {
+		Entity entity = fboIndex.get(id);
+		FBO_Component fboComp = ComponentMappers.fbo.get(entity);
+		fboComp.batch.end();
+		Shaders.manager.endFB();
+		TextureComponent textComp = ComponentMappers.texture.get(entity);
+		textComp.region = new TextureRegion(Shaders.manager.getFBTexture(fboComp.FBO_ID));
+		textComp.region.flip(false, true);
+	}
 	
 	private void render(Entity entity, SpriteBatch spriteBatch) {
-		ShaderComponent shaderComp = null;
 		if (ComponentMappers.shader.has(entity)) {
-			shaderComp = ComponentMappers.shader.get(entity);
+			ShaderComponent shaderComp = ComponentMappers.shader.get(entity);
 			
 			spriteBatch.setShader(shaderComp.shader);
 			
@@ -202,6 +224,19 @@ public class RenderingSystem extends EntitySystem {
 		@Override
 		public int compare(Entity e1, Entity e2) {
 			return (int) Math.signum(ComponentMappers.transform.get(e1).getTotalZ() - ComponentMappers.transform.get(e2).getTotalZ());
+		}
+	}
+
+	private static class DepthFBOComparator implements Comparator<Entity> {
+		@Override
+		public int compare(Entity e1, Entity e2) {
+			String id1 = ComponentMappers.fboitem.get(e1).fboID;
+			String id2 = ComponentMappers.fboitem.get(e2).fboID;
+			if (id1.equals(id2)) {
+				return (int) Math.signum(ComponentMappers.transform.get(e1).getTotalZ() - ComponentMappers.transform.get(e2).getTotalZ());
+			} else {
+				return id1.compareTo(id2);
+			}
 		}
 	}
 }

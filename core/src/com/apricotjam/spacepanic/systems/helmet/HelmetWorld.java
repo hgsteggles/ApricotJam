@@ -32,7 +32,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
-	public static float HELMET_Z = 10f;
+	public static float HELMET_Z = 100f;
 	public static float LEDBG_X = (71f/80f)*BasicScreen.WORLD_WIDTH;
 	public static float LEDBG_Y = (6f/80f)*BasicScreen.WORLD_HEIGHT;
 	public static float LEDBG_W = 3f;
