@@ -10,25 +10,20 @@ import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.HelmetPartComponent;
-import com.apricotjam.spacepanic.components.LED_Component;
-import com.apricotjam.spacepanic.components.MovementComponent;
-import com.apricotjam.spacepanic.components.ScrollComponent;
 import com.apricotjam.spacepanic.components.ShaderComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.TweenSpec;
+import com.apricotjam.spacepanic.components.helmet.LED_Component;
 import com.apricotjam.spacepanic.interfaces.EventInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
@@ -43,9 +38,6 @@ public class HelmetWorld {
 	private TransformComponent resourcePanelTransform;
 	
 	public void build(Engine engine) {
-		// Create star background.
-		engine.addEntity(createStarBackground());
-		
 		// Create helmet.
 		engine.addEntity(createHelmet());
 		
@@ -92,36 +84,6 @@ public class HelmetWorld {
 		// Create black marquee.
 		engine.addEntity(createLED_PanelShadow());
 		engine.addEntity(createLED_Panel());
-	}
-	
-	private Entity createStarBackground() {
-		Entity e = new Entity();
-
-		TextureComponent texComp = new TextureComponent();
-		Texture tex = MiscArt.mainBackgroundScrollable;
-		float texToCorner = (float)Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
-		texComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
-		tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-		texComp.size.x = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
-		texComp.size.y = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = -1000;
-
-		MovementComponent movementComp = new MovementComponent();
-		movementComp.rotationalVelocity = 1.0f;
-
-		ScrollComponent scrollComp = new ScrollComponent();
-		scrollComp.speed.x = 0.3f;
-
-		e.add(texComp);
-		e.add(transComp);
-		e.add(movementComp);
-		e.add(scrollComp);
-
-		return e;
 	}
 	
 	private Entity createHelmet() {

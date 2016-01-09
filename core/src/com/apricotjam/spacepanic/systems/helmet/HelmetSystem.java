@@ -1,8 +1,7 @@
 package com.apricotjam.spacepanic.systems.helmet;
 
 import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.LED_Component;
-import com.badlogic.ashley.core.Component;
+import com.apricotjam.spacepanic.components.helmet.LED_Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -12,7 +11,12 @@ import com.badlogic.ashley.utils.ImmutableArray;
 public class HelmetSystem extends EntitySystem {
 	private HelmetWorld world = new HelmetWorld();
 	
+	private Entity masterEntity;
 	private ImmutableArray<Entity> leds;
+	
+	public HelmetSystem(Entity masterEntity) {
+		this.masterEntity = masterEntity;
+	}
 	
 	@Override
 	public void addedToEngine(Engine engine) {

@@ -86,6 +86,9 @@ public class RenderingSystem extends EntitySystem {
 		pixelcamera.update();
 		
 		// Render to frame buffers.
+		for (Entity entity : fboList)
+			renderFbo(entity);
+		/*
 		for (Entity entity : fboList) {
 			FBO_Component fboComp = ComponentMappers.fbo.get(entity);
 			Shaders.manager.beginFB(fboComp.FBO_ID);
@@ -105,6 +108,7 @@ public class RenderingSystem extends EntitySystem {
 			textComp.region = new TextureRegion(Shaders.manager.getFBTexture(fboComp.FBO_ID));
 			textComp.region.flip(false, true);
 		}
+		*/
 		
 		// Render to screen.
 		batch.setProjectionMatrix(worldCamera.combined);
@@ -114,6 +118,27 @@ public class RenderingSystem extends EntitySystem {
 			render(entity, batch);
 		}
 		batch.end();
+	}
+	
+	private void renderFbo(Entity entity) {
+		FBO_Component fboComp = ComponentMappers.fbo.get(entity);
+		Shaders.manager.beginFB(fboComp.FBO_ID);
+		fboComp.batch.setProjectionMatrix(fboComp.camera.combined);
+		fboComp.batch.begin();
+		
+		Array<Entity> fboItemEntities = fboRenderQueue.getSortedEntities();
+		for (Entity e : fboItemEntities) {
+			FBO_ItemComponent fboItemComp = ComponentMappers.fboitem.get(e);
+			if (fboItemComp.fboBatch == fboComp.batch) {
+				render(e, fboItemComp.fboBatch);
+			}
+		}
+		
+		fboComp.batch.end();
+		Shaders.manager.endFB();
+		TextureComponent textComp = ComponentMappers.texture.get(entity);
+		textComp.region = new TextureRegion(Shaders.manager.getFBTexture(fboComp.FBO_ID));
+		textComp.region.flip(false, true);
 	}
 	
 	private void render(Entity entity, SpriteBatch spriteBatch) {

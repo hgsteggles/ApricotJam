@@ -2,6 +2,8 @@ package com.apricotjam.spacepanic.components;
 
 import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
 import com.apricotjam.spacepanic.components.mapComponents.ResourceComponent;
+import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
+import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
 import com.badlogic.ashley.core.ComponentMapper;
 
 import java.awt.*;

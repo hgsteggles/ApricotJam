@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class PipePuzzleGenerator {
 	private RandomXS128 rng = new RandomXS128(0);
-	private byte[][] maskGrid = new byte[PipeSystem.GRID_LENGTH][PipeSystem.GRID_LENGTH];
+	private byte[][] maskGrid = new byte[PipeWorld.GRID_LENGTH][PipeWorld.GRID_LENGTH];
 	private int turnOffCounter = 0;
 	private byte[] randomMasks = createRandomMasks();
 	
@@ -21,32 +21,32 @@ public class PipePuzzleGenerator {
 		// TODO: modify generation parameters to reflect difficulty.
 		
 		if (npipes == 1) {
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 1));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, PipeSystem.GRID_LENGTH - 1));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 1));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 1));
 		}
 		else if (npipes == 2) {
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 4));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, 0));
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 2));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, PipeSystem.GRID_LENGTH - 1));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 4));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, 0));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 2));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 1));
 		}
 		else if (npipes == 3) {
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 4));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, 0));
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 2));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, PipeSystem.GRID_LENGTH - 1));
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 3));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, PipeSystem.GRID_LENGTH - 3));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 4));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, 0));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 2));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 1));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 3));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 3));
 		}
 		else {
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 4));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, 0));
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 2));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, PipeSystem.GRID_LENGTH - 3));
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 3));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, PipeSystem.GRID_LENGTH - 4));
-			starts.add(new GridPoint2(-1, PipeSystem.GRID_LENGTH - 1));
-			ends.add(new GridPoint2(PipeSystem.GRID_LENGTH, PipeSystem.GRID_LENGTH - 2));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 4));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, 0));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 2));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 3));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 3));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 4));
+			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 1));
+			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 2));
 		}
 		
 		resetMaskGrid();
@@ -60,8 +60,8 @@ public class PipePuzzleGenerator {
 		}
 		
 		// Fill out the rest.
-		for (int i = 0; i < PipeSystem.GRID_LENGTH; ++i) {
-			for (int j = 0; j < PipeSystem.GRID_LENGTH; ++j) {
+		for (int i = 0; i < PipeWorld.GRID_LENGTH; ++i) {
+			for (int j = 0; j < PipeWorld.GRID_LENGTH; ++j) {
 				if (maskGrid[i][j] == 0) {
 					maskGrid[i][j] = randomMasks[rng.nextInt(randomMasks.length)];
 				}
@@ -88,8 +88,8 @@ public class PipePuzzleGenerator {
 	private void resetMaskGrid() {
 		currPipe = 0;
 		length = 2;
-		for (int i = 0; i < PipeSystem.GRID_LENGTH; ++i) {
-			for (int j = 0; j < PipeSystem.GRID_LENGTH; ++j) {
+		for (int i = 0; i < PipeWorld.GRID_LENGTH; ++i) {
+			for (int j = 0; j < PipeWorld.GRID_LENGTH; ++j) {
 				maskGrid[i][j] = 0;
 			}
 		}
@@ -109,7 +109,7 @@ public class PipePuzzleGenerator {
 			parentDirection = 0;
 		
 		if (i == ends.get(currPipe).x && j == ends.get(currPipe).y) {
-			if (!PipeSystem.connectedAtIndex((byte)(8), parentDirection) || turnOffCounter != 0)
+			if (!PipeWorld.connectedAtIndex((byte)(8), parentDirection) || turnOffCounter != 0)
 				return false;
 			else {
 				if (currPipe == starts.size - 1)
@@ -125,19 +125,19 @@ public class PipePuzzleGenerator {
 				}
 			}
 		}
-		if (PipeSystem.connectedAtIndex(maskGrid[i][j], PipeSystem.oppositeDirectionIndex(parentDirection)))
+		if (PipeWorld.connectedAtIndex(maskGrid[i][j], PipeWorld.oppositeDirectionIndex(parentDirection)))
 			return false;
-		maskGrid[i][j] = PipeSystem.connectAtIndex(maskGrid[i][j], parentDirection);
+		maskGrid[i][j] = PipeWorld.connectAtIndex(maskGrid[i][j], parentDirection);
 		
 		// Possible routes.
 		Array<Integer> routes = new Array<Integer>();
 		
 		for (int idir = 0; idir < 4; ++idir) {
-			if (!PipeSystem.connectedAtIndex(maskGrid[i][j], idir)) { // If already connected, can't go down this route.
-				int inew = i + PipeSystem.GridDeltas.get(idir).x;
-				int jnew = j + PipeSystem.GridDeltas.get(idir).y;
+			if (!PipeWorld.connectedAtIndex(maskGrid[i][j], idir)) { // If already connected, can't go down this route.
+				int inew = i + PipeWorld.GridDeltas.get(idir).x;
+				int jnew = j + PipeWorld.GridDeltas.get(idir).y;
 				
-				if (PipeSystem.withinBounds(inew, jnew) || (inew == ends.get(currPipe).x && jnew == ends.get(currPipe).y)) {
+				if (PipeWorld.withinBounds(inew, jnew) || (inew == ends.get(currPipe).x && jnew == ends.get(currPipe).y)) {
 					boolean isStart = (inew == starts.get(currPipe).x) && (jnew == starts.get(currPipe).y);
 					if (!isStart) { // Pipe cannot connect to start tile.
 						// Check if pipe can turn off from a direct route to exit.
@@ -157,15 +157,15 @@ public class PipePuzzleGenerator {
 		
 		boolean connected = false;
 		for (Integer route : routes) {
-			int inew = i + PipeSystem.GridDeltas.get(route).x;
-			int jnew = j + PipeSystem.GridDeltas.get(route).y;
+			int inew = i + PipeWorld.GridDeltas.get(route).x;
+			int jnew = j + PipeWorld.GridDeltas.get(route).y;
 			
 			if ((inew - i > 0 && ends.get(currPipe).x - i <= 0) || (inew - i < 0 && ends.get(currPipe).x - i >= 0) ||
 					(jnew - j > 0 && ends.get(currPipe).y - j <= 0) || (jnew - j < 0 && ends.get(currPipe).y - j >= 0)) {
 				turnOffCounter -= 1;
 			}
 			
-			maskGrid[i][j] = PipeSystem.connectAtIndex(maskGrid[i][j], route);
+			maskGrid[i][j] = PipeWorld.connectAtIndex(maskGrid[i][j], route);
 			
 			length += 1;
 			connected = updateMask(i, j, inew, jnew);
@@ -178,12 +178,12 @@ public class PipePuzzleGenerator {
 						(jnew - j > 0 && ends.get(currPipe).y - j <= 0) || (jnew - j < 0 && ends.get(currPipe).y - j >= 0)) {
 					turnOffCounter += 1;
 				}
-				maskGrid[i][j] = PipeSystem.disconnectAtIndex(maskGrid[i][j], route);
+				maskGrid[i][j] = PipeWorld.disconnectAtIndex(maskGrid[i][j], route);
 			}
 		}
 		
 		if (!connected) {
-			maskGrid[i][j] = PipeSystem.disconnectAtIndex(maskGrid[i][j], parentDirection);
+			maskGrid[i][j] = PipeWorld.disconnectAtIndex(maskGrid[i][j], parentDirection);
 		}
 		
 		return connected;
