@@ -38,7 +38,7 @@ public class GameScreen extends BasicScreen {
 		add(new TickerSystem());
 
 		add(new HelmetSystem());
-		add(new PipeSystem());
+		//add(new PipeSystem());
 		addMapSystem();
 
 		add(createBackground());
@@ -93,9 +93,9 @@ public class GameScreen extends BasicScreen {
 		mapSystemEntity.add(new MapScreenComponent());
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f + 3.0f;
+		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		tranc.position.z = 10.0f;
+		tranc.position.z = 5.0f;
 		mapSystemEntity.add(tranc);
 
 		mapSystemEntity.add(new TweenComponent());

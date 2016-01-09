@@ -1,6 +1,7 @@
 package com.apricotjam.spacepanic.systems.map;
 
 import com.apricotjam.spacepanic.art.Art;
+import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.*;
@@ -25,8 +26,12 @@ import java.util.Random;
 
 public class MapSystem extends EntitySystem {
 
-	private static final float PATHINESS = 0.5f; //How likely each cell is to be a path on the patch boundaries
 	public static final float ASTEROID_SIZE = 0.5f;
+
+	private static final float PATHINESS = 0.5f; // How likely each cell is to be a path on the patch boundaries
+	                                             // 0.5f is pretty good
+	private static final float DEADENDNESS = 1.0f; // Amount of deadends
+	                                               // 0.0f - basically none, 1.0f quite a bit (but still playable)
 
 	private static final float SPEED = 3.0f;
 
@@ -79,7 +84,7 @@ public class MapSystem extends EntitySystem {
 		mapCentreTrans = ComponentMappers.transform.get(mapCentre);
 		playerIcon = createPlayerIcon();
 
-		mazeGenerator = new MazeGenerator(seed, PATHINESS);
+		mazeGenerator = new MazeGenerator(seed, PATHINESS, DEADENDNESS);
 		resourceGenerator = new ResourceGenerator(seed);
 		patchConveyor = new PatchConveyor(mazeGenerator, resourceGenerator, this);
 		path = new Path(patchConveyor, this);
@@ -250,7 +255,7 @@ public class MapSystem extends EntitySystem {
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = 0.0f;
 		tranc.position.y = 0.0f;
-		tranc.position.z = 0.0f;
+		tranc.position.z = 0.1f;
 		tranc.parent = screenTrans;
 		screenFrame.add(tranc);
 
