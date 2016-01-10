@@ -69,10 +69,10 @@ public class HelmetSystem extends EntitySystem {
 			if (animation != null) {
 				float targetCount = helmetScreenComp.resourceCount.get(resourcePipeComp.resource);
 				if (resourcePipeComp.currCount > targetCount) {
-					resourcePipeComp.currCount =  Math.max(resourcePipeComp.currCount - RESOURCE_FILL_SPEED*deltaTime, world.resourceTotal.get(resourcePipeComp.resource));
+					resourcePipeComp.currCount =  Math.max(resourcePipeComp.currCount - RESOURCE_FILL_SPEED*deltaTime, targetCount);
 				}
 				else if (resourcePipeComp.currCount < targetCount) {
-					resourcePipeComp.currCount =  Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED*deltaTime, world.resourceTotal.get(resourcePipeComp.resource));
+					resourcePipeComp.currCount =  Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED*deltaTime, targetCount);
 				}
 				
 				texComp.region = animation.getKeyFrame(Math.max(resourcePipeComp.currCount - resourcePipeComp.minCount, 0));

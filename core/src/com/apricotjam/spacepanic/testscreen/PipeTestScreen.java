@@ -10,6 +10,7 @@ import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
+import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.systems.AnimatedShaderSystem;
 import com.apricotjam.spacepanic.systems.AnimationSystem;
@@ -76,6 +77,15 @@ public class PipeTestScreen extends BasicScreen {
 			
 			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
 		}
+		
+		alterResource(Resource.OXYGEN, -0.02f*delta);
+	}
+	
+	private void alterResource(Resource resource, float amount) {
+		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+		float current = hsc.resourceCount.get(resource);
+		float next = Math.min(Math.max(current + amount, 0.0f), hsc.maxCount.get(resource));
+		hsc.resourceCount.put(resource, next);
 	}
 	
 	private Entity createHelmetMasterEntity() {
