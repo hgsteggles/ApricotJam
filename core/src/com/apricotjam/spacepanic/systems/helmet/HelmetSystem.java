@@ -14,7 +14,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class HelmetSystem extends EntitySystem {
-	static private float RESOURCE_FILL_SPEED = 2f;
+	static private float RESOURCE_FILL_SPEED = 5.0f;
 	private HelmetWorld world = new HelmetWorld();
 	
 	private Entity masterEntity;

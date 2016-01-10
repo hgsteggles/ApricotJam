@@ -1,21 +1,20 @@
 package com.apricotjam.spacepanic.screen;
 
+import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
+import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
-import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Vector2;
 
 public class GameScreen extends BasicScreen {
 
@@ -54,17 +53,21 @@ public class GameScreen extends BasicScreen {
 		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
 		if (msc.currentState == MapScreenComponent.State.ENCOUNTER) {
 			System.out.println("Look! A " + msc.encounterResource);
-			msc.currentState = MapScreenComponent.State.PAUSED;
+			alterResource(msc.encounterResource, GameParameters.RESOURCE_GAIN.get(msc.encounterResource));
+			msc.currentState = MapScreenComponent.State.EXPLORING;
+			/*msc.currentState = MapScreenComponent.State.PAUSED;
 			TweenSpec ts = new TweenSpec();
-			ts.start = 0.0f;
-			ts.end = 360.0f;
-			ts.cycle = TweenSpec.Cycle.ONCE;
+			ts.start = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
+			ts.end =  -2.0f;
+			ts.cycle = TweenSpec.Cycle.LOOP;
+			ts.reverse = true;
+			ts.loops = 2;
 			ts.interp = Interpolation.linear;
 			ts.period = 2.0f;
 			ts.tweenInterface = new TweenInterface() {
 				@Override
 				public void applyTween(Entity e, float a) {
-					ComponentMappers.transform.get(e).rotation = a;
+					ComponentMappers.transform.get(e).position.y = a;
 				}
 
 				@Override
@@ -72,10 +75,26 @@ public class GameScreen extends BasicScreen {
 					ComponentMappers.mapscreen.get(e).currentState = MapScreenComponent.State.EXPLORING;
 				}
 			};
-			ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(ts);
+			ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(ts);*/
 		} else if (msc.currentState == MapScreenComponent.State.EXPLORING) {
 			setBackgroundPosition();
 		}
+
+		for (Resource r: Resource.values()) {
+			if (r != Resource.NONE) {
+				//alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
+			}
+		}
+
+		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+		System.out.println(hsc.resourceCount.get(Resource.OXYGEN));
+	}
+
+	private void alterResource(Resource resource, float amount) {
+		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+		float current = hsc.resourceCount.get(resource);
+		float next = Math.max(current + amount, 0.0f);
+		hsc.resourceCount.put(resource, next);
 	}
 
 	private void setBackgroundPosition() {

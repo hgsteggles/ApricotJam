@@ -29,8 +29,8 @@ public class SpacePanic extends ApplicationAdapter {
 		Art.load();
 		Shaders.load();
 		InputManager.create();
-		setScreen(new TitleScreen(this));
-		//setScreen(new GameScreen(this));
+		//setScreen(new TitleScreen(this));
+		setScreen(new GameScreen(this));
 		//setScreen(new PipeTestScreen(this));
 		//setScreen(new PipeFillTestScreen(this));
 		//setScreen(new CRT_TestScreen(this));
