@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
@@ -21,6 +22,7 @@ public class GameScreen extends BasicScreen {
 	public static float BACKGROUND_MOVEMENT_FACTOR = 0.1f;
 
 	Entity mapSystemEntity;
+	Entity helmetSystemEntity;
 	TextureComponent backgroundTexComp;
 
 	public GameScreen(SpacePanic spacePanic) {
@@ -37,7 +39,8 @@ public class GameScreen extends BasicScreen {
 		add(new ShaderLightingSystem());
 		add(new TickerSystem());
 
-		add(new HelmetSystem());
+		helmetSystemEntity = createHelmetMasterEntity();
+		add(new HelmetSystem(helmetSystemEntity));
 		//add(new PipeSystem());
 		addMapSystem();
 
@@ -102,6 +105,13 @@ public class GameScreen extends BasicScreen {
 
 		add(mapSystemEntity);
 		add(new MapSystem(mapSystemEntity, 8.25f, 4.75f));
+	}
+	
+	private Entity createHelmetMasterEntity() {
+		Entity entity = new Entity();
+		entity.add(new HelmetScreenComponent());
+		
+		return entity;
 	}
 
 	private Entity createBackground() {

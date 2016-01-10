@@ -6,8 +6,6 @@ import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.screen.GameScreen;
-import com.apricotjam.spacepanic.screen.TitleScreen;
-import com.apricotjam.spacepanic.testscreen.PipeTestScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;

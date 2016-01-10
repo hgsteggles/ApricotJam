@@ -1,33 +1,38 @@
 package com.apricotjam.spacepanic.art;
 
+import com.apricotjam.spacepanic.gameelements.Resource;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class HelmetUI {
 
-	public static AtlasRegion fullOverlay;
-	public static AtlasRegion base;
-	public static AtlasRegion pipesLeft;
-	public static AtlasRegion pipesRight;
+	static public AtlasRegion fullOverlay;
+	static public AtlasRegion base;
+	static public AtlasRegion pipesLeft;
+	static public AtlasRegion pipesRight;
 
-	public static AtlasRegion fluidBlue;
-	public static AtlasRegion fluidRed;
-	public static AtlasRegion fluidYellow;
-	public static AtlasRegion fluidBlack;
+	static public AtlasRegion fluidBlue;
+	static public AtlasRegion fluidRed;
+	static public AtlasRegion fluidYellow;
+	static public AtlasRegion fluidBlack;
 
-	public static AtlasRegion valveBlue;
-	public static AtlasRegion valveGreen;
+	static public AtlasRegion valveBlue;
+	static public AtlasRegion valveGreen;
 
-	public static AtlasRegion screw;
-	public static AtlasRegion speaker;
+	static public AtlasRegion screw;
+	static public AtlasRegion speaker;
 	
-	public static AtlasRegion sidepanelLeft;
-	public static TextureRegion sidepanelRight;
-	public static TextureRegion resourcePanel;
-	public static AtlasRegion fog;
+	static public AtlasRegion sidepanelLeft;
+	static public TextureRegion sidepanelRight;
+	static public TextureRegion resourcePanel;
+	static public AtlasRegion fog;
+	
+	static public ObjectMap<Resource, Color> resourceColors = new ObjectMap<Resource, Color>(); 
 
-	public static void load(TextureAtlas atlas) {
+	static public void load(TextureAtlas atlas) {
 		fullOverlay = atlas.findRegion("mainOverlay");
 
 		base = atlas.findRegion("helmetBase");
@@ -50,5 +55,10 @@ public class HelmetUI {
 		sidepanelRight.flip(true, false);
 		resourcePanel = atlas.findRegion("resource-panel");
 		fog = atlas.findRegion("fog");
+		
+		resourceColors.put(Resource.OXYGEN, new Color(0f, 0f, 1f, 1f));
+		resourceColors.put(Resource.OIL, new Color(0f, 0f, 0f, 1f));
+		resourceColors.put(Resource.RESOURCE2, new Color(0f, 1f, 0f, 1f));
+		resourceColors.put(Resource.RESOURCE3, new Color(1f, 0f, 1f, 1f));
 	}
 }

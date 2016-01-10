@@ -1,4 +1,4 @@
-package com.apricotjam.spacepanic.components;
+package com.apricotjam.spacepanic.components.helmet;
 
 import com.badlogic.ashley.core.Component;
 
