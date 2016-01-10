@@ -142,6 +142,7 @@ public class MazeGenerator {
 	private void blockConnections(int[][] patch, int[][] connectivity) {
 		//Find connection points
 		HashMap<Integer, ArrayList<Point>> connections = new HashMap<Integer, ArrayList<Point>>();
+		printPatch(patch, connectivity);
 		for (int i = 1; i < Patch.PATCH_WIDTH; i++) {
 			for (int j = 1; j < Patch.PATCH_HEIGHT; j++) {
 				if (connectivity[i][j] != 5) {
@@ -154,13 +155,13 @@ public class MazeGenerator {
 				connected[connectivity[i][j + 1]] = true;
 
 				int sideMask = 0;
-				if (connected[2]) {
-					sideMask += 2;
-				} else if (connected[4]) {
-					sideMask += 8;
+				for (int n = 1; n <= 4; n++) {
+					if (connected[n]) {
+						sideMask += 1 << n;
+					}
 				}
 
-				if (sideMask != 0) {
+				if (sideMask == 4 || sideMask == 16) {
 					if (!connections.containsKey(sideMask)) {
 						connections.put(sideMask, new ArrayList<Point>());
 					}
@@ -169,7 +170,6 @@ public class MazeGenerator {
 
 			}
 		}
-
 
 		//Block connections
 		for (int i : connections.keySet()) {
