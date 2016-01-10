@@ -1,7 +1,7 @@
 package com.apricotjam.spacepanic.systems.map;
 
+import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.art.Art;
-import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.*;
@@ -15,7 +15,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -27,13 +26,6 @@ import java.util.Random;
 public class MapSystem extends EntitySystem {
 
 	public static final float ASTEROID_SIZE = 0.5f;
-
-	private static final float PATHINESS = 0.5f; // How likely each cell is to be a path on the patch boundaries
-	                                             // 0.5f is pretty good
-	private static final float DEADENDNESS = 1.0f; // Amount of deadends
-	                                               // 0.0f - basically none, 1.0f quite a bit (but still playable)
-
-	private static final float SPEED = 3.0f;
 
 	private float width;
 	private float height;
@@ -84,7 +76,7 @@ public class MapSystem extends EntitySystem {
 		mapCentreTrans = ComponentMappers.transform.get(mapCentre);
 		playerIcon = createPlayerIcon();
 
-		mazeGenerator = new MazeGenerator(seed, PATHINESS, DEADENDNESS);
+		mazeGenerator = new MazeGenerator(seed, GameParameters.PATHINESS, GameParameters.DEADENDNESS);
 		resourceGenerator = new ResourceGenerator(seed);
 		patchConveyor = new PatchConveyor(mazeGenerator, resourceGenerator, this);
 		path = new Path(patchConveyor, this);
@@ -108,8 +100,8 @@ public class MapSystem extends EntitySystem {
 			Vector2 moveVector =path.getNext().cpy().sub(mapScreenComponent.playerPosition);
 			float dist = moveVector.len();
 			Vector2 dir = moveVector.cpy().nor();
-			if (dist > SPEED * deltaTime) {
-				move(dir.x * SPEED * deltaTime, dir.y * SPEED * deltaTime);
+			if (dist > GameParameters.SPEED * deltaTime) {
+				move(dir.x * GameParameters.SPEED * deltaTime, dir.y * GameParameters.SPEED * deltaTime);
 			} else  {
 				move(moveVector.x, moveVector.y);
 				path.legComplete(engine);

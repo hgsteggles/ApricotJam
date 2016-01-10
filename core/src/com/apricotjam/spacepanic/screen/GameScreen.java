@@ -106,6 +106,12 @@ public class GameScreen extends BasicScreen {
 		add(mapSystemEntity);
 		add(new MapSystem(mapSystemEntity, 8.25f, 4.75f));
 	}
+
+	private void addHelmetSystem() {
+		helmetSystemEntity = new Entity();
+		helmetSystemEntity.add(new HelmetScreenComponent());
+
+	}
 	
 	private Entity createHelmetMasterEntity() {
 		Entity entity = new Entity();

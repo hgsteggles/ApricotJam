@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.systems.map;
 
+import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.badlogic.gdx.math.RandomXS128;
 
@@ -7,17 +8,14 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class ResourceGenerator {
-	private static final float[] RESOURCE_PROB = {0.6f, 0.2f, 0.15f, 0.05f};
-	//private static final float[] RESOURCE_PROB = {0.25f, 0.25f, 0.25f, 0.25f};
 	private static final float[] CUMULATIVE_RESOURCE_PROB = new float[4];
-	private static int MAX_RESOURCES_PER_PATCH = 4;
 
 	public int[] nres = {0, 0, 0 ,0};
 
 	static {
-		CUMULATIVE_RESOURCE_PROB[0] = RESOURCE_PROB[0];
-		for (int i = 1; i < RESOURCE_PROB.length; i++) {
-			CUMULATIVE_RESOURCE_PROB[i] = CUMULATIVE_RESOURCE_PROB[i - 1] + RESOURCE_PROB[i];
+		CUMULATIVE_RESOURCE_PROB[0] = GameParameters.RESOURCE_FRACTIONS[0];
+		for (int i = 1; i < GameParameters.RESOURCE_FRACTIONS.length; i++) {
+			CUMULATIVE_RESOURCE_PROB[i] = CUMULATIVE_RESOURCE_PROB[i - 1] + GameParameters.RESOURCE_FRACTIONS[i];
 		}
 	}
 
@@ -42,7 +40,7 @@ public class ResourceGenerator {
 			}
 		}
 
-		int nResources = rng.nextInt(MAX_RESOURCES_PER_PATCH + 1);
+		int nResources = rng.nextInt(GameParameters.MAX_RESOURCES_PER_PATCH + 1);
 		if (potentialLocations.size() < nResources) {
 			for (Point p: potentialLocations) {
 				resources[p.x][p.y] = rollResource();
