@@ -113,7 +113,10 @@ public class RenderingSystem extends EntitySystem {
 			render(entity, fboItemComp.fboBatch);
 		}
 
-		endFBO(currentFBO, fboIndex);
+		if (!currentFBO.equals("")) {
+			endFBO(currentFBO, fboIndex);
+		}
+
 		// Render to screen.
 		batch.setProjectionMatrix(worldCamera.combined);
 		batch.begin();
