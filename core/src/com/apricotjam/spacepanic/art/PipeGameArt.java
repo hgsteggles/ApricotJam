@@ -1,10 +1,9 @@
 package com.apricotjam.spacepanic.art;
 
-import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
+import com.apricotjam.spacepanic.systems.pipes.PipeWorld;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
@@ -59,7 +58,7 @@ public class PipeGameArt {
 			fluidRegions.put(i, fluidEntryRegions);
 			
 			for (int ientry = 0; ientry < 4; ++ientry) {
-				if (PipeSystem.connectedAtIndex((byte)(i), ientry) || (PipeSystem.numberConnections((byte)(i)) == 1 && ientry == PipeSystem.oppositeDirectionIndex(PipeSystem.directionFromMask((byte)(i))))) {
+				if (PipeWorld.connectedAtIndex((byte)(i), ientry) || (PipeWorld.numberConnections((byte)(i)) == 1 && ientry == PipeWorld.oppositeDirectionIndex(PipeWorld.directionFromMask((byte)(i))))) {
 					RotatedAnimationData rotAnimComp = new RotatedAnimationData();
 					rotAnimComp.regions = atlas.findRegions("fluid"+Integer.toString(i)+"-"+Integer.toString(ientry));
 					fluidEntryRegions.put(ientry,  rotAnimComp);
@@ -74,7 +73,7 @@ public class PipeGameArt {
 			if (rotData.region == null) {
 				for (int irot = 0; irot < 3; ++irot) {
 					rotData.rotation += 90f;
-					AtlasRegion region = pipeRegions.get(PipeSystem.rotateMask((byte)(i))).region;
+					AtlasRegion region = pipeRegions.get(PipeWorld.rotateMask((byte)(i))).region;
 					if (region != null) {
 						rotData.region = region;
 						break;
@@ -90,7 +89,7 @@ public class PipeGameArt {
 				if (rotAnimData.value.regions.size == 0) {
 					for (int irot = 1; irot < 4; ++irot) {
 						rotAnimData.value.rotation += 90f;
-						RotatedAnimationData foundAnimRotData = fluidRegions.get(PipeSystem.rotateMaskN((byte)(i), irot)).get((rotAnimData.key + irot)%4);
+						RotatedAnimationData foundAnimRotData = fluidRegions.get(PipeWorld.rotateMaskN((byte)(i), irot)).get((rotAnimData.key + irot)%4);
 						if (foundAnimRotData.regions.size != 0) {
 							rotAnimData.value.regions = foundAnimRotData.regions;
 							rotAnimData.value.rotation += foundAnimRotData.rotation;
@@ -105,16 +104,16 @@ public class PipeGameArt {
 		for (int i = 0; i < 16; ++i) {
 			IntMap<RotatedAnimationData> fluidEntryRegions = fluidRegions.get(i);
 			for (int ientry = 0; ientry < 4; ++ientry) {
-				if (PipeSystem.connectedAtIndex((byte)(i), ientry)) {
+				if (PipeWorld.connectedAtIndex((byte)(i), ientry)) {
 					RotatedAnimationData rotAnimData = fluidEntryRegions.get(ientry);
-					if (PipeSystem.numberConnections((byte)(i)) != 1 && fluidEntryRegions.get(ientry).regions.size == 0) {
-						if (PipeSystem.connectedAtIndex((byte)(i), (ientry+2)%4)) {
+					if (PipeWorld.numberConnections((byte)(i)) != 1 && fluidEntryRegions.get(ientry).regions.size == 0) {
+						if (PipeWorld.connectedAtIndex((byte)(i), (ientry+2)%4)) {
 							RotatedAnimationData foundAnimRotData = fluidEntryRegions.get((ientry+2)%4);
 							rotAnimData.regions = foundAnimRotData.regions;
 							rotAnimData.rotation = foundAnimRotData.rotation + 180f;
 						}
 						else {
-							RotatedAnimationData foundAnimRotData = fluidEntryRegions.get(PipeSystem.directionFromMask((byte)(i - (1 << ientry))));
+							RotatedAnimationData foundAnimRotData = fluidEntryRegions.get(PipeWorld.directionFromMask((byte)(i - (1 << ientry))));
 							
 							
 							Array<AtlasRegion> flippedRegions = new Array<AtlasRegion>();

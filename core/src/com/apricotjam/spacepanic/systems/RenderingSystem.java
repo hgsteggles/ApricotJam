@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
@@ -91,6 +92,7 @@ public class RenderingSystem extends EntitySystem {
 
 		//Create FBO index
 		HashMap<String, Entity> fboIndex = new HashMap<String, Entity>();
+
 		for (Entity entity : fboList) {
 			FBO_Component fboComp = ComponentMappers.fbo.get(entity);
 			fboIndex.put(fboComp.FBO_ID, entity);
@@ -110,8 +112,8 @@ public class RenderingSystem extends EntitySystem {
 			}
 			render(entity, fboItemComp.fboBatch);
 		}
-		endFBO(currentFBO, fboIndex);
 
+		endFBO(currentFBO, fboIndex);
 		// Render to screen.
 		batch.setProjectionMatrix(worldCamera.combined);
 		batch.begin();
@@ -132,6 +134,27 @@ public class RenderingSystem extends EntitySystem {
 	private void endFBO(String id, HashMap<String, Entity> fboIndex) {
 		Entity entity = fboIndex.get(id);
 		FBO_Component fboComp = ComponentMappers.fbo.get(entity);
+		fboComp.batch.end();
+		Shaders.manager.endFB();
+		TextureComponent textComp = ComponentMappers.texture.get(entity);
+		textComp.region = new TextureRegion(Shaders.manager.getFBTexture(fboComp.FBO_ID));
+		textComp.region.flip(false, true);
+	}
+	
+	private void renderFbo(Entity entity) {
+		FBO_Component fboComp = ComponentMappers.fbo.get(entity);
+		Shaders.manager.beginFB(fboComp.FBO_ID);
+		fboComp.batch.setProjectionMatrix(fboComp.camera.combined);
+		fboComp.batch.begin();
+		
+		Array<Entity> fboItemEntities = fboRenderQueue.getSortedEntities();
+		for (Entity e : fboItemEntities) {
+			FBO_ItemComponent fboItemComp = ComponentMappers.fboitem.get(e);
+			if (fboItemComp.fboBatch == fboComp.batch) {
+				render(e, fboItemComp.fboBatch);
+			}
+		}
+		
 		fboComp.batch.end();
 		Shaders.manager.endFB();
 		TextureComponent textComp = ComponentMappers.texture.get(entity);
