@@ -2,6 +2,7 @@ package com.apricotjam.spacepanic.testscreen;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.MovementComponent;
 import com.apricotjam.spacepanic.components.ScrollComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
@@ -21,6 +22,7 @@ import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -38,7 +40,8 @@ public class PipeTestScreen extends BasicScreen {
 		add(createBackground());
 
 		add(new HelmetSystem(helmetSystemEntity));
-		add(new PipeSystem(pipeSystemEntity));
+		PipeSystem pipeSystem = new PipeSystem(pipeSystemEntity);
+		add(pipeSystem);
 		add(new MovementSystem());
 		add(new ScrollSystem());
 		add(new ClickSystem());
@@ -47,6 +50,27 @@ public class PipeTestScreen extends BasicScreen {
 		add(new AnimatedShaderSystem());
 		add(new ShaderLightingSystem());
 		add(new TickerSystem());
+		
+		pipeSystem.start();
+	}
+	
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+		
+		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(pipeSystemEntity);
+		if (pipeScreenComp.currentState == PipeScreenComponent.State.SUCCESS) {
+			System.out.println("Solved the pipe puzzle!");
+			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
+			
+			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+			helmetScreenComp.resourceCount.put(pipeScreenComp.resource, helmetScreenComp.resourceCount.get(pipeScreenComp.resource) + 10);
+		}
+		else if (pipeScreenComp.currentState == PipeScreenComponent.State.FAIL) {
+			System.out.println("Failed the pipe puzzle :(");
+			
+			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
+		}
 	}
 	
 	private Entity createHelmetMasterEntity() {
@@ -59,7 +83,9 @@ public class PipeTestScreen extends BasicScreen {
 	private Entity createPipeMasterEntity() {
 		Entity entity = new Entity();
 
-		entity.add(new PipeScreenComponent());
+		PipeScreenComponent pipeScreenComp = new PipeScreenComponent();
+		pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
+		entity.add(pipeScreenComp);
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.set(BasicScreen.WORLD_WIDTH / 2.0f, BasicScreen.WORLD_HEIGHT / 2.0f, -10);

@@ -168,7 +168,7 @@ public class PipeWorld {
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
 				engine.addEntity(startPipe);
-				engine.addEntity(startFluid);
+				//engine.addEntity(startFluid);
 				
 				for (int j = timer_j.get(istart) + 1; j <= starts.get(istart).y; ++j) {
 					byte mask = (byte)((j == starts.get(istart).y) ? 6 : 5);
@@ -189,7 +189,7 @@ public class PipeWorld {
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
 				engine.addEntity(startPipe);
-				engine.addEntity(startFluid);
+				//engine.addEntity(startFluid);
 				
 				for (int j = timer_j.get(istart) - 1; j >= starts.get(istart).y; --j) {
 					byte mask = (byte)((j == starts.get(istart).y) ? 3 : 5);
@@ -210,7 +210,7 @@ public class PipeWorld {
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
 				engine.addEntity(startPipe);
-				engine.addEntity(startFluid);
+				//engine.addEntity(startFluid);
 				
 				parentPipeTileComp.neighbours[1] = pipeGrid[0][starts.get(istart).y];
 			}

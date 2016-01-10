@@ -1,12 +1,15 @@
 package com.apricotjam.spacepanic.components;
 
+import com.apricotjam.spacepanic.components.helmet.HelmetPartComponent;
+import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
+import com.apricotjam.spacepanic.components.helmet.ResourceCountComponent;
+import com.apricotjam.spacepanic.components.helmet.ResourcePipeComponent;
 import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
 import com.apricotjam.spacepanic.components.mapComponents.ResourceComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
+import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
 import com.badlogic.ashley.core.ComponentMapper;
-
-import java.awt.*;
 
 public class ComponentMappers {
 	public static ComponentMapper<TransformComponent> transform = ComponentMapper.getFor(TransformComponent.class);
@@ -30,5 +33,9 @@ public class ComponentMappers {
 	public static ComponentMapper<FBO_Component> fbo = ComponentMapper.getFor(FBO_Component.class);
 	public static ComponentMapper<FBO_ItemComponent> fboitem = ComponentMapper.getFor(FBO_ItemComponent.class);
 	public static ComponentMapper<MapScreenComponent> mapscreen = ComponentMapper.getFor(MapScreenComponent.class);
+	public static ComponentMapper<PipeScreenComponent> pipescreen = ComponentMapper.getFor(PipeScreenComponent.class);
+	public static ComponentMapper<HelmetScreenComponent> helmetscreen = ComponentMapper.getFor(HelmetScreenComponent.class);
 	public static ComponentMapper<ResourceComponent> resource = ComponentMapper.getFor(ResourceComponent.class);
+	public static ComponentMapper<ResourceCountComponent> resourcecount = ComponentMapper.getFor(ResourceCountComponent.class);
+	public static ComponentMapper<ResourcePipeComponent> resourcepipe = ComponentMapper.getFor(ResourcePipeComponent.class);
 }

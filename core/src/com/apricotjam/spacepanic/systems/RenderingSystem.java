@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
