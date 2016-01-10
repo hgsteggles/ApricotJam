@@ -94,7 +94,7 @@ public class GameScreen extends BasicScreen {
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
 		tranc.position.z = 5.0f;
 		mapSystemEntity.add(tranc);
 

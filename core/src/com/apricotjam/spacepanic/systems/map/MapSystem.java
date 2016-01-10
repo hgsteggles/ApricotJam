@@ -261,8 +261,8 @@ public class MapSystem extends EntitySystem {
 
 		TextureComponent texc = new TextureComponent();
 		texc.region = MapArt.computerFrame;
-		texc.size.x = width;
-		texc.size.y = height;
+		texc.size.y = height * 1.35f;
+		texc.size.x = texc.size.y * texc.region.getRegionWidth() / texc.region.getRegionHeight();
 		screenFrame.add(texc);
 
 		return screenFrame;

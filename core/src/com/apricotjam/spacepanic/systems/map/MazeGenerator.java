@@ -103,16 +103,10 @@ public class MazeGenerator {
 				}
 			}
 		}
-		printPatch(patch, connectivity);
-		System.out.print("\n-------------\n");
-		printPatch(patch);
 
 		if (blockChance > 0.0f) {
 			blockConnections(patch, connectivity);
 		}
-
-		System.out.print("\n-------------\n");
-		printPatch(patch, connectivity);
 
 		//Remove extra boundaries
 		int[][] trimmedPatch = new int[Patch.PATCH_WIDTH][Patch.PATCH_HEIGHT];

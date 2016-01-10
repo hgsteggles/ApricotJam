@@ -20,55 +20,55 @@ title
   index: -1
 
 art2.png
-size: 2048,1024
+size: 2048,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 asteroid
   rotate: false
-  xy: 1060, 850
+  xy: 2, 8
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 asteroid2
   rotate: false
-  xy: 644, 240
+  xy: 644, 144
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 asteroid3
   rotate: false
-  xy: 1060, 720
+  xy: 1062, 370
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 computerBackground
   rotate: false
-  xy: 2, 8
+  xy: 2, 138
   size: 640, 360
   orig: 640, 360
   offset: 0, 0
   index: -1
 computerFrame
   rotate: false
-  xy: 2, 370
-  size: 1056, 608
-  orig: 1056, 608
+  xy: 644, 274
+  size: 416, 224
+  orig: 416, 224
   offset: 0, 0
   index: -1
 mapcross01
   rotate: false
-  xy: 1190, 914
+  xy: 132, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 mapcross02
   rotate: false
-  xy: 644, 174
+  xy: 774, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -82,35 +82,35 @@ mapline01
   index: -1
 playerIcon
   rotate: false
-  xy: 774, 304
+  xy: 1062, 304
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 resource0Icon
   rotate: false
-  xy: 1060, 654
+  xy: 1192, 434
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 resource1Icon
   rotate: false
-  xy: 1190, 848
+  xy: 198, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 resource2Icon
   rotate: false
-  xy: 1256, 914
+  xy: 840, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 resource3Icon
   rotate: false
-  xy: 644, 108
+  xy: 1258, 434
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
