@@ -10,7 +10,7 @@ public class MapScreenComponent implements Component {
 	}
 
 	public State currentState = State.EXPLORING;
-	public Resource encounterResource = Resource.NONE;
+	public Resource encounterResource = null;
 
 	public Vector2 playerPosition = new Vector2();
 }

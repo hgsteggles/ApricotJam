@@ -42,17 +42,11 @@ public class HelmetWorld {
 	public static float LEDBG_H = 0.7f;
 	public static int FLUID_SEG_RSRC_COUNT = 5;
 	
-	public ObjectMap<Resource, Integer> resourceTotal = new ObjectMap<Resource, Integer>();
-	
 	private float PIPE_SIZE = 0.6f;
 	
 	private TransformComponent resourcePanelTransform;
 	
 	public void build(Engine engine) {
-		resourceTotal.put(Resource.OXYGEN, 4*FLUID_SEG_RSRC_COUNT);
-		resourceTotal.put(Resource.OIL, 3*FLUID_SEG_RSRC_COUNT);
-		resourceTotal.put(Resource.RESOURCE2, 2*FLUID_SEG_RSRC_COUNT);
-		resourceTotal.put(Resource.RESOURCE3, 1*FLUID_SEG_RSRC_COUNT);
 		
 		// Create FBOs.
 		engine.addEntity(createLED_FBO2());

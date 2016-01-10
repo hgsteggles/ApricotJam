@@ -159,7 +159,7 @@ public class MapSystem extends EntitySystem {
 	private void checkForEncounter() {
 		Point playerPoint = getPlayerPoint(mapScreenComponent.playerPosition);
 		Resource r = patchConveyor.popResourceAtLocation(playerPoint, engine);
-		if (r != Resource.NONE) {
+		if (r != null) {
 			usedResources.add(new Point(playerPoint));
 			mapScreenComponent.encounterResource = r;
 			mapScreenComponent.currentState = MapScreenComponent.State.ENCOUNTER;

@@ -33,7 +33,7 @@ public class ResourceGenerator {
 		ArrayList<Point> potentialLocations = new ArrayList<Point>();
 		for (int i = 0; i < Patch.PATCH_WIDTH; i++) {
 			for (int j = 0; j < Patch.PATCH_HEIGHT; j++) {
-				resources[i][j] = Resource.NONE;
+				resources[i][j] = null;
 				if (maze[i][j] == MazeGenerator.PATH) {
 					potentialLocations.add(new Point(i, j));
 				}

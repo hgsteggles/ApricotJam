@@ -36,7 +36,7 @@ public class Patch {
 					asteroids.add(mapSystem.createAsteroid(xast, yast));
 				}
 
-				if (resourceArray[icell][jcell] != Resource.NONE) {
+				if (resourceArray[icell][jcell] != null) {
 					Point pos = new Point(x * PATCH_WIDTH + icell - (PATCH_WIDTH / 2), y * PATCH_HEIGHT - (PATCH_HEIGHT / 2) + jcell);
 					if (!mapSystem.isResourceUsed(pos)) {
 						float xicon = pos.x * MapSystem.ASTEROID_SIZE;

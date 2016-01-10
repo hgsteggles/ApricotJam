@@ -10,6 +10,7 @@ import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
+import com.apricotjam.spacepanic.systems.helmet.HelmetWorld;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
@@ -38,9 +39,8 @@ public class GameScreen extends BasicScreen {
 		add(new ShaderLightingSystem());
 		add(new TickerSystem());
 
-		helmetSystemEntity = createHelmetMasterEntity();
-		add(new HelmetSystem(helmetSystemEntity));
 		//add(new PipeSystem());
+		addHelmetSystem();
 		addMapSystem();
 
 		add(createBackground());
@@ -81,9 +81,7 @@ public class GameScreen extends BasicScreen {
 		}
 
 		for (Resource r: Resource.values()) {
-			if (r != Resource.NONE) {
-				//alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
-			}
+			alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
 		}
 
 		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
@@ -128,15 +126,15 @@ public class GameScreen extends BasicScreen {
 
 	private void addHelmetSystem() {
 		helmetSystemEntity = new Entity();
-		helmetSystemEntity.add(new HelmetScreenComponent());
 
-	}
-	
-	private Entity createHelmetMasterEntity() {
-		Entity entity = new Entity();
-		entity.add(new HelmetScreenComponent());
-		
-		return entity;
+		HelmetScreenComponent helmetScreenComponent = new HelmetScreenComponent();
+		for (Resource r: Resource.values()) {
+			helmetScreenComponent.maxCount.put(r, GameParameters.RESOURCE_MAX.get(r));
+			helmetScreenComponent.resourceCount.put(r, GameParameters.RESOURCE_MAX.get(r));
+		}
+		helmetSystemEntity.add(helmetScreenComponent);
+
+		add(new HelmetSystem(helmetSystemEntity));
 	}
 
 	private Entity createBackground() {

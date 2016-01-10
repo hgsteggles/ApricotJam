@@ -115,7 +115,7 @@ public class PatchConveyor {
 			Entity e = patches[ipatch][jpatch].resources.get(test);
 			return ComponentMappers.resource.get(e).resource;
 		}
-		return Resource.NONE;
+		return null;
 	}
 
 	public Resource popResourceAtLocation(Point position, Engine engine) {
@@ -134,7 +134,7 @@ public class PatchConveyor {
 			engine.removeEntity(e);
 			return ComponentMappers.resource.get(e).resource;
 		}
-		return Resource.NONE;
+		return null;
 	}
 
 	private void movePatchesUp(Engine engine) {

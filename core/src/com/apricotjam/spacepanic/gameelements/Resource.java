@@ -1,5 +1,5 @@
 package com.apricotjam.spacepanic.gameelements;
 
 public enum Resource {
-	OXYGEN, OIL, RESOURCE2, RESOURCE3, NONE
+	OXYGEN, OIL, RESOURCE2, RESOURCE3
 }
