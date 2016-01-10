@@ -53,7 +53,8 @@ public class MenuScreen extends BasicScreen {
 		tweenSpec.start = transComp.position.y;
 		tweenSpec.end = TITLEENDPOSITION;
 		tweenSpec.period = TITLETIME;
-		tweenSpec.cycle = TweenSpec.Cycle.REVERSE;
+		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
+		tweenSpec.reverse = true;
 		tweenSpec.interp = Interpolation.linear;
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override

@@ -25,17 +25,26 @@ public class TweenSystem extends IteratingSystem {
 				switch (tws.cycle) {
 					case ONCE:
 						tws.time = Math.min(tws.time, 1);
-						finished.add(tws);
+						tws.finished = true;
 						break;
 					case LOOP:
 						tws.time -= 1;
+						tws.loops--;
+						if (tws.loops <= 0) {
+							tws.finished = true;
+						}
 						break;
-					case REVERSE:
+					case INFLOOP:
 						tws.time -= 1;
-						float temp = tws.start;
-						tws.start = tws.end;
-						tws.end = temp;
 						break;
+				}
+				if (tws.reverse) {
+					float temp = tws.start;
+					tws.start = tws.end;
+					tws.end = temp;
+				}
+				if (tws.finished) {
+					finished.add(tws);
 				}
 			}
 			tws.tweenInterface.applyTween(entity, tws.interp.apply(tws.start, tws.end, tws.time));

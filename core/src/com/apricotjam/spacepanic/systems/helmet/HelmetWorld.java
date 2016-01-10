@@ -365,7 +365,8 @@ public class HelmetWorld {
 		tweenSpec.start = 0.0f;
 		tweenSpec.end = 1.0f;
 		tweenSpec.period = 1.2f;
-		tweenSpec.cycle = TweenSpec.Cycle.REVERSE;
+		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
+		tweenSpec.reverse = true;
 		tweenSpec.interp = Interpolation.fade;
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
@@ -509,7 +510,8 @@ public class HelmetWorld {
 		tweenSpec.start = 0.0f;
 		tweenSpec.end = 1.0f;
 		tweenSpec.period = 0.8f;
-		tweenSpec.cycle = TweenSpec.Cycle.REVERSE;
+		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
+		tweenSpec.reverse = true;
 		tweenSpec.interp = Interpolation.linear;
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
