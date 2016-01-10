@@ -17,7 +17,7 @@ public class Path {
 
 	private ArrayList<Vector2> path = new ArrayList<Vector2>();
 	private ArrayList<Entity> pathLines = new ArrayList<Entity>();
-	private Entity cross;
+	private Entity cross = null;
 
 	private final MapSystem mapSystem;
 	private final Pathfinder pathfinder = new Pathfinder(Patch.PATCH_WIDTH * PatchConveyor.PATCHES_X, Patch.PATCH_HEIGHT * PatchConveyor.PATCHES_Y, MAXPATH);
@@ -76,7 +76,7 @@ public class Path {
 		for (Entity e: pathLines) {
 			engine.addEntity(e);
 		}
-		if (pathLines.size() > 0) {
+		if (cross != null) {
 			engine.addEntity(cross);
 		}
 	}
@@ -85,15 +85,28 @@ public class Path {
 		for (Entity e: pathLines) {
 			engine.removeEntity(e);
 		}
-		if (pathLines.size() > 0) {
+		if (cross != null) {
 			engine.removeEntity(cross);
 		}
 	}
 
-	public void clear(Engine engine) {
+	public void softStop(Engine engine) {
+		if (cross != null) {
+			engine.removeEntity(cross);
+			cross = null;
+		}
+		while (path.size() > 1) {
+			path.remove(path.size() - 1);
+			engine.removeEntity(pathLines.get(pathLines.size() - 1));
+			pathLines.remove(pathLines.size() - 1);
+		}
+	}
+
+	public void hardStop(Engine engine) {
 		removeFromEngine(engine);
 		pathLines.clear();
 		path.clear();
+		cross = null;
 	}
 
 	public Vector2 getNext() {
@@ -104,8 +117,9 @@ public class Path {
 		engine.removeEntity(pathLines.get(0));
 		pathLines.remove(0);
 		path.remove(0);
-		if (pathLines.size() == 0) {
+		if (path.size() == 0 && cross != null) {
 			engine.removeEntity(cross);
+			cross = null;
 		}
 	}
 

@@ -97,7 +97,7 @@ public class MapSystem extends EntitySystem {
 	@Override
 	public void update (float deltaTime) {
 		if (moving) {
-			Vector2 moveVector =path.getNext().cpy().sub(mapScreenComponent.playerPosition);
+			Vector2 moveVector = path.getNext().cpy().sub(mapScreenComponent.playerPosition);
 			float dist = moveVector.len();
 			Vector2 dir = moveVector.cpy().nor();
 			if (dist > GameParameters.SPEED * deltaTime) {
@@ -106,7 +106,7 @@ public class MapSystem extends EntitySystem {
 				move(moveVector.x, moveVector.y);
 				path.legComplete(engine);
 				if (path.size() == 0) {
-					stop();
+					hardStop();
 				}
 			}
 			path.update(engine);
@@ -122,13 +122,17 @@ public class MapSystem extends EntitySystem {
 		patchConveyor.move(dx, dy);
 	}
 
-	private void stop() {
-		path.clear(engine);
+	private void softStop() {
+		path.softStop(engine);
+	}
+
+	private void hardStop() {
+		path.hardStop(engine);
 		moving = false;
 	}
 
 	private Point getPlayerPoint(Vector2 pos) {
-		return new Point((int)(pos.x), (int)(pos.y));
+		return new Point(Math.round(pos.x), Math.round(pos.y));
 	}
 
 	private void click(int x, int y) {
@@ -149,7 +153,7 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private void clickPlayer() {
-		stop();
+		hardStop();
 		for (int i = 0; i < resourceGenerator.nres.length; i++) {
 			System.out.print(resourceGenerator.nres[i] + ", ");
 		}
@@ -163,7 +167,7 @@ public class MapSystem extends EntitySystem {
 			usedResources.add(new Point(playerPoint));
 			mapScreenComponent.encounterResource = r;
 			mapScreenComponent.currentState = MapScreenComponent.State.ENCOUNTER;
-			stop();
+			softStop();
 		}
 	}
 
