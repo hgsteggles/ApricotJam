@@ -21,6 +21,8 @@ import com.apricotjam.spacepanic.systems.ShaderLightingSystem;
 import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severity;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
@@ -65,6 +67,9 @@ public class PipeTestScreen extends BasicScreen {
 			
 			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 			helmetScreenComp.resourceCount.put(pipeScreenComp.resource, helmetScreenComp.resourceCount.get(pipeScreenComp.resource) + 10);
+			
+			helmetScreenComp.messages.addLast(new LED_Message("SUCCESS", Severity.SUCCESS));
+			helmetScreenComp.messages.addLast(new LED_Message("RESOURCE COLLECTED", Severity.HINT));
 		}
 		else if (pipeScreenComp.currentState == PipeScreenComponent.State.FAIL) {
 			System.out.println("Failed the pipe puzzle :(");

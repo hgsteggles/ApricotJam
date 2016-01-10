@@ -419,8 +419,11 @@ public class HelmetWorld {
 		return entity;
 	}
 	
-	static public Entity createMarqueeLED(String text) {
+	public Entity createMarqueeLED(String text) {
+		Entity entity = new Entity();
+		
 		LED_Component ledComp = new LED_Component();
+		entity.add(ledComp);
 		
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "led";
@@ -430,6 +433,7 @@ public class HelmetWorld {
 		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
 		layout.setText(MiscArt.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
+		entity.add(fontComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("led");
@@ -438,19 +442,23 @@ public class HelmetWorld {
 		float normY = (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
 		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
 		Shaders.manager.end();
+		entity.add(shaderComp);
 		
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, HELMET_Z + 4);
+		entity.add(transComp);
 		
 		TweenComponent tweenComp = new TweenComponent();
+		entity.add(tweenComp);
 		
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 0.0f;
 		tweenSpec.end = 1.0f;
 		tweenSpec.period = 4f;
-		tweenSpec.cycle = TweenSpec.Cycle.LOOP;
+		tweenSpec.loops = 2;
+		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
 		tweenSpec.interp = Interpolation.linear;
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
@@ -462,27 +470,16 @@ public class HelmetWorld {
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
-		
-		TickerComponent tickComp = new TickerComponent();
-		tickComp.tickerActive = false;
-		tickComp.finishActive = true;
-		tickComp.duration = 1f*tweenSpec.period;
-		tickComp.finish = new EventInterface() {
-			@Override
-			public void dispatchEvent(Entity entity) {
-				entity.remove(TweenComponent.class);
-			}
-		};
-		tickComp.start();
-		
-		Entity entity = new Entity();
-		entity.add(ledComp).add(fontComp).add(shaderComp).add(transComp).add(tweenComp).add(tickComp);
+		entity.add(tweenComp);
 		
 		return entity;
 	}
 	
-	static public Entity createFlashLED(String text) {
+	public Entity createFlashLED(String text) {
+		Entity entity = new Entity();
+		
 		LED_Component ledComp = new LED_Component();
+		entity.add(ledComp);
 		
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "led";
@@ -492,6 +489,7 @@ public class HelmetWorld {
 		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
 		layout.setText(MiscArt.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
+		entity.add(fontComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("led");
@@ -500,17 +498,19 @@ public class HelmetWorld {
 		float normY = (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
 		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
 		Shaders.manager.end();
+		entity.add(shaderComp);
 		
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
+		entity.add(transComp);
 		
-		TweenComponent tweenComp = new TweenComponent();
-		
+		TweenComponent tweenComp = new TweenComponent();	
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 0.0f;
 		tweenSpec.end = 1.0f;
 		tweenSpec.period = 0.8f;
 		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
+		tweenSpec.loops = 8;
 		tweenSpec.reverse = true;
 		tweenSpec.interp = Interpolation.linear;
 		tweenSpec.tweenInterface = new TweenInterface() {
@@ -521,27 +521,16 @@ public class HelmetWorld {
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
-		
-		TickerComponent tickComp = new TickerComponent();
-		tickComp.tickerActive = false;
-		tickComp.finishActive = true;
-		tickComp.duration = 8f*tweenSpec.period;
-		tickComp.finish = new EventInterface() {
-			@Override
-			public void dispatchEvent(Entity entity) {
-				entity.remove(TweenComponent.class);
-			}
-		};
-		tickComp.start();
-		
-		Entity entity = new Entity();
-		entity.add(ledComp).add(fontComp).add(shaderComp).add(transComp).add(tweenComp).add(tickComp);
-		
+		entity.add(tweenComp);
+				
 		return entity;
 	}
 	
-	static public Entity createAppearLED(String text) {
+	public Entity createAppearLED(String text) {
+		Entity entity = new Entity();
+		
 		LED_Component ledComp = new LED_Component();
+		entity.add(ledComp);
 		
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "led";
@@ -551,6 +540,7 @@ public class HelmetWorld {
 		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
 		layout.setText(MiscArt.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
+		entity.add(fontComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("led");
@@ -559,14 +549,15 @@ public class HelmetWorld {
 		float normY = (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
 		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
 		Shaders.manager.end();
+		entity.add(shaderComp);
 		
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
+		entity.add(transComp);
 		
 		TweenComponent tweenComp = new TweenComponent();
-		
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 0.0f;
 		tweenSpec.end = 2.0f;
@@ -581,21 +572,7 @@ public class HelmetWorld {
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
-		
-		TickerComponent tickComp = new TickerComponent();
-		tickComp.tickerActive = false;
-		tickComp.finishActive = true;
-		tickComp.duration = 1f*tweenSpec.period;
-		tickComp.finish = new EventInterface() {
-			@Override
-			public void dispatchEvent(Entity entity) {
-				entity.remove(TweenComponent.class);
-			}
-		};
-		tickComp.start();
-		
-		Entity entity = new Entity();
-		entity.add(ledComp).add(fontComp).add(shaderComp).add(transComp).add(tweenComp).add(tickComp);
+		entity.add(tweenComp);
 		
 		return entity;
 	}

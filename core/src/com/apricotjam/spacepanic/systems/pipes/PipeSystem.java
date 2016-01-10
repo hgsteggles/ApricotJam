@@ -7,7 +7,6 @@ import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
-import com.apricotjam.spacepanic.systems.helmet.HelmetWorld;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -168,8 +167,6 @@ public class PipeSystem extends EntitySystem {
 			StateComponent stateComp = ComponentMappers.state.get(pipeFluid);
 			stateComp.timescale = solvedFluidSpeedup;
 		}
-		// Show connection LED text.
-		getEngine().addEntity(HelmetWorld.createAppearLED("SUCCESS"));
 		// Stop timer;
 		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
 		timerTickerComp.tickerActive = false;
@@ -184,8 +181,6 @@ public class PipeSystem extends EntitySystem {
 			ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
 			clickComp.active = false;
 		}
-		// Show connection LED text.
-		getEngine().addEntity(HelmetWorld.createFlashLED("ERROR"));
 		// Stop timer;
 		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
 		timerTickerComp.tickerActive = false;
