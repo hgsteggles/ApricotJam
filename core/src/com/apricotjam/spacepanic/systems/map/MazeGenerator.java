@@ -142,7 +142,6 @@ public class MazeGenerator {
 	private void blockConnections(int[][] patch, int[][] connectivity) {
 		//Find connection points
 		HashMap<Integer, ArrayList<Point>> connections = new HashMap<Integer, ArrayList<Point>>();
-		printPatch(patch, connectivity);
 		for (int i = 1; i < Patch.PATCH_WIDTH; i++) {
 			for (int j = 1; j < Patch.PATCH_HEIGHT; j++) {
 				if (connectivity[i][j] != 5) {

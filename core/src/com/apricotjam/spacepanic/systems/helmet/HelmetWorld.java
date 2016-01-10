@@ -15,7 +15,6 @@ import com.apricotjam.spacepanic.components.ShaderComponent;
 import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
-import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.TweenSpec;
@@ -23,7 +22,6 @@ import com.apricotjam.spacepanic.components.helmet.HelmetPartComponent;
 import com.apricotjam.spacepanic.components.helmet.LED_Component;
 import com.apricotjam.spacepanic.components.helmet.ResourcePipeComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
-import com.apricotjam.spacepanic.interfaces.EventInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
@@ -32,7 +30,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.utils.ObjectMap;
 
 public class HelmetWorld {
 	public static float HELMET_Z = 100f;
@@ -40,7 +37,6 @@ public class HelmetWorld {
 	public static float LEDBG_Y = (6f/80f)*BasicScreen.WORLD_HEIGHT;
 	public static float LEDBG_W = 3f;
 	public static float LEDBG_H = 0.7f;
-	public static int FLUID_SEG_RSRC_COUNT = 5;
 	
 	private float PIPE_SIZE = 0.6f;
 	
@@ -78,25 +74,15 @@ public class HelmetWorld {
 		float bottomRightPipeY = -0.069722221f*BasicScreen.WORLD_HEIGHT;
 		float pipeHeight = 0.7f*PIPE_SIZE;
 		int bottomPipeLength = 4;
-		
-		Entity[] oxygenPipes = createFluidLine(Resource.OXYGEN, bottomPipeLength, bottomRightPipeX, bottomRightPipeY);
-		for (Entity fluid : oxygenPipes)
-			engine.addEntity(fluid);
-		Entity[] oilPipes = createFluidLine(Resource.OIL, bottomPipeLength - 1, bottomRightPipeX, bottomRightPipeY + pipeHeight);
-		for (Entity fluid : oilPipes)
-			engine.addEntity(fluid);
-		Entity[] rsrc2Pipes = createFluidLine(Resource.RESOURCE2, bottomPipeLength - 2, bottomRightPipeX, bottomRightPipeY + 2*pipeHeight);
-		for (Entity fluid : rsrc2Pipes)
-			engine.addEntity(fluid);
-		Entity[] rsrc3Pipes = createFluidLine(Resource.RESOURCE3, bottomPipeLength - 3, bottomRightPipeX, bottomRightPipeY + 3*pipeHeight);
-		for (Entity fluid : rsrc3Pipes)
-			engine.addEntity(fluid);
+
+		engine.addEntity(createFluidLine(Resource.OXYGEN, bottomPipeLength, bottomRightPipeX, bottomRightPipeY));
+		engine.addEntity(createFluidLine(Resource.OIL, bottomPipeLength - 1, bottomRightPipeX, bottomRightPipeY + pipeHeight));
+		engine.addEntity(createFluidLine(Resource.RESOURCE2, bottomPipeLength - 2, bottomRightPipeX, bottomRightPipeY + 2*pipeHeight));
+		engine.addEntity(createFluidLine(Resource.RESOURCE3, bottomPipeLength - 3, bottomRightPipeX, bottomRightPipeY + 3*pipeHeight));
 		
 		for (int i = 0; i < 4; ++i) {
 			// Pipe outlines.
-			Entity[] pipeOutlines = createPipeLine(bottomPipeLength - i, bottomRightPipeX, bottomRightPipeY + i*pipeHeight);
-			for (Entity pipe : pipeOutlines)
-				engine.addEntity(pipe);
+			engine.addEntity(createPipeLine(bottomPipeLength - i, bottomRightPipeX, bottomRightPipeY + i*pipeHeight));
 			//// Pipe caps.
 			engine.addEntity(createPipeCap(bottomRightPipeX + (bottomPipeLength - i)*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + i*pipeHeight, false));
 			engine.addEntity(createPipeCap(bottomRightPipeX - PIPE_SIZE + (1f/16f)*PIPE_SIZE, bottomRightPipeY + i*pipeHeight, true));
@@ -226,38 +212,18 @@ public class HelmetWorld {
 		return e;
 	}
 	
-	private Entity[] createPipeLine(int size, float x, float y) {
-		Entity[] pipes = new Entity[size];
-		
-		for (int i = 0; i < size; ++i)
-			pipes[i] = createPipeSegment((byte)(10), x + i*PIPE_SIZE, y);
-		
-		return pipes;
-	}
-	
-	private Entity[] createFluidLine(Resource resource, int size, float x, float y) {
-		Entity[] fluids = new Entity[size];
-		
-		for (int i = 0; i < size; ++i) {
-			int minCount = i*FLUID_SEG_RSRC_COUNT;
-			fluids[i] = createFluidSegment(resource, minCount, (byte)(10), x + i*PIPE_SIZE, y);
-		}
-		
-		return fluids;
-	}
-	
-	private Entity createPipeSegment(byte mask, float x, float y) {
+	private Entity createPipeLine(int size, float x, float y) {
 		Entity e = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
-		RotatedRegionData rotRegionData = PipeGameArt.pipeRegions.get(mask);
+		RotatedRegionData rotRegionData = PipeGameArt.pipeRegions.get((byte)(10));
 		texComp.region = rotRegionData.region;
-		texComp.size.x = PIPE_SIZE;
+		texComp.size.x = size * PIPE_SIZE;
 		texComp.size.y = PIPE_SIZE;
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
+		transComp.position.x = x + ((size - 1.0f) * 0.5f * PIPE_SIZE);
 		transComp.position.y = y;
 		transComp.position.z = HELMET_Z + 4;
 		transComp.rotation = rotRegionData.rotation;
@@ -267,38 +233,37 @@ public class HelmetWorld {
 		return e;
 	}
 	
-	private Entity createFluidSegment(Resource resource, int minCount, byte mask, float x, float y) {
+	private Entity createFluidLine(Resource resource, int size, float x, float y) {
 		Entity entity = new Entity();
 
 		RotatedAnimationData animData = PipeGameArt.fluidRegions.get((byte)(10)).get(3);
 		AnimationComponent animComp = new AnimationComponent();
-		animComp.animations.put(0, new Animation(FLUID_SEG_RSRC_COUNT/(float)(animData.regions.size), animData.regions));
+		animComp.animations.put(0, new Animation(1.0f / animData.regions.size, animData.regions));
 		entity.add(animComp);
-		
+
 		TextureComponent texComp = new TextureComponent();
-		texComp.size.x = PIPE_SIZE;
+		texComp.size.x = size * PIPE_SIZE;
 		texComp.size.y = PIPE_SIZE;
 		texComp.color.set(HelmetUI.resourceColors.get(resource));
 		texComp.region = animData.regions.get(0);
 		entity.add(texComp);
-		
+
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
+		transComp.position.x = x + ((size - 1.0f) * 0.5f * PIPE_SIZE);
 		transComp.position.y = y;
 		transComp.position.z = HELMET_Z + 3;
 		transComp.rotation = animData.rotation;
 		transComp.parent = resourcePanelTransform;
 		entity.add(transComp);
-		
+
 		ResourcePipeComponent resourcePipeComp = new ResourcePipeComponent();
 		resourcePipeComp.resource = resource;
-		resourcePipeComp.minCount = minCount;
 		entity.add(resourcePipeComp);
-		
+
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("fluid");
 		entity.add(shaderComp);
-		
+
 		ShaderTimeComponent shaderTimeComp = new ShaderTimeComponent();
 		entity.add(shaderTimeComp);
 

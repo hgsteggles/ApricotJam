@@ -13,14 +13,14 @@ public class HelmetScreenComponent implements Component {
 	public Queue<HelmetSystem.LED_Message> messages = new Queue<HelmetSystem.LED_Message>();
 	
 	public HelmetScreenComponent() {
-		maxCount.put(Resource.OXYGEN, 4f*HelmetWorld.FLUID_SEG_RSRC_COUNT);
-		maxCount.put(Resource.OIL, 3f*HelmetWorld.FLUID_SEG_RSRC_COUNT);
-		maxCount.put(Resource.RESOURCE2, 2f*HelmetWorld.FLUID_SEG_RSRC_COUNT);
-		maxCount.put(Resource.RESOURCE3, 1f*HelmetWorld.FLUID_SEG_RSRC_COUNT);
+		maxCount.put(Resource.OXYGEN, 1.0f);
+		maxCount.put(Resource.OIL, 1.0f);
+		maxCount.put(Resource.RESOURCE2, 1.0f);
+		maxCount.put(Resource.RESOURCE3, 1.0f);
 		
-		resourceCount.put(Resource.OXYGEN, 4f*HelmetWorld.FLUID_SEG_RSRC_COUNT);
-		resourceCount.put(Resource.OIL, 3f*HelmetWorld.FLUID_SEG_RSRC_COUNT);
-		resourceCount.put(Resource.RESOURCE2, 2f*HelmetWorld.FLUID_SEG_RSRC_COUNT);
-		resourceCount.put(Resource.RESOURCE3, 1f*HelmetWorld.FLUID_SEG_RSRC_COUNT);
+		resourceCount.put(Resource.OXYGEN, 1.0f);
+		resourceCount.put(Resource.OIL, 1.0f);
+		resourceCount.put(Resource.RESOURCE2, 1.0f);
+		resourceCount.put(Resource.RESOURCE3, 1.0f);
 	}
 }

@@ -14,6 +14,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.math.MathUtils;
 
 public class HelmetSystem extends EntitySystem {
 	static private float RESOURCE_FILL_SPEED = 5.0f;
@@ -74,8 +75,10 @@ public class HelmetSystem extends EntitySystem {
 				else if (resourcePipeComp.currCount < targetCount) {
 					resourcePipeComp.currCount =  Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED*deltaTime, targetCount);
 				}
-				
-				texComp.region = animation.getKeyFrame(Math.max(resourcePipeComp.currCount - resourcePipeComp.minCount, 0));
+				resourcePipeComp.currCount = targetCount;
+				float frac = resourcePipeComp.currCount / helmetScreenComp.maxCount.get(resourcePipeComp.resource);
+				frac = MathUtils.clamp(frac, 0.0f, 1.0f);
+				texComp.region = animation.getKeyFrame(frac);
 			}
 		}
 	}
