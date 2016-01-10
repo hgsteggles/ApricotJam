@@ -1,5 +1,7 @@
 package com.apricotjam.spacepanic.systems.helmet;
 
+import java.util.EnumMap;
+
 import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.TextureComponent;
@@ -34,12 +36,28 @@ public class HelmetSystem extends EntitySystem {
 
 	@Override
 	public void update(float deltaTime) {
-		for (Entity entity : leds) {
-			if (!ComponentMappers.tween.has(entity))
-				getEngine().removeEntity(entity);
+		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(masterEntity);
+		
+		if (leds.size() == 0 && helmetScreenComp.messages.size != 0) {
+			LED_Message message = helmetScreenComp.messages.removeFirst();
+			
+			switch(message.severity) {
+				case HINT:
+					getEngine().addEntity(world.createMarqueeLED(message.text));
+					break;
+				case SUCCESS:
+					getEngine().addEntity(world.createAppearLED(message.text));
+					break;
+				case FAIL:
+					getEngine().addEntity(world.createFlashLED(message.text));
+					break;
+			}
 		}
 		
-		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(masterEntity);
+		for (Entity entity : leds) {
+			if (ComponentMappers.tween.get(entity).tweenSpecs.size == 0)
+				getEngine().removeEntity(entity);
+		}
 		
 		for (Entity entity : resourcePipes) {
 			TextureComponent texComp = ComponentMappers.texture.get(entity);
@@ -51,14 +69,26 @@ public class HelmetSystem extends EntitySystem {
 			if (animation != null) {
 				float targetCount = helmetScreenComp.resourceCount.get(resourcePipeComp.resource);
 				if (resourcePipeComp.currCount > targetCount) {
-					resourcePipeComp.currCount =  Math.max(resourcePipeComp.currCount - RESOURCE_FILL_SPEED*deltaTime, world.resourceTotal.get(resourcePipeComp.resource));
+					resourcePipeComp.currCount =  Math.max(resourcePipeComp.currCount - RESOURCE_FILL_SPEED*deltaTime, targetCount);
 				}
 				else if (resourcePipeComp.currCount < targetCount) {
-					resourcePipeComp.currCount =  Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED*deltaTime, world.resourceTotal.get(resourcePipeComp.resource));
+					resourcePipeComp.currCount =  Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED*deltaTime, targetCount);
 				}
 				
 				texComp.region = animation.getKeyFrame(Math.max(resourcePipeComp.currCount - resourcePipeComp.minCount, 0));
 			}
 		}
+	}
+	
+	public static class LED_Message {
+		public String text;
+		public Severity severity;
+		
+		public LED_Message(String text, Severity severity) {
+			this.text = text;
+			this.severity = severity;
+		}
+		
+		public enum Severity { HINT, FAIL, SUCCESS };
 	}
 }

@@ -4,27 +4,24 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.MiscArt;
-import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.FBO_Component;
 import com.apricotjam.spacepanic.components.FBO_ItemComponent;
 import com.apricotjam.spacepanic.components.ShaderComponent;
+import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
 import com.apricotjam.spacepanic.components.ShaderLightingComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
-import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -43,13 +40,18 @@ public class RenderingSystem extends EntitySystem {
 	private SpriteBatch batch;
 	
 	private ImmutableArray<Entity> fboList;
-	private SortedEntityList fboRenderQueue;
+	private SortedEntityList fboRenderQueue, fbo2RenderQueue;
 	private SortedEntityList screenRenderQueue;
 
 	public RenderingSystem(SpriteBatch batch, Camera worldCamera) {
 		super();
 		
 		fboRenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class)
+				.exclude(FBO_Component.class)
+				.one(TextureComponent.class, BitmapFontComponent.class)
+				.get(), new DepthFBOComparator());
+		
+		fbo2RenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class, FBO_Component.class)
 				.one(TextureComponent.class, BitmapFontComponent.class)
 				.get(), new DepthFBOComparator());
 		
@@ -111,6 +113,20 @@ public class RenderingSystem extends EntitySystem {
 				startFBO(currentFBO, fboIndex);
 			}
 			render(entity, fboItemComp.fboBatch);
+		}
+		
+		//Render FBOs to FBOs.
+		Array<Entity> fbo2Entities = fbo2RenderQueue.getSortedEntities();
+		for (Entity entity : fbo2Entities) {
+			FBO_ItemComponent fbo2ItemComp = ComponentMappers.fboitem.get(entity);
+			if (!fbo2ItemComp.fboID.equals(currentFBO)) {
+				if (!currentFBO.equals("")) {
+					endFBO(currentFBO, fboIndex);
+				}
+				currentFBO = fbo2ItemComp.fboID;
+				startFBO(currentFBO, fboIndex);
+			}
+			render(entity, fbo2ItemComp.fboBatch);
 		}
 
 		if (!currentFBO.equals("")) {
@@ -178,6 +194,10 @@ public class RenderingSystem extends EntitySystem {
 			if (ComponentMappers.shaderlight.has(entity)) {
 				ShaderLightingComponent shaderLightComp = ComponentMappers.shaderlight.get(entity);
 				shaderComp.shader.setUniformf("LightPos", shaderLightComp.lightPosition);
+			}
+			if (ComponentMappers.shaderdirection.has(entity)) {
+				ShaderDirectionComponent shaderDirComp = ComponentMappers.shaderdirection.get(entity);
+				shaderComp.shader.setUniformf("direction", shaderDirComp.direction);
 			}
 		}
 		

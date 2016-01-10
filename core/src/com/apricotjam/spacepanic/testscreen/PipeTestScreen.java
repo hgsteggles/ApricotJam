@@ -10,6 +10,7 @@ import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
+import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.systems.AnimatedShaderSystem;
 import com.apricotjam.spacepanic.systems.AnimationSystem;
@@ -21,6 +22,8 @@ import com.apricotjam.spacepanic.systems.ShaderLightingSystem;
 import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severity;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
@@ -65,12 +68,24 @@ public class PipeTestScreen extends BasicScreen {
 			
 			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 			helmetScreenComp.resourceCount.put(pipeScreenComp.resource, helmetScreenComp.resourceCount.get(pipeScreenComp.resource) + 10);
+			
+			helmetScreenComp.messages.addLast(new LED_Message("SUCCESS", Severity.SUCCESS));
+			helmetScreenComp.messages.addLast(new LED_Message("RESOURCE COLLECTED", Severity.HINT));
 		}
 		else if (pipeScreenComp.currentState == PipeScreenComponent.State.FAIL) {
 			System.out.println("Failed the pipe puzzle :(");
 			
 			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
 		}
+		
+		alterResource(Resource.OXYGEN, -0.02f*delta);
+	}
+	
+	private void alterResource(Resource resource, float amount) {
+		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+		float current = hsc.resourceCount.get(resource);
+		float next = Math.min(Math.max(current + amount, 0.0f), hsc.maxCount.get(resource));
+		hsc.resourceCount.put(resource, next);
 	}
 	
 	private Entity createHelmetMasterEntity() {

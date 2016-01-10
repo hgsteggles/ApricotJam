@@ -74,8 +74,11 @@ public class Shaders {
 		manager.setUniformf("maskRect", 0.25f, 0.25f, 0.5f, 0.5f);
 		manager.end();
 		
-		manager.add("led", Gdx.files.internal("default.vert"), Gdx.files.internal("mask.frag"));
-		manager.registerResolutionShader("led");
+		manager.add("led-blur-mask", Gdx.files.internal("default.vert"), Gdx.files.internal("led.frag"));
+		manager.registerResolutionShader("led-blur-mask");
+		manager.begin("led-blur-mask");
+		manager.setUniformf("radius", 0.2f);
+		manager.end();
 		
 		manager.resize(SpacePanic.WIDTH, SpacePanic.HEIGHT);
 	}
