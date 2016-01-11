@@ -47,28 +47,22 @@ public class HelmetSystem extends EntitySystem {
 	public void update(float deltaTime) {
 		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(masterEntity);
 		
-		if (leds.size() == 0 && helmetScreenComp.messages.size != 0) {
-			LED_Message message = helmetScreenComp.messages.removeFirst();
-			
-			switch(message.severity) {
-				case HINT:
-					getEngine().addEntity(world.createMarqueeLED(message.text));
-					break;
-				case SUCCESS:
-					getEngine().addEntity(world.createAppearLED(message.text));
-					break;
-				case FAIL:
-					getEngine().addEntity(world.createFlashLED(message.text));
-					break;
+		if (helmetScreenComp.messages.size != 0) {
+			if (leds.size() > 0) {
+				for (Entity entity : leds) {
+					getEngine().removeEntity(entity);
+				}
 			}
+			LED_Message message = helmetScreenComp.messages.removeFirst();
+			getEngine().addEntity(world.createLED(message.text, message.severity));
 		}
 		
 		for (Entity entity : leds) {
-			if (ComponentMappers.tween.get(entity).tweenSpecs.size == 0)
+			if (ComponentMappers.tween.get(entity).tweenSpecs.size == 0) {
 				getEngine().removeEntity(entity);
+			}
 		}
 		
-		/*
 		for (Entity entity : resourcePipes) {
 			ResourcePipeComponent resourcePipeComp = ComponentMappers.resourcepipe.get(entity);
 			float targetCount = helmetScreenComp.resourceCount.get(resourcePipeComp.resource);
@@ -80,7 +74,6 @@ public class HelmetSystem extends EntitySystem {
 			resourcePipeComp.currCount = targetCount;
 			updateResourcePipe(entity);
 		}
-		*/
 	}
 
 	private void updateResourcePipe(Entity e) {

@@ -88,14 +88,14 @@ asteroid
   index: -1
 asteroid2
   rotate: false
-  xy: 1286, 144
+  xy: 644, 144
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 asteroid3
   rotate: false
-  xy: 1704, 370
+  xy: 1062, 370
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
@@ -107,23 +107,9 @@ computerBackground
   orig: 640, 360
   offset: 0, 0
   index: -1
-computerBackground (another copy)
-  rotate: false
-  xy: 2, 138
-  size: 640, 360
-  orig: 640, 360
-  offset: 0, 0
-  index: -1
-computerBackground (copy)
-  rotate: false
-  xy: 644, 138
-  size: 640, 360
-  orig: 640, 360
-  offset: 0, 0
-  index: -1
 computerFrame
   rotate: false
-  xy: 1286, 274
+  xy: 644, 274
   size: 416, 224
   orig: 416, 224
   offset: 0, 0
@@ -137,7 +123,7 @@ mapcross01
   index: -1
 mapcross02
   rotate: false
-  xy: 1416, 208
+  xy: 774, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -151,14 +137,14 @@ mapline01
   index: -1
 playerIcon
   rotate: false
-  xy: 1704, 304
+  xy: 1062, 304
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 resource0Icon
   rotate: false
-  xy: 1834, 434
+  xy: 1192, 434
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -172,14 +158,14 @@ resource1Icon
   index: -1
 resource2Icon
   rotate: false
-  xy: 1482, 208
+  xy: 840, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 resource3Icon
   rotate: false
-  xy: 1900, 434
+  xy: 1258, 434
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

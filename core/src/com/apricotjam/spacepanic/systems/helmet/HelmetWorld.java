@@ -8,7 +8,6 @@ import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedAnimationData;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedRegionData;
 import com.apricotjam.spacepanic.art.Shaders;
-import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.ShaderComponent;
@@ -24,10 +23,10 @@ import com.apricotjam.spacepanic.components.helmet.ResourcePipeComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severity;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -605,6 +604,92 @@ public class HelmetWorld {
 				bfc.color.a = Math.min(2.0f*a, 1);
 			}
 		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+		entity.add(tweenComp);
+		
+		return entity;
+	}
+	
+	public Entity createLED(String text, Severity severity) {
+		Entity entity = new Entity();
+		
+		LED_Component ledComp = new LED_Component();
+		entity.add(ledComp);
+		
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "led";
+		fontComp.centering = true;
+		fontComp.string = text;
+		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
+		layout.setText(MiscArt.fonts.get(fontComp.font), text);
+		fontComp.layout = layout;
+		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
+		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
+		if (severity == Severity.HINT)
+			fontComp.color.set(1f, 1f, 0f, 1f);
+		else if (severity == Severity.SUCCESS)
+			fontComp.color.set(0f, 1f, 0f, width > LEDBG_W ? 1f : 0f);
+		else
+			fontComp.color.set(1f, 0f, 0f, 1f);
+		entity.add(fontComp);
+		
+		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
+		
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
+		entity.add(transComp);
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		if (severity == Severity.HINT || width > LEDBG_W) {
+			transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, HELMET_Z + 4);
+			
+			tweenSpec.start = 0.0f;
+			tweenSpec.end = 1.0f;
+			tweenSpec.period = 4f;
+			tweenSpec.loops = severity == Severity.HINT ? 2 : 1;
+			tweenSpec.cycle = TweenSpec.Cycle.LOOP;
+			tweenSpec.interp = Interpolation.linear;
+			tweenSpec.tweenInterface = new TweenInterface() {
+				@Override
+				public void applyTween(Entity e, float a) {
+					TransformComponent tc = ComponentMappers.transform.get(e);
+					BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e); 
+					float w = bfc.layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;
+					tc.position.x = LEDBG_X + (LEDBG_W + w)/2f - a*(LEDBG_W + w);
+				}
+			};
+		}
+		else if (severity == Severity.SUCCESS) {
+			tweenSpec.start = 0.0f;
+			tweenSpec.end = 1.0f;
+			tweenSpec.period = 2f;
+			tweenSpec.cycle = TweenSpec.Cycle.ONCE;
+			tweenSpec.interp = Interpolation.linear;
+			tweenSpec.tweenInterface = new TweenInterface() {
+				@Override
+				public void applyTween(Entity e, float a) {
+					BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
+					bfc.color.a = Math.min(2.0f*Math.max(a, 0), 1);
+				}
+			};
+		}
+		else {
+			tweenSpec.start = 0.0f;
+			tweenSpec.end = 1.0f;
+			tweenSpec.period = 0.8f;
+			tweenSpec.cycle = TweenSpec.Cycle.LOOP;
+			tweenSpec.loops = 8;
+			tweenSpec.reverse = true;
+			tweenSpec.interp = Interpolation.sine;
+			tweenSpec.tweenInterface = new TweenInterface() {
+				@Override
+				public void applyTween(Entity e, float a) {
+					BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
+					bfc.color.a = a;
+				}
+			};
+		}
 		tweenComp.tweenSpecs.add(tweenSpec);
 		entity.add(tweenComp);
 		

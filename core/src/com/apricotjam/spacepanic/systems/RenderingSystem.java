@@ -98,6 +98,8 @@ public class RenderingSystem extends EntitySystem {
 		for (Entity entity : fboList) {
 			FBO_Component fboComp = ComponentMappers.fbo.get(entity);
 			fboIndex.put(fboComp.FBO_ID, entity);
+			Shaders.manager.beginFB(fboComp.FBO_ID);
+			Shaders.manager.endFB();
 		}
 
 		//Render items to FBOs
