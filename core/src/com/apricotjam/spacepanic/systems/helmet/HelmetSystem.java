@@ -68,6 +68,7 @@ public class HelmetSystem extends EntitySystem {
 				getEngine().removeEntity(entity);
 		}
 		
+		/*
 		for (Entity entity : resourcePipes) {
 			ResourcePipeComponent resourcePipeComp = ComponentMappers.resourcepipe.get(entity);
 			float targetCount = helmetScreenComp.resourceCount.get(resourcePipeComp.resource);
@@ -79,6 +80,7 @@ public class HelmetSystem extends EntitySystem {
 			resourcePipeComp.currCount = targetCount;
 			updateResourcePipe(entity);
 		}
+		*/
 	}
 
 	private void updateResourcePipe(Entity e) {

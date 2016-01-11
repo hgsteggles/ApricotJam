@@ -16,18 +16,23 @@ import com.apricotjam.spacepanic.components.StateComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.pipe.PipeComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.EventInterface;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -136,6 +141,12 @@ public class PipeWorld {
 		
 		// Create led display.
 		//engine.addEntity(createLED_Panel());
+		
+		// Create capsule parts.
+		engine.addEntity(createCapsulePart(true));
+		engine.addEntity(createCapsulePart(false));
+		engine.addEntity(createCapsuleMaskPart(true));
+		engine.addEntity(createCapsuleMaskPart(false));
 	}
 	
 	private void buildTimerPipes(Engine engine, Entity[][] pipeGrid) {
@@ -235,6 +246,67 @@ public class PipeWorld {
 	
 	public Entity getTimer() {
 		return timer;
+	}
+	
+	private Entity createCapsulePart(boolean isLeft) {
+		Entity entity = new Entity();
+		
+		TextureComponent textureComp = new TextureComponent();
+		textureComp.region = isLeft ? PipeGameArt.capsuleLeft : PipeGameArt.capsuleRight;
+		textureComp.size.set((260f/896f)*7f, 7f);
+		entity.add(textureComp);
+		
+		TransformComponent transComp = new TransformComponent();
+		float halfwidth = (GRID_LENGTH + 4f) / 2f + 1f;
+		transComp.position.set(isLeft ? -halfwidth : halfwidth, 0, PIPE_Z);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
+		entity.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("light");
+		entity.add(shaderComp);
+		
+		return entity;
+	}
+	
+	private Entity createCapsuleMaskPart(boolean isLeft) {
+		Entity entity = new Entity();
+		
+		TextureComponent textureComp = new TextureComponent();
+		textureComp.region = isLeft ? PipeGameArt.capsuleMaskLeft : PipeGameArt.capsuleMaskRight;
+		textureComp.size.set((260f/896f)*7f, 7f);
+		textureComp.color.set(0f, 0f, 0f, 1f);
+		entity.add(textureComp);
+		
+		TransformComponent transComp = new TransformComponent();
+		float halfwidth = (GRID_LENGTH + 4f) / 2f + 1f;
+		transComp.position.set(isLeft ? -halfwidth : halfwidth, 0, PIPE_Z);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
+		entity.add(transComp);
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 0.0f;
+		tweenSpec.end = 1.0f;
+		tweenSpec.period = 2f;
+		tweenSpec.reverse = true;
+		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
+		tweenSpec.interp = Interpolation.sine;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				TextureComponent tc = ComponentMappers.texture.get(e);
+				tc.color.r = a;
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+		entity.add(tweenComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("light");
+		entity.add(shaderComp);
+		
+		return entity;
 	}
 	
 	private Entity createPipe(byte mask, int ipos, int jpos, boolean withinGrid) {

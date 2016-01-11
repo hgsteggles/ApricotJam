@@ -76,6 +76,11 @@ public class PipeTestScreen extends BasicScreen {
 			System.out.println("Failed the pipe puzzle :(");
 			
 			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
+			
+			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+			
+			helmetScreenComp.messages.addLast(new LED_Message("FAILURE", Severity.FAIL));
+			helmetScreenComp.messages.addLast(new LED_Message("RESOURCE NOT COLLECTED", Severity.HINT));
 		}
 		
 		alterResource(Resource.OXYGEN, -0.02f*delta);

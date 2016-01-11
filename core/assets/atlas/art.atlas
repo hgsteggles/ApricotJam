@@ -20,6 +20,61 @@ title
   index: -1
 
 art2.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+comsSpeaker
+  rotate: false
+  xy: 1688, 1495
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+fog
+  rotate: false
+  xy: 2, 903
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+helmetBase
+  rotate: false
+  xy: 2, 181
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+ledFrame
+  rotate: false
+  xy: 1284, 1344
+  size: 288, 96
+  orig: 288, 96
+  offset: 0, 0
+  index: -1
+resource-panel
+  rotate: false
+  xy: 2, 36
+  size: 304, 143
+  orig: 304, 143
+  offset: 0, 0
+  index: -1
+screw
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+sidepanel
+  rotate: false
+  xy: 1284, 1442
+  size: 402, 181
+  orig: 402, 181
+  offset: 0, 0
+  index: -1
+
+art3.png
 size: 2048,512
 format: RGBA8888
 filter: Nearest,Nearest
@@ -130,747 +185,782 @@ resource3Icon
   offset: 0, 0
   index: -1
 
-art3.png
-size: 2048,2048
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-comsSpeaker
-  rotate: false
-  xy: 1284, 1278
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-fog
-  rotate: false
-  xy: 2, 869
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-helmetBase
-  rotate: false
-  xy: 2, 147
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-resource-panel
-  rotate: false
-  xy: 2, 2
-  size: 304, 143
-  orig: 304, 143
-  offset: 0, 0
-  index: -1
-screw
-  rotate: false
-  xy: 1688, 1557
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-sidepanel
-  rotate: false
-  xy: 1284, 1408
-  size: 402, 181
-  orig: 402, 181
-  offset: 0, 0
-  index: -1
-
 art4.png
-size: 1024,512
+size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+capsule-left
+  rotate: false
+  xy: 2, 122
+  size: 260, 896
+  orig: 260, 896
+  offset: 0, 0
+  index: -1
+capsule-left-mask
+  rotate: false
+  xy: 264, 122
+  size: 260, 896
+  orig: 260, 896
+  offset: 0, 0
+  index: -1
+capsule-right
+  rotate: false
+  xy: 526, 122
+  size: 260, 896
+  orig: 260, 896
+  offset: 0, 0
+  index: -1
 fluid1-0
   rotate: false
-  xy: 652, 444
+  xy: 986, 968
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
-fluid1-0
-  rotate: false
-  xy: 686, 478
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 1
-fluid1-0
-  rotate: false
-  xy: 2, 20
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 2
-fluid1-0
-  rotate: false
-  xy: 36, 54
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 3
-fluid1-0
-  rotate: false
-  xy: 70, 88
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 4
-fluid1-0
-  rotate: false
-  xy: 522, 280
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 5
-fluid1-0
-  rotate: false
-  xy: 556, 314
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 6
-fluid1-0
-  rotate: false
-  xy: 590, 348
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 7
-fluid1-0
-  rotate: false
-  xy: 652, 426
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 8
-fluid1-0
-  rotate: false
-  xy: 704, 478
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 9
 fluid1-0
   rotate: false
   xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
+  index: 1
+fluid1-0
+  rotate: false
+  xy: 36, 36
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+fluid1-0
+  rotate: false
+  xy: 70, 70
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+fluid1-0
+  rotate: false
+  xy: 104, 104
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+fluid1-0
+  rotate: false
+  xy: 918, 866
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 5
+fluid1-0
+  rotate: false
+  xy: 952, 900
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 6
+fluid1-0
+  rotate: false
+  xy: 986, 950
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 7
+fluid1-0
+  rotate: false
+  xy: 122, 104
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 8
+fluid1-0
+  rotate: false
+  xy: 918, 848
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 9
+fluid1-0
+  rotate: false
+  xy: 986, 932
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
   index: 10
 fluid1-0
   rotate: false
-  xy: 88, 88
+  xy: 140, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid1-0
   rotate: false
-  xy: 522, 262
+  xy: 918, 830
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 fluid1-0
   rotate: false
-  xy: 608, 348
+  xy: 158, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 fluid1-0
   rotate: false
-  xy: 652, 408
+  xy: 918, 812
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
 fluid1-2
   rotate: false
-  xy: 652, 408
+  xy: 918, 812
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
 fluid1-2
   rotate: false
-  xy: 722, 478
+  xy: 176, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid1-2
   rotate: false
-  xy: 106, 88
+  xy: 918, 794
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid1-2
   rotate: false
-  xy: 522, 244
+  xy: 194, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 fluid1-2
   rotate: false
-  xy: 626, 348
+  xy: 918, 776
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid1-2
   rotate: false
-  xy: 652, 390
+  xy: 212, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid1-2
   rotate: false
-  xy: 740, 478
+  xy: 918, 758
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid1-2
   rotate: false
-  xy: 124, 88
+  xy: 230, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid1-2
   rotate: false
-  xy: 522, 226
+  xy: 918, 740
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid1-2
   rotate: false
-  xy: 652, 372
+  xy: 248, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid1-2
   rotate: false
-  xy: 758, 478
+  xy: 918, 722
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid1-2
   rotate: false
-  xy: 142, 88
+  xy: 266, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid1-2
   rotate: false
-  xy: 522, 208
+  xy: 918, 704
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid1-2
   rotate: false
-  xy: 776, 478
+  xy: 284, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 fluid1-2
   rotate: false
-  xy: 160, 88
+  xy: 918, 686
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 fluid10-3
   rotate: false
-  xy: 522, 190
+  xy: 302, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid15-3
   rotate: false
-  xy: 522, 190
+  xy: 302, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid6-2
   rotate: false
-  xy: 522, 190
+  xy: 302, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 fluid10-3
   rotate: false
-  xy: 794, 478
+  xy: 918, 668
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid15-3
   rotate: false
-  xy: 794, 478
+  xy: 918, 668
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid10-3
   rotate: false
-  xy: 178, 88
+  xy: 320, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 fluid15-3
   rotate: false
-  xy: 178, 88
+  xy: 320, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 fluid10-3
   rotate: false
-  xy: 522, 172
+  xy: 918, 650
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid15-3
   rotate: false
-  xy: 522, 172
+  xy: 918, 650
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid10-3
   rotate: false
-  xy: 812, 478
+  xy: 338, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid15-3
   rotate: false
-  xy: 812, 478
+  xy: 338, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid10-3
   rotate: false
-  xy: 196, 88
+  xy: 918, 632
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid15-3
   rotate: false
-  xy: 196, 88
+  xy: 918, 632
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid10-3
   rotate: false
-  xy: 522, 154
+  xy: 356, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid15-3
   rotate: false
-  xy: 522, 154
+  xy: 356, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid10-3
   rotate: false
-  xy: 830, 478
+  xy: 918, 614
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid15-3
   rotate: false
-  xy: 830, 478
+  xy: 918, 614
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid10-3
   rotate: false
-  xy: 214, 88
+  xy: 374, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid15-3
   rotate: false
-  xy: 214, 88
+  xy: 374, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid10-3
   rotate: false
-  xy: 522, 136
+  xy: 918, 596
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid15-3
   rotate: false
-  xy: 522, 136
+  xy: 918, 596
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid10-3
   rotate: false
-  xy: 848, 478
+  xy: 392, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid15-3
   rotate: false
-  xy: 848, 478
+  xy: 392, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid10-3
   rotate: false
-  xy: 232, 88
+  xy: 918, 578
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid15-3
   rotate: false
-  xy: 232, 88
+  xy: 918, 578
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid10-3
   rotate: false
-  xy: 522, 118
+  xy: 410, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 fluid15-3
   rotate: false
-  xy: 522, 118
+  xy: 410, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 fluid10-3
   rotate: false
-  xy: 866, 478
+  xy: 918, 560
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 fluid15-3
   rotate: false
-  xy: 866, 478
+  xy: 918, 560
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 fluid10-3
   rotate: false
-  xy: 250, 88
+  xy: 428, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
 fluid15-3
   rotate: false
-  xy: 250, 88
+  xy: 428, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
 fluid10-3
   rotate: false
-  xy: 884, 478
+  xy: 918, 542
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 15
 fluid15-3
   rotate: false
-  xy: 884, 478
+  xy: 918, 542
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 15
 fluid10-3
   rotate: false
-  xy: 268, 88
+  xy: 446, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 16
 fluid15-3
   rotate: false
-  xy: 268, 88
+  xy: 446, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 16
 fluid6-2
   rotate: false
-  xy: 902, 478
+  xy: 918, 524
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 fluid6-2
   rotate: false
-  xy: 286, 88
+  xy: 464, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 fluid6-2
   rotate: false
-  xy: 920, 478
+  xy: 918, 506
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 fluid6-2
   rotate: false
-  xy: 304, 88
+  xy: 482, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 fluid6-2
   rotate: false
-  xy: 938, 478
+  xy: 918, 488
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 fluid6-2
   rotate: false
-  xy: 322, 88
+  xy: 500, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
 fluid6-2
   rotate: false
-  xy: 956, 478
+  xy: 918, 470
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 fluid6-2
   rotate: false
-  xy: 340, 88
+  xy: 518, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
 fluid6-2
   rotate: false
-  xy: 974, 478
+  xy: 918, 452
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 fluid6-2
   rotate: false
-  xy: 358, 88
+  xy: 536, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
 fluid6-2
   rotate: false
-  xy: 992, 478
+  xy: 918, 434
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 fluid6-2
   rotate: false
-  xy: 376, 88
+  xy: 554, 104
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
 circuit-1
   rotate: false
-  xy: 2, 72
+  xy: 918, 986
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 circuit-2
   rotate: false
-  xy: 522, 332
+  xy: 2, 88
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 circuit-3
   rotate: false
-  xy: 652, 462
+  xy: 918, 952
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 circuit-4
   rotate: false
-  xy: 2, 38
+  xy: 952, 986
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 circuit-5
   rotate: false
-  xy: 36, 72
+  xy: 2, 54
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-0
+  rotate: false
+  xy: 36, 88
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 pipe-bg-1
   rotate: false
-  xy: 522, 298
+  xy: 918, 918
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-pipe-bg-1-new
+pipe-bg-12
   rotate: false
-  xy: 556, 332
+  xy: 952, 918
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-pipe-cap
+pipe-bg-2
   rotate: false
-  xy: 522, 366
-  size: 128, 128
-  orig: 128, 128
+  xy: 952, 952
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-3
+  rotate: false
+  xy: 986, 986
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-4
+  rotate: false
+  xy: 2, 20
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-6
+  rotate: false
+  xy: 36, 54
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-8
+  rotate: false
+  xy: 70, 88
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-9
+  rotate: false
+  xy: 918, 884
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 pipe1
   rotate: false
-  xy: 2, 366
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-pipe10
-  rotate: false
-  xy: 392, 366
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-pipe12
-  rotate: false
-  xy: 262, 106
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-pipe15
-  rotate: false
-  xy: 392, 236
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-pipe15-old
-  rotate: false
-  xy: 392, 106
+  xy: 788, 890
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe2
   rotate: false
-  xy: 2, 236
+  xy: 788, 760
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe3
   rotate: false
-  xy: 132, 366
+  xy: 788, 630
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe4
   rotate: false
-  xy: 2, 106
+  xy: 788, 500
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe5
   rotate: false
-  xy: 132, 236
+  xy: 788, 370
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe6
   rotate: false
-  xy: 262, 366
+  xy: 788, 240
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 pipe8
   rotate: false
-  xy: 132, 106
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-pipe9
-  rotate: false
-  xy: 262, 236
+  xy: 788, 110
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 white_pixel
   rotate: false
-  xy: 670, 459
+  xy: 1020, 1017
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 
 art5.png
+size: 512,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+capsule-right-mask
+  rotate: false
+  xy: 2, 2
+  size: 260, 896
+  orig: 260, 896
+  offset: 0, 0
+  index: -1
+pipe-cap
+  rotate: false
+  xy: 264, 250
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+pipe10
+  rotate: false
+  xy: 264, 640
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+pipe12
+  rotate: false
+  xy: 264, 510
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+pipe15
+  rotate: false
+  xy: 264, 380
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+pipe15-old
+  rotate: false
+  xy: 264, 120
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+pipe9
+  rotate: false
+  xy: 264, 770
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+
+art6.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
