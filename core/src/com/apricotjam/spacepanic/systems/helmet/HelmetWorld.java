@@ -8,19 +8,12 @@ import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedAnimationData;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedRegionData;
 import com.apricotjam.spacepanic.art.Shaders;
-import com.apricotjam.spacepanic.components.BitmapFontComponent;
-import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.ShaderComponent;
-import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
-import com.apricotjam.spacepanic.components.ShaderTimeComponent;
-import com.apricotjam.spacepanic.components.TextureComponent;
-import com.apricotjam.spacepanic.components.TransformComponent;
-import com.apricotjam.spacepanic.components.TweenComponent;
-import com.apricotjam.spacepanic.components.TweenSpec;
+import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.helmet.HelmetPartComponent;
 import com.apricotjam.spacepanic.components.helmet.LED_Component;
 import com.apricotjam.spacepanic.components.helmet.ResourcePipeComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
+import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severity;
@@ -29,6 +22,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
@@ -64,7 +58,7 @@ public class HelmetWorld {
 		
 		//// Screws.
 		engine.addEntity(createScrew((46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));
-		engine.addEntity(createScrew((48f/1280f)*BasicScreen.WORLD_WIDTH, (560f/720f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((48f/1280f)*BasicScreen.WORLD_WIDTH, (560f/720f)*BasicScreen.WORLD_HEIGHT, true));
 		engine.addEntity(createScrew((439f/1280f)*BasicScreen.WORLD_WIDTH, (699f/720f)*BasicScreen.WORLD_HEIGHT));
 		engine.addEntity(createScrew((1.0f - 46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));
 		engine.addEntity(createScrew((1.0f - 48f/1280f)*BasicScreen.WORLD_WIDTH, (560f/720f)*BasicScreen.WORLD_HEIGHT));
@@ -143,8 +137,12 @@ public class HelmetWorld {
 
 		return e;
 	}
-	
+
 	private Entity createScrew(float x, float y) {
+		return createScrew(x, y, false);
+	}
+	
+	private Entity createScrew(float x, float y, boolean trick) {
 		Entity e = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
@@ -163,7 +161,37 @@ public class HelmetWorld {
 		shaderComp.shader = Shaders.manager.get("helmet-light");
 		e.add(shaderComp);
 
+		if (trick) {
+			e.add(new TweenComponent());
+			ClickComponent clickComponent = new ClickComponent();
+			clickComponent.shape = new Circle(0.0f, 0.0f, 0.4f);
+			clickComponent.clicker = new ClickInterface() {
+				@Override
+				public void onClick(Entity entity) {
+					TweenComponent tweenComponent = ComponentMappers.tween.get(entity);
+					tweenComponent.tweenSpecs.add(spinTween());
+				}
+			};
+			e.add(clickComponent);
+		}
+
 		return e;
+	}
+
+	private TweenSpec spinTween() {
+		TweenSpec ts = new TweenSpec();
+		ts.start = 0.0f;
+		ts.end = 360.0f;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.exp10;
+		ts.period = 2.0f;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.transform.get(e).rotation = a;
+			}
+		};
+		return ts;
 	}
 	
 	private Entity createLED_Frame(float x, float y) {

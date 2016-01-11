@@ -198,8 +198,8 @@ public class GameScreen extends BasicScreen {
 
 			@Override
 			public void endTween(Entity e) {
-				engine.removeEntity(pipeSystemEntity);
 				engine.removeSystem(pipeSystem);
+				engine.removeEntity(pipeSystemEntity);
 			}
 		};
 		return ts;
