@@ -18,6 +18,8 @@ public class TransformComponent implements Component {
 		total.rotation += rotation;
 		TransformComponent ipar = parent;
 		while (ipar != null) {
+			total.position.x *= ipar.scale.x;
+			total.position.y *= ipar.scale.y;
 			total.position.add(ipar.position);
 			total.scale.x *= ipar.scale.x;
 			total.scale.y *= ipar.scale.y;

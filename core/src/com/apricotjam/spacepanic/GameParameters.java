@@ -15,10 +15,10 @@ public class GameParameters {
 
 	public static final ObjectMap<Resource, Float> RESOURCE_DEPLETION = new ObjectMap<Resource, Float>();
 	static {
-		RESOURCE_DEPLETION.put(Resource.OXYGEN, -1.0f);
-		RESOURCE_DEPLETION.put(Resource.OIL, -1.0f);
-		RESOURCE_DEPLETION.put(Resource.RESOURCE2, -1.0f);
-		RESOURCE_DEPLETION.put(Resource.RESOURCE3, -1.0f);
+		RESOURCE_DEPLETION.put(Resource.OXYGEN, -0.1f);
+		RESOURCE_DEPLETION.put(Resource.OIL, -0.1f);
+		RESOURCE_DEPLETION.put(Resource.RESOURCE2, -0.1f);
+		RESOURCE_DEPLETION.put(Resource.RESOURCE3, -0.1f);
 	}
 
 	public static final ObjectMap<Resource, Float> RESOURCE_GAIN = new ObjectMap<Resource, Float>();

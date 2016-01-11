@@ -206,7 +206,7 @@ public class RenderingSystem extends EntitySystem {
 		if (ComponentMappers.texture.has(entity)) {
 			TextureComponent tex = ComponentMappers.texture.get(entity);
 
-			if (tex.region == null) {
+			if (tex.region == null || tex.region.getTexture() == null) {
 				return;
 			}
 

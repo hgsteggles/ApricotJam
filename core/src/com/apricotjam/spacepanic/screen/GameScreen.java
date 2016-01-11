@@ -6,84 +6,126 @@ import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
+import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
-import com.apricotjam.spacepanic.systems.helmet.HelmetWorld;
+import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severity;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
+import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 
 public class GameScreen extends BasicScreen {
 
-	public static float BACKGROUND_MOVEMENT_FACTOR = 0.1f;
+	public enum GameState {
+		MAZING, PIPING, TRANSITIONING
+	}
 
-	Entity mapSystemEntity;
-	Entity helmetSystemEntity;
-	TextureComponent backgroundTexComp;
+	public static float BACKGROUND_MOVEMENT_FACTOR = 0.1f;
+	public static float MAP_X = BasicScreen.WORLD_WIDTH / 2.0f;
+	public static float MAP_Y_ON = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
+	public static float MAP_Y_OFF = -2.0f;
+	public static float PIPE_X = BasicScreen.WORLD_WIDTH / 2.0f;
+	public static float PIPE_Y = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
+	public static float PIPE_SCALE_SMALL = 0.1f;
+	public static float PIPE_SCALE_LARGE = 1.0f;
+
+	private GameState currentState;
+
+	private Entity mapSystemEntity;
+	private Entity helmetSystemEntity;
+	private Entity pipeSystemEntity;
+	private TextureComponent backgroundTexComp;
+
+	private PipeSystem pipeSystem = null;
 
 	public GameScreen(SpacePanic spacePanic) {
 		super(spacePanic);
 
 		add(new RenderingSystem(spriteBatch, worldCamera));
 		add(new ClickSystem());
-		add(new AnimatedShaderSystem());
 		add(new TweenSystem());
-		add(new LineSystem());
 		add(new MovementSystem());
 		add(new ScrollSystem());
-		add(new AnimationSystem());
-		add(new ShaderLightingSystem());
+		add(new LineSystem());
 		add(new TickerSystem());
+		add(new AnimationSystem());
+		add(new AnimatedShaderSystem());
+		add(new ShaderLightingSystem());
 
-		//add(new PipeSystem());
 		addHelmetSystem();
 		addMapSystem();
 
 		add(createBackground());
+
+		currentState = GameState.MAZING;
 	}
 
 	@Override
 	public void render(float delta) {
 		super.render(delta);
 
-		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
-		if (msc.currentState == MapScreenComponent.State.ENCOUNTER) {
-			System.out.println("Look! A " + msc.encounterResource);
-			alterResource(msc.encounterResource, GameParameters.RESOURCE_GAIN.get(msc.encounterResource));
-			HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
-			hsc.messages.addLast(new HelmetSystem.LED_Message(msc.encounterResource + " found!", HelmetSystem.LED_Message.Severity.SUCCESS));
-			msc.currentState = MapScreenComponent.State.EXPLORING;
-			/*msc.currentState = MapScreenComponent.State.PAUSED;
-			TweenSpec ts = new TweenSpec();
-			ts.start = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
-			ts.end =  -2.0f;
-			ts.cycle = TweenSpec.Cycle.LOOP;
-			ts.reverse = true;
-			ts.loops = 2;
-			ts.interp = Interpolation.linear;
-			ts.period = 2.0f;
-			ts.tweenInterface = new TweenInterface() {
-				@Override
-				public void applyTween(Entity e, float a) {
-					ComponentMappers.transform.get(e).position.y = a;
-				}
-
-				@Override
-				public void endTween(Entity e) {
-					ComponentMappers.mapscreen.get(e).currentState = MapScreenComponent.State.EXPLORING;
-				}
-			};
-			ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(ts);*/
-		} else if (msc.currentState == MapScreenComponent.State.EXPLORING) {
-			setBackgroundPosition();
+		switch (currentState) {
+			case MAZING:
+				updateMaze();
+				break;
+			case PIPING:
+				updatePipe();
+				break;
 		}
 
 		for (Resource r: Resource.values()) {
 			alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
+		}
+	}
+
+	private void updateMaze() {
+		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
+		if (msc.currentState == MapScreenComponent.State.ENCOUNTER) {
+			resourceEncountered(msc.encounterResource);
+		} else if (msc.currentState == MapScreenComponent.State.EXPLORING) {
+			setBackgroundPosition();
+		}
+	}
+
+	private void updatePipe() {
+		PipeScreenComponent psc = ComponentMappers.pipescreen.get(pipeSystemEntity);
+		if (psc.currentState == PipeScreenComponent.State.SUCCESS) {
+			pipeGameComplete(psc.resource, true);
+		} else if (psc.currentState == PipeScreenComponent.State.FAIL) {
+			pipeGameComplete(psc.resource, false);
+		}
+	}
+
+	private void resourceEncountered(Resource resource) {
+		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
+		addMessage(resource + " located", Severity.HINT);
+		msc.currentState = MapScreenComponent.State.PAUSED;
+		ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(mapOutTween());
+		currentState = GameState.TRANSITIONING;
+
+		addPipeSystem(resource);
+		ComponentMappers.tween.get(pipeSystemEntity).tweenSpecs.add(pipeInTween());
+	}
+
+	private void pipeGameComplete(Resource resource, boolean success) {
+		ComponentMappers.tween.get(pipeSystemEntity).tweenSpecs.add(pipeOutTween());
+		PipeScreenComponent psc = ComponentMappers.pipescreen.get(pipeSystemEntity);
+		psc.currentState = PipeScreenComponent.State.PAUSED;
+		currentState = GameState.TRANSITIONING;
+
+		ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(mapInTween());
+
+		if (success) {
+			addMessage(resource + " acquired", Severity.SUCCESS);
+			alterResource(resource, GameParameters.RESOURCE_GAIN.get(resource));
+		} else {
+			addMessage(resource + " lost", Severity.FAIL);
 		}
 	}
 
@@ -92,6 +134,98 @@ public class GameScreen extends BasicScreen {
 		float current = hsc.resourceCount.get(resource);
 		float next = Math.max(current + amount, 0.0f);
 		hsc.resourceCount.put(resource, next);
+	}
+
+	private void addMessage(String text, Severity severity) {
+		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+		hsc.messages.addLast(new HelmetSystem.LED_Message(text, severity));
+	}
+
+	private TweenSpec mapOutTween() {
+		TweenSpec ts = new TweenSpec();
+		ts.start = MAP_Y_ON;
+		ts.end =  MAP_Y_OFF;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.linear;
+		ts.period = 2.0f;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.transform.get(e).position.y = a;
+			}
+		};
+		return ts;
+	}
+
+	private TweenSpec mapInTween() {
+		TweenSpec ts = new TweenSpec();
+		ts.start = MAP_Y_OFF;
+		ts.end =  MAP_Y_ON;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.linear;
+		ts.period = 2.0f;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.transform.get(e).position.y = a;
+			}
+
+			@Override
+			public void endTween(Entity e) {
+				currentState = GameState.MAZING;
+				ComponentMappers.mapscreen.get(e).currentState = MapScreenComponent.State.EXPLORING;
+			}
+		};
+		return ts;
+	}
+
+	private TweenSpec pipeOutTween() {
+		TweenSpec ts = new TweenSpec();
+		//ts.start = PIPE_SCALE_LARGE;
+		//ts.end = PIPE_SCALE_LARGE;
+		ts.start = PIPE_X;
+		ts.end = PIPE_X + 3.0f;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.linear;
+		ts.period = 2.0f;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.transform.get(e).position.x = a;
+				//ComponentMappers.transform.get(e).scale.x = a;
+				//ComponentMappers.transform.get(e).scale.y = a;
+			}
+
+			@Override
+			public void endTween(Entity e) {
+				engine.removeEntity(pipeSystemEntity);
+				engine.removeSystem(pipeSystem);
+			}
+		};
+		return ts;
+	}
+
+	private TweenSpec pipeInTween() {
+		TweenSpec ts = new TweenSpec();
+		ts.start = PIPE_SCALE_SMALL;
+		ts.end =  PIPE_SCALE_LARGE;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.linear;
+		ts.period = 2.0f;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.transform.get(e).scale.x = a;
+				ComponentMappers.transform.get(e).scale.y = a;
+			}
+
+			@Override
+			public void endTween(Entity e) {
+				currentState = GameState.PIPING;
+				pipeSystem.start();
+			}
+		};
+		return ts;
 	}
 
 	private void setBackgroundPosition() {
@@ -112,9 +246,9 @@ public class GameScreen extends BasicScreen {
 		mapSystemEntity.add(new MapScreenComponent());
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		tranc.position.x = MAP_X;
 		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
-		tranc.position.z = 5.0f;
+		tranc.position.z = 10.0f;
 		mapSystemEntity.add(tranc);
 
 		mapSystemEntity.add(new TweenComponent());
@@ -133,7 +267,32 @@ public class GameScreen extends BasicScreen {
 		}
 		helmetSystemEntity.add(helmetScreenComponent);
 
+		add(helmetSystemEntity);
 		add(new HelmetSystem(helmetSystemEntity));
+	}
+
+	private void addPipeSystem(Resource resource) {
+		pipeSystemEntity = new Entity();
+
+		PipeScreenComponent pipeScreenComp = new PipeScreenComponent();
+		pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
+		pipeScreenComp.resource = resource;
+		pipeSystemEntity.add(pipeScreenComp);
+
+		TransformComponent tranc = new TransformComponent();
+		tranc.position.x = PIPE_X;
+		tranc.position.y = PIPE_Y;
+		tranc.position.z = 5.0f;
+		tranc.scale.x = PIPE_SCALE_SMALL;
+		tranc.scale.y = PIPE_SCALE_SMALL;
+		pipeSystemEntity.add(tranc);
+
+		TweenComponent tweenc = new TweenComponent();
+		pipeSystemEntity.add(tweenc);
+
+		pipeSystem = new PipeSystem(pipeSystemEntity, 15);
+		add(pipeSystemEntity);
+		add(pipeSystem);
 	}
 
 	private Entity createBackground() {
