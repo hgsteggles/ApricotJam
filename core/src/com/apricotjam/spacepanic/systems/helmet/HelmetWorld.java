@@ -33,8 +33,8 @@ import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
 	public static float HELMET_Z = 100f;
-	public static float LEDBG_X = (71f/80f)*BasicScreen.WORLD_WIDTH;
-	public static float LEDBG_Y = (6f/80f)*BasicScreen.WORLD_HEIGHT;
+	public static float LEDBG_X = (70f/80f)*BasicScreen.WORLD_WIDTH;
+	public static float LEDBG_Y = (7f/80f)*BasicScreen.WORLD_HEIGHT;
 	public static float LEDBG_W = 3f;
 	public static float LEDBG_H = 0.7f;
 
@@ -171,8 +171,8 @@ public class HelmetWorld {
 
 		TextureComponent texComp = new TextureComponent();
 		texComp.region = HelmetUI.ledFrame;
-		texComp.size.x = 3.85f;
-		texComp.size.y = 2.08f;
+		texComp.size.x = 6.00f;
+		texComp.size.y = 2.00f;
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();

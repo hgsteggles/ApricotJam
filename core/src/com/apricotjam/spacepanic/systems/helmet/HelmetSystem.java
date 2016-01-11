@@ -48,13 +48,17 @@ public class HelmetSystem extends EntitySystem {
 		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(masterEntity);
 		
 		if (helmetScreenComp.messages.size != 0) {
+			/*
 			if (leds.size() > 0) {
 				for (Entity entity : leds) {
 					getEngine().removeEntity(entity);
 				}
 			}
-			LED_Message message = helmetScreenComp.messages.removeFirst();
-			getEngine().addEntity(world.createLED(message.text, message.severity));
+			*/
+			if (leds.size() == 0) {
+				LED_Message message = helmetScreenComp.messages.removeFirst();
+				getEngine().addEntity(world.createLED(message.text, message.severity));
+			}
 		}
 		
 		for (Entity entity : leds) {

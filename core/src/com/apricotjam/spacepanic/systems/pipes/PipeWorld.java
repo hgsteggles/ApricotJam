@@ -1,12 +1,14 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
 import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedAnimationData;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
+import com.apricotjam.spacepanic.components.ColorInterpolationComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.FBO_Component;
 import com.apricotjam.spacepanic.components.FBO_ItemComponent;
@@ -21,9 +23,11 @@ import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.pipe.PipeComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
+import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.EventInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.Colors;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.badlogic.ashley.core.Engine;
@@ -284,6 +288,11 @@ public class PipeWorld {
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		
+		ColorInterpolationComponent colorInterpComp = new ColorInterpolationComponent();
+		colorInterpComp.start.set(0f, 0f, 0f, 1f);
+		colorInterpComp.finish.set(HelmetUI.resourceColors.get(Resource.OXYGEN));
+		entity.add(colorInterpComp);
+		
 		TweenComponent tweenComp = new TweenComponent();
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 0.0f;
@@ -296,7 +305,8 @@ public class PipeWorld {
 			@Override
 			public void applyTween(Entity e, float a) {
 				TextureComponent tc = ComponentMappers.texture.get(e);
-				tc.color.r = a;
+				ColorInterpolationComponent cic = ComponentMappers.colorinterps.get(e);
+				Colors.lerp(tc.color, cic.start, cic.finish, a);
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);

@@ -39,4 +39,5 @@ public class ComponentMappers {
 	public static ComponentMapper<LineComponent> line = ComponentMapper.getFor(LineComponent.class);
 	public static ComponentMapper<ResourceCountComponent> resourcecount = ComponentMapper.getFor(ResourceCountComponent.class);
 	public static ComponentMapper<ResourcePipeComponent> resourcepipe = ComponentMapper.getFor(ResourcePipeComponent.class);
+	public static ComponentMapper<ColorInterpolationComponent> colorinterps = ComponentMapper.getFor(ColorInterpolationComponent.class);
 }
