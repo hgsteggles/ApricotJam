@@ -22,15 +22,12 @@ public class Shaders {
 	public static final float LIGHT_INTENSITY = 1.0f*0.4f;
 	
 	public static final Vector3 LIGHT_POS = new Vector3(0.5f, 0.5f, DEFAULT_LIGHT_Z);
-	
-	//Light RGB and intensity (alpha)
 	public static final Vector3 LIGHT_COLOR = new Vector3(1f, 1.0f, 1.0f);
-
-	//Ambient RGB and intensity (alpha)
 	public static final Vector3 AMBIENT_COLOR = new Vector3(1.0f, 1.0f, 1f);
-
-	//Attenuation coefficients for light falloff
 	public static final Vector3 FALLOFF = new Vector3(0.4f, 0.25f*3f, 0.10f*20f);
+	
+	public static final Vector3 DEMIST_POS = new Vector3(0.5f, 0.5f, 0.15f);
+	
 	
 	static public void load() {
 		shaderAssets = new AssetManager();
@@ -78,6 +75,13 @@ public class Shaders {
 		manager.registerResolutionShader("led-blur-mask");
 		manager.begin("led-blur-mask");
 		manager.setUniformf("radius", 0.2f);
+		manager.end();
+		
+		manager.add("fog", Gdx.files.internal("default.vert"), Gdx.files.internal("fog.frag"));
+		manager.registerResolutionShader("fog");
+		manager.begin("fog");
+		manager.setUniformf("demistPos", DEMIST_POS.x, DEMIST_POS.y, DEMIST_POS.z);
+		manager.setUniformf("spread", 2f);
 		manager.end();
 		
 		manager.resize(SpacePanic.WIDTH, SpacePanic.HEIGHT);

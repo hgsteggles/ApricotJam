@@ -12,6 +12,7 @@ import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.ShaderComponent;
 import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
+import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
@@ -93,6 +94,7 @@ public class HelmetWorld {
 		
 		//// Fog.
 		engine.addEntity(createFog());
+		engine.addEntity(createFog2());
 		
 		// Create black marquee.
 		//engine.addEntity(createLED_PanelShadow());
@@ -368,6 +370,50 @@ public class HelmetWorld {
 		e.add(tweenComp);
 
 		return e;
+	}
+	
+	private Entity createFog2() {
+		Entity entity = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = HelmetUI.fog2;
+		texComp.size.x = BasicScreen.WORLD_WIDTH;
+		texComp.size.y = BasicScreen.WORLD_HEIGHT;
+		entity.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		transComp.position.z = HELMET_Z - 1;
+		entity.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("fog");
+		entity.add(shaderComp);
+		
+		ShaderSpreadComponent shaderSpreadComp = new ShaderSpreadComponent();
+		shaderSpreadComp.spread = 100f;
+		entity.add(shaderSpreadComp);
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 0.0f;
+		tweenSpec.end = 1.0f;
+		tweenSpec.period = 4f;
+		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
+		tweenSpec.reverse = true;
+		tweenSpec.interp = Interpolation.sine;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ShaderSpreadComponent ssc = ComponentMappers.shaderspread.get(e);
+				ssc.spread = 0.1f/(a+0.001f); 
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+		entity.add(tweenComp);
+
+		return entity;
 	}
 	
 	private Entity createLED_PanelShadow() {
