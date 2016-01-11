@@ -50,7 +50,7 @@ public class PipePuzzleGenerator {
 		}
 		
 		resetMaskGrid();
-		turnOffCounter = Math.min(difficulty, 10);
+		turnOffCounter = Math.min(difficulty, 9);
 		
 		boolean done = updateMask(starts.get(0).x, starts.get(0).y, starts.get(0).x + 1, starts.get(0).y);
 		

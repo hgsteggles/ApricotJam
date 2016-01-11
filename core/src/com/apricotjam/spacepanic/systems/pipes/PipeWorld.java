@@ -55,17 +55,22 @@ public class PipeWorld {
 	private Array<Entity> entryPipes = new Array<Entity>();
 	private Array<Entity> exitPipes = new Array<Entity>();
 	
+	private int difficulty;
+	
 	private enum TileType {CORNER, SIDE, CENTRE};
 	
-	public PipeWorld(Entity masterEntity) {
+	public PipeWorld(Entity masterEntity, int difficulty) {
 		this.masterEntity = masterEntity;
+		this.difficulty = difficulty;
 	}
 	
 	public void build(Engine engine) {
 		// Create fluid lighting fbo.
 		engine.addEntity(createFluidFBO());
 		
-		generator.generatePuzzle(5, 1);
+		// Generate puzzle.
+		generator.generatePuzzle(difficulty%10, 1 + (int)(difficulty/10f));
+		
 		byte[][] maskGrid = generator.getMaskGrid();
 		
 		Entity[][] pipeEntities = new Entity[GRID_LENGTH][GRID_LENGTH];

@@ -21,9 +21,9 @@ public class PipeSystem extends EntitySystem {
 	
 	private Entity masterEntity;
 	
-	public PipeSystem(Entity masterEntity) {
+	public PipeSystem(Entity masterEntity, int difficulty) {
 		this.masterEntity = masterEntity;
-		world = new PipeWorld(masterEntity);
+		world = new PipeWorld(masterEntity, difficulty);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class PipeSystem extends EntitySystem {
 						
 						int entryDirection = PipeWorld.oppositeDirectionIndex(exitDirection);
 						
-						if (PipeWorld.connectedAtIndex(nextPipeTileComp.mask, entryDirection)) {
+						if (PipeWorld.connectedAtIndex(nextPipeTileComp.mask, entryDirection) && !PipeWorld.connectedAtIndex(nextPipeTileComp.usedExitMask, entryDirection)) {
 							// Next pipe is connected, start filling.
 							Entity nextFluid = world.createFluid(nextPipe, entryDirection);
 							ComponentMappers.shadertime.get(nextFluid).time = ComponentMappers.shadertime.get(pipeFluid).time;
@@ -69,12 +69,14 @@ public class PipeSystem extends EntitySystem {
 								StateComponent nextStateComp = ComponentMappers.state.get(nextFluid);
 								nextStateComp.timescale = solvedFluidSpeedup;
 							}
-							
 							getEngine().addEntity(nextFluid);
 							
 							// Stop player rotating the filling pipe.
 							ClickComponent clickComp = ComponentMappers.click.get(nextPipe);
 							clickComp.active = false;
+							
+							// Set exit mask to prevent fluid collisions.
+							nextPipeTileComp.usedExitMask = PipeWorld.connectAtIndex(nextPipeTileComp.usedExitMask, PipeWorld.exitFromEntryDirection(nextPipeTileComp.mask, entryDirection));
 						}
 						else {
 							if (!startedSolutionAnimation)

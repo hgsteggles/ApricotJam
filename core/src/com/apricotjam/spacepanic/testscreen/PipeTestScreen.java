@@ -43,7 +43,7 @@ public class PipeTestScreen extends BasicScreen {
 		add(createBackground());
 
 		add(new HelmetSystem(helmetSystemEntity));
-		PipeSystem pipeSystem = new PipeSystem(pipeSystemEntity);
+		PipeSystem pipeSystem = new PipeSystem(pipeSystemEntity, 15);
 		add(pipeSystem);
 		add(new MovementSystem());
 		add(new ScrollSystem());
