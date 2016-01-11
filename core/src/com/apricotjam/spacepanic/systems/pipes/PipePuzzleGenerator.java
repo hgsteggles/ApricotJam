@@ -7,11 +7,11 @@ import com.badlogic.gdx.utils.Array;
 public class PipePuzzleGenerator {
 	private RandomXS128 rng = new RandomXS128(0);
 	private byte[][] maskGrid = new byte[PipeWorld.GRID_LENGTH][PipeWorld.GRID_LENGTH];
-	private int turnOffCounter = 0;
 	private byte[] randomMasks = createRandomMasks();
 	
 	private Array<GridPoint2> starts = new Array<GridPoint2>();
 	private Array<GridPoint2> ends = new Array<GridPoint2>();
+	private Array<Integer> turnOffCounters = new Array<Integer>();
 	private int currPipe = 0;
 	
 	private int length = 2;
@@ -49,8 +49,13 @@ public class PipePuzzleGenerator {
 			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 2));
 		}
 		
+		int totalTurnOffCounter = Math.min(difficulty, 9);
+		
+		for (int i = 0; i < npipes - 1; ++i)
+			turnOffCounters.add(totalTurnOffCounter/npipes);
+		turnOffCounters.add(totalTurnOffCounter - (npipes - 1)*(totalTurnOffCounter/npipes));
+		
 		resetMaskGrid();
-		turnOffCounter = Math.min(difficulty, 9);
 		
 		boolean done = updateMask(starts.get(0).x, starts.get(0).y, starts.get(0).x + 1, starts.get(0).y);
 		
@@ -109,7 +114,7 @@ public class PipePuzzleGenerator {
 			parentDirection = 0;
 		
 		if (i == ends.get(currPipe).x && j == ends.get(currPipe).y) {
-			if (!PipeWorld.connectedAtIndex((byte)(8), parentDirection) || turnOffCounter != 0)
+			if (!PipeWorld.connectedAtIndex((byte)(8), parentDirection) || turnOffCounters.get(currPipe) != 0)
 				return false;
 			else {
 				if (currPipe == starts.size - 1)
@@ -143,7 +148,7 @@ public class PipePuzzleGenerator {
 						// Check if pipe can turn off from a direct route to exit.
 						if ((inew - i > 0 && ends.get(currPipe).x - i <= 0) || (inew - i < 0 && ends.get(currPipe).x - i >= 0) ||
 							(jnew - j > 0 && ends.get(currPipe).y - j <= 0) || (jnew - j < 0 && ends.get(currPipe).y - j >= 0)) {
-							if (turnOffCounter > 0)
+							if (turnOffCounters.get(currPipe) > 0)
 								routes.add(idir);
 						}
 						else {
@@ -162,7 +167,7 @@ public class PipePuzzleGenerator {
 			
 			if ((inew - i > 0 && ends.get(currPipe).x - i <= 0) || (inew - i < 0 && ends.get(currPipe).x - i >= 0) ||
 					(jnew - j > 0 && ends.get(currPipe).y - j <= 0) || (jnew - j < 0 && ends.get(currPipe).y - j >= 0)) {
-				turnOffCounter -= 1;
+				turnOffCounters.set(currPipe, turnOffCounters.get(currPipe) - 1);
 			}
 			
 			maskGrid[i][j] = PipeWorld.connectAtIndex(maskGrid[i][j], route);
@@ -176,7 +181,7 @@ public class PipePuzzleGenerator {
 				length -= 1;
 				if ((inew - i > 0 && ends.get(currPipe).x - i <= 0) || (inew - i < 0 && ends.get(currPipe).x - i >= 0) ||
 						(jnew - j > 0 && ends.get(currPipe).y - j <= 0) || (jnew - j < 0 && ends.get(currPipe).y - j >= 0)) {
-					turnOffCounter += 1;
+					turnOffCounters.set(currPipe, turnOffCounters.get(currPipe) + 1);
 				}
 				maskGrid[i][j] = PipeWorld.disconnectAtIndex(maskGrid[i][j], route);
 			}
