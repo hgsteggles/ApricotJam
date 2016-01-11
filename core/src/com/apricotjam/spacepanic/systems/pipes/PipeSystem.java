@@ -32,6 +32,12 @@ public class PipeSystem extends EntitySystem {
 		pipeTiles = engine.getEntitiesFor(Family.all(PipeTileComponent.class, ClickComponent.class).get());
 		pipeFluids = engine.getEntitiesFor(Family.all(PipeFluidComponent.class).get());
 	}
+	
+	@Override
+	public void removedFromEngine(Engine engine) {
+		for (Entity entity : world.getAllPipeEntities())
+			engine.removeEntity(entity);
+	}
 
 	@Override
 	public void update(float deltaTime) {

@@ -94,7 +94,7 @@ public class HelmetWorld {
 		
 		//// Fog.
 		engine.addEntity(createFog());
-		engine.addEntity(createFog2());
+		//engine.addEntity(createFog2());
 		
 		// Create black marquee.
 		//engine.addEntity(createLED_PanelShadow());
@@ -372,7 +372,7 @@ public class HelmetWorld {
 		return e;
 	}
 	
-	private Entity createFog2() {
+	static public Entity createFog2() {
 		Entity entity = new Entity();
 
 		TextureComponent texComp = new TextureComponent();

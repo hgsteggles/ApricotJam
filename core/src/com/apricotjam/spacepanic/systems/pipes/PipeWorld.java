@@ -59,6 +59,8 @@ public class PipeWorld {
 	
 	private enum TileType {CORNER, SIDE, CENTRE};
 	
+	private Array<Entity> allEntities = new Array<Entity>();
+	
 	public PipeWorld(Entity masterEntity, int difficulty) {
 		this.masterEntity = masterEntity;
 		this.difficulty = difficulty;
@@ -66,7 +68,7 @@ public class PipeWorld {
 	
 	public void build(Engine engine) {
 		// Create fluid lighting fbo.
-		engine.addEntity(createFluidFBO());
+		addToEngine(engine, createFluidFBO());
 		
 		// Generate puzzle.
 		generator.generatePuzzle(difficulty%10, 1 + (int)(difficulty/10f));
@@ -88,7 +90,7 @@ public class PipeWorld {
 					rotateTile(pipe);
 				}
 								
-				engine.addEntity(pipe);
+				addToEngine(engine, pipe);
 				
 				pipeEntities[i][j] = pipe;
 			}
@@ -96,22 +98,22 @@ public class PipeWorld {
 		
 		// Create circuit borders.
 		for (int i = -1; i < GRID_LENGTH + 1; ++i) {
-			engine.addEntity(createCircuitBorder(i, -1, false));
-			engine.addEntity(createCircuitBorder(i, GRID_LENGTH, false));
+			addToEngine(engine, createCircuitBorder(i, -1, false));
+			addToEngine(engine, createCircuitBorder(i, GRID_LENGTH, false));
 		}
 		for (int j = 0; j < GRID_LENGTH; ++j) {
-			engine.addEntity(createCircuitBorder(-2, j, false));
-			engine.addEntity(createCircuitBorder(GRID_LENGTH + 1, j, false));
+			addToEngine(engine, createCircuitBorder(-2, j, false));
+			addToEngine(engine, createCircuitBorder(GRID_LENGTH + 1, j, false));
 		}
-		engine.addEntity(createCircuitBorder(-2, -1, true));
-		engine.addEntity(createCircuitBorder(-2, GRID_LENGTH, true));
-		engine.addEntity(createCircuitBorder(GRID_LENGTH + 1, -1, true));
-		engine.addEntity(createCircuitBorder(GRID_LENGTH + 1, GRID_LENGTH, true));
+		addToEngine(engine, createCircuitBorder(-2, -1, true));
+		addToEngine(engine, createCircuitBorder(-2, GRID_LENGTH, true));
+		addToEngine(engine, createCircuitBorder(GRID_LENGTH + 1, -1, true));
+		addToEngine(engine, createCircuitBorder(GRID_LENGTH + 1, GRID_LENGTH, true));
 		
 		// Create pipe background tiles.
 		for (int i = 0; i < GRID_LENGTH; ++i) {
 			for (int j = 0; j < GRID_LENGTH; ++j) {
-				engine.addEntity(createPipeBG(i, j));
+				addToEngine(engine, createPipeBG(i, j));
 			}
 		}
 		
@@ -139,25 +141,34 @@ public class PipeWorld {
 			Entity exitPipe = createPipe((byte)(8), exits.get(iexit).x, exits.get(iexit).y, false);
 			PipeTileComponent exitPipeTileComp = ComponentMappers.pipetile.get(pipeEntities[exits.get(iexit).x - 1][exits.get(iexit).y]);
 			exitPipeTileComp.neighbours[1] = exitPipe;
-			engine.addEntity(exitPipe);
+			addToEngine(engine, exitPipe);
 			exitPipes.add(exitPipe);
 		}
 		
 		// Create back panel.
-		engine.addEntity(createBackPanel());
+		addToEngine(engine, createBackPanel());
 		
 		// Create timer.
 		timer = createTimer(30);
-		engine.addEntity(timer);
+		addToEngine(engine, timer);
 		
 		// Create led display.
-		//engine.addEntity(createLED_Panel());
+		//addToEngine(engine, createLED_Panel());
 		
 		// Create capsule parts.
-		engine.addEntity(createCapsulePart(true));
-		engine.addEntity(createCapsulePart(false));
-		engine.addEntity(createCapsuleMaskPart(true));
-		engine.addEntity(createCapsuleMaskPart(false));
+		addToEngine(engine, createCapsulePart(true));
+		addToEngine(engine, createCapsulePart(false));
+		addToEngine(engine, createCapsuleMaskPart(true));
+		addToEngine(engine, createCapsuleMaskPart(false));
+	}
+	
+	public Array<Entity> getAllPipeEntities() {
+		return allEntities;
+	}
+	
+	private void addToEngine(Engine engine, Entity entity) {
+		allEntities.add(entity);
+		engine.addEntity(entity);
 	}
 	
 	private void buildTimerPipes(Engine engine, Entity[][] pipeGrid) {
@@ -189,8 +200,8 @@ public class PipeWorld {
 				Entity startFluid = createFluid(startPipe, 2);
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
-				engine.addEntity(startPipe);
-				//engine.addEntity(startFluid);
+				addToEngine(engine, startPipe);
+				//addToEngine(engine, startFluid);
 				
 				for (int j = timer_j.get(istart) + 1; j <= starts.get(istart).y; ++j) {
 					byte mask = (byte)((j == starts.get(istart).y) ? 6 : 5);
@@ -199,7 +210,7 @@ public class PipeWorld {
 					parentPipeTileComp.neighbours[0] = timerPipe;
 					parentPipeTileComp = ComponentMappers.pipetile.get(timerPipe);
 					
-					engine.addEntity(timerPipe);
+					addToEngine(engine, timerPipe);
 				}
 				
 				parentPipeTileComp.neighbours[1] = pipeGrid[0][starts.get(istart).y];
@@ -210,8 +221,8 @@ public class PipeWorld {
 				Entity startFluid = createFluid(startPipe, 0);
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
-				engine.addEntity(startPipe);
-				//engine.addEntity(startFluid);
+				addToEngine(engine, startPipe);
+				//addToEngine(engine, startFluid);
 				
 				for (int j = timer_j.get(istart) - 1; j >= starts.get(istart).y; --j) {
 					byte mask = (byte)((j == starts.get(istart).y) ? 3 : 5);
@@ -220,7 +231,7 @@ public class PipeWorld {
 					parentPipeTileComp.neighbours[2] = timerPipe;
 					parentPipeTileComp = ComponentMappers.pipetile.get(timerPipe);
 					
-					engine.addEntity(timerPipe);
+					addToEngine(engine, timerPipe);
 				}
 				
 				parentPipeTileComp.neighbours[1] = pipeGrid[0][starts.get(istart).y];
@@ -231,8 +242,8 @@ public class PipeWorld {
 				Entity startFluid = createFluid(startPipe, 3);
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
-				engine.addEntity(startPipe);
-				//engine.addEntity(startFluid);
+				addToEngine(engine, startPipe);
+				//addToEngine(engine, startFluid);
 				
 				parentPipeTileComp.neighbours[1] = pipeGrid[0][starts.get(istart).y];
 			}
