@@ -54,6 +54,8 @@ public class GameScreen extends BasicScreen {
 		if (msc.currentState == MapScreenComponent.State.ENCOUNTER) {
 			System.out.println("Look! A " + msc.encounterResource);
 			alterResource(msc.encounterResource, GameParameters.RESOURCE_GAIN.get(msc.encounterResource));
+			HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+			hsc.messages.addLast(new HelmetSystem.LED_Message(msc.encounterResource + " found!", HelmetSystem.LED_Message.Severity.SUCCESS));
 			msc.currentState = MapScreenComponent.State.EXPLORING;
 			/*msc.currentState = MapScreenComponent.State.PAUSED;
 			TweenSpec ts = new TweenSpec();
@@ -83,8 +85,6 @@ public class GameScreen extends BasicScreen {
 		for (Resource r: Resource.values()) {
 			alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
 		}
-
-		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 	}
 
 	private void alterResource(Resource resource, float amount) {
