@@ -22,9 +22,11 @@ public class PipeGameArt {
 	
 	public static IntMap<RotatedRegionData> pipeRegions = new IntMap<RotatedRegionData>();
 	public static IntMap<IntMap<RotatedAnimationData>> fluidRegions = new IntMap<IntMap<RotatedAnimationData>>();
+	public static IntMap<TextureRegion> pipeBGs = new IntMap<TextureRegion>();
+	
 	public static TextureRegion ledBG;
-	public static TextureRegion pipeBG_Centre, pipeBG_Corner;
-	public static TextureRegion[] pipeBG_Side = new TextureRegion[4];
+	public static TextureRegion circuitCorner;
+	public static TextureRegion[] circuitSide = new TextureRegion[4];
 	public static TextureRegion pipeCapLeft, pipeCapRight;
 	public static TextureRegion capsuleLeft, capsuleRight, capsuleMaskLeft, capsuleMaskRight;
 	
@@ -37,10 +39,11 @@ public class PipeGameArt {
 		ledBG = whitePixel;
 		
 		// Load pipe tile backgrounds.
-		pipeBG_Centre = atlas.findRegion("pipe-bg-1");
-		for (int i = 0; i < pipeBG_Side.length; ++i)
-			pipeBG_Side[i] = atlas.findRegion("circuit-" + Integer.toString(i + 1));
-		pipeBG_Corner = atlas.findRegion("circuit-" + Integer.toString(pipeBG_Side.length + 1));
+		for (int i = 0; i < 16; ++i)
+			pipeBGs.put(i, atlas.findRegion("pipe-bg-"+Integer.toString(i)));
+		for (int i = 0; i < circuitSide.length; ++i)
+			circuitSide[i] = atlas.findRegion("circuit-" + Integer.toString(i + 1));
+		circuitCorner = atlas.findRegion("circuit-" + Integer.toString(circuitSide.length + 1));
 		
 		// Load pipe cap.
 		pipeCapRight = atlas.findRegion("pipe-cap");

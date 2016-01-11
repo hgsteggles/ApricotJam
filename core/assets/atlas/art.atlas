@@ -771,65 +771,65 @@ circuit-5
   orig: 32, 32
   offset: 0, 0
   index: -1
-pipe-bg-0
-  rotate: false
-  xy: 2, 20
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-pipe-bg-1
-  rotate: false
-  xy: 36, 54
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-pipe-bg-12
-  rotate: false
-  xy: 104, 88
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-pipe-bg-2
-  rotate: false
-  xy: 70, 88
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-pipe-bg-3
-  rotate: false
-  xy: 918, 884
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-pipe-bg-4
+pipe-bg-11
   rotate: false
   xy: 952, 918
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-pipe-bg-6
+pipe-bg-12
   rotate: false
   xy: 986, 952
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-pipe-bg-8
+pipe-bg-13
   rotate: false
   xy: 36, 20
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-pipe-bg-9
+pipe-bg-14
   rotate: false
   xy: 70, 54
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-15
+  rotate: false
+  xy: 104, 88
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-3
+  rotate: false
+  xy: 2, 20
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-6
+  rotate: false
+  xy: 36, 54
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-7
+  rotate: false
+  xy: 70, 88
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pipe-bg-9
+  rotate: false
+  xy: 918, 884
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

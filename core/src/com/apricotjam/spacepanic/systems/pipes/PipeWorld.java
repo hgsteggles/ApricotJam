@@ -90,28 +90,30 @@ public class PipeWorld {
 								
 				engine.addEntity(pipe);
 				
-				// Create pipe bg.
-				engine.addEntity(createPipeBG(i, j, TileType.CENTRE));
-				
 				pipeEntities[i][j] = pipe;
 			}
 		}
 		
-		// Create borders.
+		// Create circuit borders.
 		for (int i = -1; i < GRID_LENGTH + 1; ++i) {
-			engine.addEntity(createPipeBG(i, -1, TileType.SIDE));
-			engine.addEntity(createPipeBG(i, GRID_LENGTH, TileType.SIDE));
+			engine.addEntity(createCircuitBorder(i, -1, false));
+			engine.addEntity(createCircuitBorder(i, GRID_LENGTH, false));
 		}
 		for (int j = 0; j < GRID_LENGTH; ++j) {
-			engine.addEntity(createPipeBG(-2, j, TileType.SIDE));
-			engine.addEntity(createPipeBG(GRID_LENGTH + 1, j, TileType.SIDE));
+			engine.addEntity(createCircuitBorder(-2, j, false));
+			engine.addEntity(createCircuitBorder(GRID_LENGTH + 1, j, false));
 		}
+		engine.addEntity(createCircuitBorder(-2, -1, true));
+		engine.addEntity(createCircuitBorder(-2, GRID_LENGTH, true));
+		engine.addEntity(createCircuitBorder(GRID_LENGTH + 1, -1, true));
+		engine.addEntity(createCircuitBorder(GRID_LENGTH + 1, GRID_LENGTH, true));
 		
-		// Create corners.
-		engine.addEntity(createPipeBG(-2, -1, TileType.CORNER));
-		engine.addEntity(createPipeBG(-2, GRID_LENGTH, TileType.CORNER));
-		engine.addEntity(createPipeBG(GRID_LENGTH + 1, -1, TileType.CORNER));
-		engine.addEntity(createPipeBG(GRID_LENGTH + 1, GRID_LENGTH, TileType.CORNER));
+		// Create pipe background tiles.
+		for (int i = 0; i < GRID_LENGTH; ++i) {
+			for (int j = 0; j < GRID_LENGTH; ++j) {
+				engine.addEntity(createPipeBG(i, j));
+			}
+		}
 		
 		// Link up puzzle neighbours.
 		for (int i = 0; i < GRID_LENGTH; ++i) {
@@ -410,31 +412,53 @@ public class PipeWorld {
 		return entity;
 	}
 	
-	private Entity createPipeBG(int ipos, int jpos, TileType type) {
-		TextureComponent textureComp = new TextureComponent();
-		switch (type) {
-			case CENTRE:
-				textureComp.region = PipeGameArt.pipeBG_Centre;
-				break;
-			case SIDE:
-				textureComp.region = PipeGameArt.pipeBG_Side[SpacePanic.rng.nextInt(PipeGameArt.pipeBG_Side.length)];
-				break;
-			case CORNER:
-				textureComp.region = PipeGameArt.pipeBG_Corner;
-				break;
-		}
+	private Entity createCircuitBorder(int ipos, int jpos, boolean isCorner) {
+		Entity entity = new Entity();
 		
-		textureComp.color.set(0.8f, 0.8f, 1.0f, type == TileType.CENTRE ? 0.6f : 1f);
+		TextureComponent textureComp = new TextureComponent();
+		textureComp.region = isCorner ? PipeGameArt.circuitCorner : PipeGameArt.circuitSide[SpacePanic.rng.nextInt(PipeGameArt.circuitSide.length)];
+		textureComp.color.set(0.8f, 0.8f, 1.0f, 1f);
+		entity.add(textureComp);
 		
 		TransformComponent transComp = new TransformComponent();
 		float gridOffsetX = - GRID_LENGTH / 2f;
 		float gridOffsetY = - GRID_LENGTH / 2f;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1), gridOffsetY + 0.5f * (2 * jpos + 1), -2);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
+		entity.add(transComp);
+
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("light");
+		entity.add(shaderComp);
+		
+		return entity;
+	}
+	
+	private Entity createPipeBG(int ipos, int jpos) {
+		byte mask = 0;
+		if (ipos > 0)
+			mask = connectAtIndex(mask, 3);
+		if (ipos < GRID_LENGTH - 1)
+			mask = connectAtIndex(mask, 1);
+		if (jpos > 0)
+			mask = connectAtIndex(mask, 2);
+		if (jpos < GRID_LENGTH - 1)
+			mask = connectAtIndex(mask, 0);
 		
 		Entity entity = new Entity();
-		entity.add(textureComp).add(transComp);
 		
+		TextureComponent textureComp = new TextureComponent();
+		textureComp.region = PipeGameArt.pipeBGs.get(mask);
+		textureComp.color.set(0.6f, 0.6f, 0.6f, 1f);
+		entity.add(textureComp);
+		
+		TransformComponent transComp = new TransformComponent();
+		float gridOffsetX = - GRID_LENGTH / 2f;
+		float gridOffsetY = - GRID_LENGTH / 2f;
+		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1), gridOffsetY + 0.5f * (2 * jpos + 1), -2);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
+		entity.add(transComp);
+
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("light");
 		entity.add(shaderComp);
