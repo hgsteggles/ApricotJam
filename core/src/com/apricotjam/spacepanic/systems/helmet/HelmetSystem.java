@@ -8,6 +8,7 @@ import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.helmet.LED_Component;
 import com.apricotjam.spacepanic.components.helmet.ResourcePipeComponent;
+import com.apricotjam.spacepanic.gameelements.Resource;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -33,6 +34,13 @@ public class HelmetSystem extends EntitySystem {
 		world.build(engine);
 		leds = engine.getEntitiesFor(Family.all(LED_Component.class).get());
 		resourcePipes = engine.getEntitiesFor(Family.all(ResourcePipeComponent.class).get());
+
+		for (Entity e : resourcePipes) {
+			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(masterEntity);
+			ResourcePipeComponent resourcePipeComp = ComponentMappers.resourcepipe.get(e);
+			resourcePipeComp.currCount = helmetScreenComp.resourceCount.get(resourcePipeComp.resource);
+			updateResourcePipe(e);
+		}
 	}
 
 	@Override
@@ -61,26 +69,25 @@ public class HelmetSystem extends EntitySystem {
 		}
 		
 		for (Entity entity : resourcePipes) {
-			TextureComponent texComp = ComponentMappers.texture.get(entity);
-			AnimationComponent animComp = ComponentMappers.animation.get(entity);
 			ResourcePipeComponent resourcePipeComp = ComponentMappers.resourcepipe.get(entity);
-			
-			Animation animation = animComp.animations.get(0);
-			
-			if (animation != null) {
-				float targetCount = helmetScreenComp.resourceCount.get(resourcePipeComp.resource);
-				if (resourcePipeComp.currCount > targetCount) {
-					resourcePipeComp.currCount =  Math.max(resourcePipeComp.currCount - RESOURCE_FILL_SPEED*deltaTime, targetCount);
-				}
-				else if (resourcePipeComp.currCount < targetCount) {
-					resourcePipeComp.currCount =  Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED*deltaTime, targetCount);
-				}
-				resourcePipeComp.currCount = targetCount;
-				float frac = resourcePipeComp.currCount / helmetScreenComp.maxCount.get(resourcePipeComp.resource);
-				frac = MathUtils.clamp(frac, 0.0f, 1.0f);
-				texComp.region = animation.getKeyFrame(frac);
+			float targetCount = helmetScreenComp.resourceCount.get(resourcePipeComp.resource);
+			if (resourcePipeComp.currCount > targetCount) {
+				resourcePipeComp.currCount =  Math.max(resourcePipeComp.currCount - RESOURCE_FILL_SPEED*deltaTime, targetCount);
+			} else if (resourcePipeComp.currCount < targetCount) {
+				resourcePipeComp.currCount =  Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED*deltaTime, targetCount);
 			}
+			resourcePipeComp.currCount = targetCount;
+			updateResourcePipe(entity);
 		}
+	}
+
+	private void updateResourcePipe(Entity e) {
+		ResourcePipeComponent resourcePipeComp = ComponentMappers.resourcepipe.get(e);
+		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(masterEntity);
+		float frac = resourcePipeComp.currCount / helmetScreenComp.maxCount.get(resourcePipeComp.resource);
+		frac = MathUtils.clamp(frac, 0.0f, 1.0f);
+		TextureComponent texComp = ComponentMappers.texture.get(e);
+		texComp.size.x = frac * resourcePipeComp.maxSize;
 	}
 	
 	public static class LED_Message {

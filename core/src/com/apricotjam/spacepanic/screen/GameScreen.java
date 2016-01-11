@@ -85,7 +85,6 @@ public class GameScreen extends BasicScreen {
 		}
 
 		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
-		System.out.println(hsc.resourceCount.get(Resource.OXYGEN));
 	}
 
 	private void alterResource(Resource resource, float amount) {

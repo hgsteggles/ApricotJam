@@ -29,6 +29,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
@@ -37,8 +38,10 @@ public class HelmetWorld {
 	public static float LEDBG_Y = (6f/80f)*BasicScreen.WORLD_HEIGHT;
 	public static float LEDBG_W = 3f;
 	public static float LEDBG_H = 0.7f;
-	
-	private float PIPE_SIZE = 0.6f;
+
+	private static final float[] PIPE_LENGTHS = {2.4f, 1.8f, 1.2f, 0.6f};
+	private static final float PIPE_HEIGHT = 0.6f;
+	private static final float PIPE_SPACING = 0.42f;
 	
 	private TransformComponent resourcePanelTransform;
 	
@@ -69,26 +72,23 @@ public class HelmetWorld {
 		
 		//// Speaker.
 		engine.addEntity(createSpeaker());
-		
-		float bottomRightPipeX = (0.005f-0.045703125f)*BasicScreen.WORLD_WIDTH;
-		float bottomRightPipeY = -0.069722221f*BasicScreen.WORLD_HEIGHT;
-		float pipeHeight = 0.7f*PIPE_SIZE;
-		int bottomPipeLength = 4;
 
-		engine.addEntity(createFluidLine(Resource.OXYGEN, bottomPipeLength, bottomRightPipeX, bottomRightPipeY));
-		engine.addEntity(createFluidLine(Resource.OIL, bottomPipeLength - 1, bottomRightPipeX, bottomRightPipeY + pipeHeight));
-		engine.addEntity(createFluidLine(Resource.RESOURCE2, bottomPipeLength - 2, bottomRightPipeX, bottomRightPipeY + 2*pipeHeight));
-		engine.addEntity(createFluidLine(Resource.RESOURCE3, bottomPipeLength - 3, bottomRightPipeX, bottomRightPipeY + 3*pipeHeight));
-		
-		for (int i = 0; i < 4; ++i) {
+		float bottomRightPipeX = -0.08f*BasicScreen.WORLD_WIDTH;
+		float bottomRightPipeY = -0.105f*BasicScreen.WORLD_HEIGHT;
+
+		for (int i = 0; i < 4; i++) {
+			// Pipe fluid
+			engine.addEntity(createFluidLine(Resource.values()[i], PIPE_LENGTHS[i], bottomRightPipeX, bottomRightPipeY + i*PIPE_SPACING));
+
 			// Pipe outlines.
-			engine.addEntity(createPipeLine(bottomPipeLength - i, bottomRightPipeX, bottomRightPipeY + i*pipeHeight));
+			engine.addEntity(createPipeLine(PIPE_LENGTHS[i], bottomRightPipeX, bottomRightPipeY + i*PIPE_SPACING));
+
 			//// Pipe caps.
-			engine.addEntity(createPipeCap(bottomRightPipeX + (bottomPipeLength - i)*PIPE_SIZE - (1f/16f)*PIPE_SIZE, bottomRightPipeY + i*pipeHeight, false));
-			engine.addEntity(createPipeCap(bottomRightPipeX - PIPE_SIZE + (1f/16f)*PIPE_SIZE, bottomRightPipeY + i*pipeHeight, true));
-			
+			engine.addEntity(createPipeCap(bottomRightPipeX - (1.0f/4.0f)*PIPE_SPACING, bottomRightPipeY + (i + 0.725f)*PIPE_SPACING, true));
+			engine.addEntity(createPipeCap(bottomRightPipeX + PIPE_LENGTHS[i] + (1.0f/4.0f)*PIPE_SPACING, bottomRightPipeY + (i + 0.725f)*PIPE_SPACING, false));
+
 			//// Resource icons.
-			engine.addEntity(createResourceIcon(bottomRightPipeX - 1.5f*PIPE_SIZE, bottomRightPipeY + i*pipeHeight, i));
+			engine.addEntity(createResourceIcon(bottomRightPipeX - 0.75f*PIPE_SPACING, bottomRightPipeY + (i + 0.725f)*PIPE_SPACING, i));
 		}
 		
 		//// Fog.
@@ -212,18 +212,19 @@ public class HelmetWorld {
 		return e;
 	}
 	
-	private Entity createPipeLine(int size, float x, float y) {
+	private Entity createPipeLine(float length, float x, float y) {
 		Entity e = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
 		RotatedRegionData rotRegionData = PipeGameArt.pipeRegions.get((byte)(10));
 		texComp.region = rotRegionData.region;
-		texComp.size.x = size * PIPE_SIZE;
-		texComp.size.y = PIPE_SIZE;
+		texComp.size.x = length;
+		texComp.size.y = PIPE_HEIGHT;
+		texComp.centre = false;
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x + ((size - 1.0f) * 0.5f * PIPE_SIZE);
+		transComp.position.x = x;
 		transComp.position.y = y;
 		transComp.position.z = HELMET_Z + 4;
 		transComp.rotation = rotRegionData.rotation;
@@ -233,23 +234,24 @@ public class HelmetWorld {
 		return e;
 	}
 	
-	private Entity createFluidLine(Resource resource, int size, float x, float y) {
+	private Entity createFluidLine(Resource resource, float length, float x, float y) {
 		Entity entity = new Entity();
 
 		RotatedAnimationData animData = PipeGameArt.fluidRegions.get((byte)(10)).get(3);
-		AnimationComponent animComp = new AnimationComponent();
-		animComp.animations.put(0, new Animation(1.0f / animData.regions.size, animData.regions));
-		entity.add(animComp);
+		//AnimationComponent animComp = new AnimationComponent();
+		//animComp.animations.put(0, new Animation(1.0f / animData.regions.size, animData.regions));
+		//entity.add(animComp);
 
 		TextureComponent texComp = new TextureComponent();
-		texComp.size.x = size * PIPE_SIZE;
-		texComp.size.y = PIPE_SIZE;
+		texComp.size.x = length;
+		texComp.size.y = PIPE_HEIGHT;
 		texComp.color.set(HelmetUI.resourceColors.get(resource));
-		texComp.region = animData.regions.get(0);
+		texComp.region = new TextureRegion(animData.regions.get(animData.regions.size - 1));
+		texComp.centre = false;
 		entity.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x + ((size - 1.0f) * 0.5f * PIPE_SIZE);
+		transComp.position.x = x;
 		transComp.position.y = y;
 		transComp.position.z = HELMET_Z + 3;
 		transComp.rotation = animData.rotation;
@@ -258,6 +260,7 @@ public class HelmetWorld {
 
 		ResourcePipeComponent resourcePipeComp = new ResourcePipeComponent();
 		resourcePipeComp.resource = resource;
+		resourcePipeComp.maxSize = length;
 		entity.add(resourcePipeComp);
 
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -275,8 +278,8 @@ public class HelmetWorld {
 		
 		TextureComponent texComp = new TextureComponent();
 		texComp.region = isLeft ? PipeGameArt.pipeCapLeft : PipeGameArt.pipeCapRight;
-		texComp.size.x = PIPE_SIZE;
-		texComp.size.y = PIPE_SIZE;
+		texComp.size.x = PIPE_SPACING;
+		texComp.size.y = PIPE_SPACING;
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
@@ -294,8 +297,8 @@ public class HelmetWorld {
 		
 		TextureComponent texComp = new TextureComponent();
 		texComp.region = MapArt.resourceIcons.get(index);
-		texComp.size.x = 0.6f*PIPE_SIZE;
-		texComp.size.y = 0.6f*PIPE_SIZE;
+		texComp.size.x = 0.9f*PIPE_SPACING;
+		texComp.size.y = 0.9f*PIPE_SPACING;
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();

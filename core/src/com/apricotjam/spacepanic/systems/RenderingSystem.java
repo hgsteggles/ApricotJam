@@ -213,8 +213,13 @@ public class RenderingSystem extends EntitySystem {
 
 			float width = tex.size.x;
 			float height = tex.size.y;
-			float originX = width * 0.5f;
-			float originY = height * 0.5f;
+			float originX = 0.0f;
+			float originY = 0.0f;
+
+			if (tex.centre) {
+				originX = width * 0.5f;
+				originY = height * 0.5f;
+			}
 			
 			spriteBatch.setColor(tex.color);
 			

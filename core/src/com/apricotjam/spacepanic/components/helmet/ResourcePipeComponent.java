@@ -5,5 +5,6 @@ import com.badlogic.ashley.core.Component;
 
 public class ResourcePipeComponent implements Component {
 	public Resource resource = Resource.OXYGEN;
-	public float currCount = 0;
+	public float maxSize = 1.0f;
+	public float currCount = 0f;
 }
