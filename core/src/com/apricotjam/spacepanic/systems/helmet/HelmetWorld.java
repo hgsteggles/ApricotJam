@@ -68,6 +68,7 @@ public class HelmetWorld {
 		Entity resourcePanel = createResourcePanel();
 		resourcePanelTransform = ComponentMappers.transform.get(resourcePanel);
 		engine.addEntity(resourcePanel);
+		engine.addEntity(createLED_Frame(LEDBG_X, LEDBG_Y));
 		
 		//// Screws.
 		engine.addEntity(createScrew((46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));
@@ -115,7 +116,7 @@ public class HelmetWorld {
 		engine.addEntity(createFog());
 		
 		// Create black marquee.
-		engine.addEntity(createLED_PanelShadow());
+		//engine.addEntity(createLED_PanelShadow());
 		engine.addEntity(createLED_Panel());
 	}
 	
@@ -177,6 +178,28 @@ public class HelmetWorld {
 		transComp.position.x = x;
 		transComp.position.y = y;
 		transComp.position.z = HELMET_Z + 1;
+		e.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("helmet-light");
+		e.add(shaderComp);
+
+		return e;
+	}
+	
+	private Entity createLED_Frame(float x, float y) {
+		Entity e = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = HelmetUI.ledFrame;
+		texComp.size.x = 3.85f;
+		texComp.size.y = 2.08f;
+		e.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = x;
+		transComp.position.y = y;
+		transComp.position.z = HELMET_Z + 4;
 		e.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -414,7 +437,7 @@ public class HelmetWorld {
 		entity.add(texComp);
 		
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 3);
+		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
 		entity.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -451,7 +474,7 @@ public class HelmetWorld {
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = BasicScreen.WORLD_WIDTH/2f;
 		tranc.position.y = BasicScreen.WORLD_HEIGHT/2f;
-		tranc.position.z = HELMET_Z + 4;
+		tranc.position.z = HELMET_Z + 5;
 		entity.add(tranc);
 		
 		return entity;
@@ -483,7 +506,7 @@ public class HelmetWorld {
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = BasicScreen.WORLD_WIDTH/2f;
 		tranc.position.y = BasicScreen.WORLD_HEIGHT/2f;
-		tranc.position.z = HELMET_Z + 4;
+		tranc.position.z = HELMET_Z + 5;
 		entity.add(tranc);
 		
 		return entity;
@@ -505,17 +528,6 @@ public class HelmetWorld {
 		fontComp.layout = layout;
 		entity.add(fontComp);
 		
-		/*
-		ShaderComponent shaderComp = new ShaderComponent();
-		shaderComp.shader = Shaders.manager.get("led");
-		Shaders.manager.begin("led");
-		float normX = (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
-		float normY = (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
-		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
-		Shaders.manager.end();
-		entity.add(shaderComp);
-		*/
-		
 		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
 		
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
@@ -532,7 +544,7 @@ public class HelmetWorld {
 		tweenSpec.end = 1.0f;
 		tweenSpec.period = 4f;
 		tweenSpec.loops = 2;
-		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
+		tweenSpec.cycle = TweenSpec.Cycle.LOOP;
 		tweenSpec.interp = Interpolation.linear;
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
@@ -565,17 +577,6 @@ public class HelmetWorld {
 		fontComp.layout = layout;
 		entity.add(fontComp);
 		
-		/*
-		ShaderComponent shaderComp = new ShaderComponent();
-		shaderComp.shader = Shaders.manager.get("led");
-		Shaders.manager.begin("led");
-		float normX = (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
-		float normY = (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
-		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
-		Shaders.manager.end();
-		entity.add(shaderComp);
-		*/
-		
 		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
 		
 		TransformComponent transComp = new TransformComponent();
@@ -590,7 +591,7 @@ public class HelmetWorld {
 		tweenSpec.cycle = TweenSpec.Cycle.LOOP;
 		tweenSpec.loops = 8;
 		tweenSpec.reverse = true;
-		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.interp = Interpolation.sine;
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
 			public void applyTween(Entity e, float a) {
@@ -619,17 +620,6 @@ public class HelmetWorld {
 		layout.setText(MiscArt.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
 		entity.add(fontComp);
-		
-		/*
-		ShaderComponent shaderComp = new ShaderComponent();
-		shaderComp.shader = Shaders.manager.get("led");
-		Shaders.manager.begin("led");
-		float normX = (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
-		float normY = (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
-		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
-		Shaders.manager.end();
-		entity.add(shaderComp);
-		*/
 		
 		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
 		

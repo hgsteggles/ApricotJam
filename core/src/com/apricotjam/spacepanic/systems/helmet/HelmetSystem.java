@@ -59,6 +59,7 @@ public class HelmetSystem extends EntitySystem {
 				getEngine().removeEntity(entity);
 		}
 		
+		/*
 		for (Entity entity : resourcePipes) {
 			TextureComponent texComp = ComponentMappers.texture.get(entity);
 			AnimationComponent animComp = ComponentMappers.animation.get(entity);
@@ -78,6 +79,7 @@ public class HelmetSystem extends EntitySystem {
 				texComp.region = animation.getKeyFrame(Math.max(resourcePipeComp.currCount - resourcePipeComp.minCount, 0));
 			}
 		}
+		*/
 	}
 	
 	public static class LED_Message {

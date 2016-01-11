@@ -28,6 +28,7 @@ public class HelmetUI {
 	static public AtlasRegion sidepanelLeft;
 	static public TextureRegion sidepanelRight;
 	static public TextureRegion resourcePanel;
+	static public TextureRegion ledFrame;
 	static public AtlasRegion fog;
 	
 	static public ObjectMap<Resource, Color> resourceColors = new ObjectMap<Resource, Color>(); 
@@ -54,6 +55,7 @@ public class HelmetUI {
 		sidepanelRight = new TextureRegion(sidepanelLeft);
 		sidepanelRight.flip(true, false);
 		resourcePanel = atlas.findRegion("resource-panel");
+		ledFrame = atlas.findRegion("ledFrame");
 		fog = atlas.findRegion("fog");
 		
 		resourceColors.put(Resource.OXYGEN, new Color(0f, 0f, 1f, 1f));
