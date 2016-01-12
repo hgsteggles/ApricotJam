@@ -24,9 +24,6 @@ import java.util.HashSet;
 import java.util.Random;
 
 public class MapSystem extends EntitySystem {
-
-	public static final float ASTEROID_SIZE = 1.0f;
-
 	private float width;
 	private float height;
 	private float aspectRatio;
@@ -38,7 +35,6 @@ public class MapSystem extends EntitySystem {
 
 	private Entity screen;
 	private TransformComponent screenTrans;
-	//private Entity screenBackground;
 	private Entity screenFrame;
 	private Entity mapCentre;
 	private TransformComponent mapCentreTrans;
@@ -71,7 +67,6 @@ public class MapSystem extends EntitySystem {
 		screen = createScreen();
 		screenTrans = ComponentMappers.transform.get(screen);
 
-		//screenBackground = createScreenBackground();
 		screenFrame = createScreenFrame();
 
 		mapCentre = createMapCentre();
@@ -88,7 +83,6 @@ public class MapSystem extends EntitySystem {
 	public void addedToEngine(Engine engine) {
 		this.engine = engine;
 		engine.addEntity(screen);
-		//engine.addEntity(screenBackground);
 		engine.addEntity(screenFrame);
 		engine.addEntity(mapCentre);
 		engine.addEntity(playerIcon);
@@ -119,8 +113,8 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private void move(float dx, float dy) {
-		mapCentreTrans.position.x -= dx * ASTEROID_SIZE;
-		mapCentreTrans.position.y -= dy * ASTEROID_SIZE;
+		mapCentreTrans.position.x -= dx;
+		mapCentreTrans.position.y -= dy;
 		mapScreenComponent.playerPosition.add(dx, dy);
 		patchConveyor.move(dx, dy);
 	}
@@ -279,8 +273,8 @@ public class MapSystem extends EntitySystem {
 
 		TextureComponent texc = new TextureComponent();
 		texc.region = MapArt.asteroids.get(rng.nextInt(MapArt.asteroids.size()));
-		texc.size.x = ASTEROID_SIZE;
-		texc.size.y = ASTEROID_SIZE;
+		texc.size.x = 1.0f;
+		texc.size.y = 1.0f;
 		asteroid.add(texc);
 
 		asteroid.add(Shaders.generateFBOItemComponent("map-screen-fb"));
@@ -318,8 +312,8 @@ public class MapSystem extends EntitySystem {
 				texc.region = MapArt.resourceIcons.get(3);
 				break;
 		}
-		texc.size.x = ASTEROID_SIZE;
-		texc.size.y = ASTEROID_SIZE;
+		texc.size.x = 1.0f;
+		texc.size.y = 1.0f;
 		resourceIcon.add(texc);
 
 		resourceIcon.add(Shaders.generateFBOItemComponent("map-screen-fb"));
@@ -339,8 +333,8 @@ public class MapSystem extends EntitySystem {
 
 		TextureComponent texc = new TextureComponent();
 		texc.region = MapArt.playerIcon;
-		texc.size.x = ASTEROID_SIZE * 0.8f;
-		texc.size.y = ASTEROID_SIZE * 0.8f;
+		texc.size.x = 1.0f;
+		texc.size.y = 1.0f;
 		playerIcon.add(texc);
 
 		playerIcon.add(Shaders.generateFBOItemComponent("map-screen-fb"));
@@ -355,9 +349,8 @@ public class MapSystem extends EntitySystem {
 	}
 
 	public Entity createLine(Vector2 start, Vector2 end, float lineWidth, Texture tex) {
-		Vector2 startWorld = start.cpy().scl(ASTEROID_SIZE);
-		Vector2 endWorld = end.cpy().scl(ASTEROID_SIZE);
-		lineWidth *= ASTEROID_SIZE;
+		Vector2 startWorld = start.cpy();
+		Vector2 endWorld = end.cpy();
 
 		Entity line = new Entity();
 
@@ -386,15 +379,15 @@ public class MapSystem extends EntitySystem {
 
 		TextureComponent texc = new TextureComponent();
 		texc.region = MapArt.crossGood;
-		texc.size.x = ASTEROID_SIZE * 0.8f;
-		texc.size.y = ASTEROID_SIZE * 0.8f;
+		texc.size.x = 0.8f;
+		texc.size.y = 0.8f;
 		cross.add(texc);
 
 		cross.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = x * ASTEROID_SIZE;
-		tranc.position.y = y * ASTEROID_SIZE;
+		tranc.position.x = x;
+		tranc.position.y = y;
 		tranc.position.z = 3.0f;
 		tranc.parent = mapCentreTrans;
 		cross.add(tranc);
@@ -424,15 +417,15 @@ public class MapSystem extends EntitySystem {
 
 		TextureComponent texc = new TextureComponent();
 		texc.region = MapArt.crossBad;
-		texc.size.x = ASTEROID_SIZE * 0.8f;
-		texc.size.y = ASTEROID_SIZE * 0.8f;
+		texc.size.x = 0.8f;
+		texc.size.y = 0.8f;
 		cross.add(texc);
 
 		cross.add(Shaders.generateFBOItemComponent("map-screen-fb"));
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = x * ASTEROID_SIZE;
-		tranc.position.y = y * ASTEROID_SIZE;
+		tranc.position.x = x;
+		tranc.position.y = y;
 		tranc.position.z = 3.0f;
 		tranc.parent = mapCentreTrans;
 		cross.add(tranc);

@@ -32,7 +32,6 @@ public class Path {
 		if (size() > 0) {
 			LineComponent linec = ComponentMappers.line.get(pathLines.get(0));
 			linec.start.set(mapSystem.getMapScreenComponent().playerPosition);
-			linec.start.scl(MapSystem.ASTEROID_SIZE);
 		}
 	}
 
