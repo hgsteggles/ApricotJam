@@ -11,5 +11,15 @@ public class Audio {
 	
 	static public void load() {
 		sounds.put("fluid-fill", Gdx.audio.newSound(Gdx.files.internal("sounds/fluid-fill.wav")));
+		music.put("soundtrack", Gdx.audio.newMusic(Gdx.files.internal("sounds/soundtrack.wav")));
+	}
+	
+	static public void dispose() {
+		for (ObjectMap.Entry<String, Sound> entry : sounds.entries()) {
+			entry.value.dispose();
+		}
+		for (ObjectMap.Entry<String, Music> entry : music.entries()) {
+			entry.value.dispose();
+		}
 	}
 }

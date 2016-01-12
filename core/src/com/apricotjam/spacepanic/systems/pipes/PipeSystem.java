@@ -241,7 +241,7 @@ public class PipeSystem extends EntitySystem {
 			@Override
 			public void applyTween(Entity e, float a) {
 				SoundComponent sc = ComponentMappers.sound.get(e);
-				sc.sound.setVolume(sc.soundID, 8*a);
+				sc.sound.setVolume(sc.soundID, a);
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);

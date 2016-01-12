@@ -9,6 +9,7 @@ import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.testscreen.PipeTestScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.RandomXS128;
 
@@ -36,6 +37,10 @@ public class SpacePanic extends ApplicationAdapter {
 		//setScreen(new PipeFillTestScreen(this));
 		//setScreen(new CRT_TestScreen(this));
 		//setScreen(new MaskRectTestScreen(this));
+		
+		Music soundtrack = Audio.music.get("soundtrack");
+		soundtrack.setLooping(true);
+		soundtrack.play();
 	}
 
 	@Override
@@ -66,6 +71,8 @@ public class SpacePanic extends ApplicationAdapter {
 		if (screen != null) {
 			screen.dispose();
 		}
+		Art.dispose();
+		Audio.dispose();
 		Shaders.dispose();
 	}
 
