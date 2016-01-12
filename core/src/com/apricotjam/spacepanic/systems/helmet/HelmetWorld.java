@@ -37,6 +37,7 @@ public class HelmetWorld {
 	private static final float PIPE_SPACING = 0.42f;
 	
 	private TransformComponent resourcePanelTransform;
+	private Entity demisterFog;
 	
 	public void build(Engine engine) {
 		
@@ -87,11 +88,16 @@ public class HelmetWorld {
 		
 		//// Fog.
 		engine.addEntity(createFog());
-		//engine.addEntity(createFog2());
+		demisterFog = createDemisterFog();
+		engine.addEntity(demisterFog);
 
 		// Create black marquee.
 		//engine.addEntity(createLED_PanelShadow());
 		engine.addEntity(createLED_Panel());
+	}
+	
+	public Entity getDemisterFog() {
+		return demisterFog;
 	}
 	
 	private Entity createHelmet() {
@@ -399,7 +405,7 @@ public class HelmetWorld {
 		return e;
 	}
 	
-	static public Entity createFog2() {
+	public Entity createDemisterFog() {
 		Entity entity = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
@@ -421,24 +427,6 @@ public class HelmetWorld {
 		ShaderSpreadComponent shaderSpreadComp = new ShaderSpreadComponent();
 		shaderSpreadComp.spread = 100f;
 		entity.add(shaderSpreadComp);
-
-		TweenComponent tweenComp = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = 0.0f;
-		tweenSpec.end = 1.0f;
-		tweenSpec.period = 4f;
-		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
-		tweenSpec.reverse = true;
-		tweenSpec.interp = Interpolation.sine;
-		tweenSpec.tweenInterface = new TweenInterface() {
-			@Override
-			public void applyTween(Entity e, float a) {
-				ShaderSpreadComponent ssc = ComponentMappers.shaderspread.get(e);
-				ssc.spread = 0.1f/(a+0.001f);
-			}
-		};
-		tweenComp.tweenSpecs.add(tweenSpec);
-		entity.add(tweenComp);
 
 		return entity;
 	}
