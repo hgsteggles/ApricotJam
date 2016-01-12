@@ -181,10 +181,8 @@ public class GameScreen extends BasicScreen {
 
 	private TweenSpec pipeOutTween() {
 		TweenSpec ts = new TweenSpec();
-		//ts.start = PIPE_SCALE_LARGE;
-		//ts.end = PIPE_SCALE_LARGE;
 		ts.start = PIPE_X;
-		ts.end = PIPE_X + 3.0f;
+		ts.end = PIPE_X + BasicScreen.WORLD_WIDTH;
 		ts.cycle = TweenSpec.Cycle.ONCE;
 		ts.interp = Interpolation.linear;
 		ts.period = 2.0f;
@@ -192,8 +190,6 @@ public class GameScreen extends BasicScreen {
 			@Override
 			public void applyTween(Entity e, float a) {
 				ComponentMappers.transform.get(e).position.x = a;
-				//ComponentMappers.transform.get(e).scale.x = a;
-				//ComponentMappers.transform.get(e).scale.y = a;
 			}
 
 			@Override
