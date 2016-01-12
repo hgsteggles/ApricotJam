@@ -8,25 +8,25 @@ public class GameParameters {
 	public static final ObjectMap<Resource, Float> RESOURCE_MAX = new ObjectMap<Resource, Float>();
 	static {
 		RESOURCE_MAX.put(Resource.OXYGEN, 50.0f);
-		RESOURCE_MAX.put(Resource.OIL, 20.0f);
-		RESOURCE_MAX.put(Resource.RESOURCE2, 15.0f);
-		RESOURCE_MAX.put(Resource.RESOURCE3, 10.0f);
+		RESOURCE_MAX.put(Resource.DEMISTER, 20.0f);
+		RESOURCE_MAX.put(Resource.PIPE_CLEANER, 15.0f);
+		RESOURCE_MAX.put(Resource.PLUTONIUM, 10.0f);
 	}
 
 	public static final ObjectMap<Resource, Float> RESOURCE_DEPLETION = new ObjectMap<Resource, Float>();
 	static {
 		RESOURCE_DEPLETION.put(Resource.OXYGEN, -0.1f);
-		RESOURCE_DEPLETION.put(Resource.OIL, -0.1f);
-		RESOURCE_DEPLETION.put(Resource.RESOURCE2, -0.1f);
-		RESOURCE_DEPLETION.put(Resource.RESOURCE3, -0.1f);
+		RESOURCE_DEPLETION.put(Resource.DEMISTER, -0.1f);
+		RESOURCE_DEPLETION.put(Resource.PIPE_CLEANER, -0.1f);
+		RESOURCE_DEPLETION.put(Resource.PLUTONIUM, -0.1f);
 	}
 
 	public static final ObjectMap<Resource, Float> RESOURCE_GAIN = new ObjectMap<Resource, Float>();
 	static {
 		RESOURCE_GAIN.put(Resource.OXYGEN, 5.0f);
-		RESOURCE_GAIN.put(Resource.OIL, 5.0f);
-		RESOURCE_GAIN.put(Resource.RESOURCE2, 5.0f);
-		RESOURCE_GAIN.put(Resource.RESOURCE3, 5.0f);
+		RESOURCE_GAIN.put(Resource.DEMISTER, 5.0f);
+		RESOURCE_GAIN.put(Resource.PIPE_CLEANER, 5.0f);
+		RESOURCE_GAIN.put(Resource.PLUTONIUM, 5.0f);
 	}
 
 	// How likely each cell is to be a path on the patch boundaries, 0.5f is pretty good
