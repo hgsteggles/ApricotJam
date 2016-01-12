@@ -1,6 +1,8 @@
 package com.apricotjam.spacepanic.art;
 
 import com.apricotjam.spacepanic.systems.pipes.PipeWorld;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,17 +11,6 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
 public class PipeGameArt {
-
-	public static class RotatedRegionData {
-		public AtlasRegion region;
-		public float rotation;
-	}
-	
-	public static class RotatedAnimationData {
-		public Array<AtlasRegion> regions = null;
-		public float rotation;
-	}
-	
 	public static IntMap<RotatedRegionData> pipeRegions = new IntMap<RotatedRegionData>();
 	public static IntMap<IntMap<RotatedAnimationData>> fluidRegions = new IntMap<IntMap<RotatedAnimationData>>();
 	public static IntMap<TextureRegion> pipeBGs = new IntMap<TextureRegion>();
@@ -33,6 +24,7 @@ public class PipeGameArt {
 	public static TextureRegion whitePixel;
 	
 	public static void load(TextureAtlas atlas) {
+		// Load fluid filling sound.
 		// Load led bg.
 		whitePixel = atlas.findRegion("white_pixel");
 		
@@ -142,5 +134,15 @@ public class PipeGameArt {
 	}
 	
 	public static void dipose() {
+	}
+	
+	public static class RotatedRegionData {
+		public AtlasRegion region;
+		public float rotation;
+	}
+	
+	public static class RotatedAnimationData {
+		public Array<AtlasRegion> regions = null;
+		public float rotation;
 	}
 }

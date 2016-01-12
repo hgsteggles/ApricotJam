@@ -1,6 +1,7 @@
 package com.apricotjam.spacepanic;
 
 import com.apricotjam.spacepanic.art.Art;
+import com.apricotjam.spacepanic.art.Audio;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
@@ -26,6 +27,7 @@ public class SpacePanic extends ApplicationAdapter {
 	@Override
 	public void create() {
 		Art.load();
+		Audio.load();
 		Shaders.load();
 		InputManager.create();
 		//setScreen(new TitleScreen(this));
