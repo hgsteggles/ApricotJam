@@ -8,19 +8,19 @@ import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.map.MapScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
-import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
-import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severity;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+
+import java.util.Random;
 
 public class GameScreen extends BasicScreen {
 
@@ -43,6 +43,8 @@ public class GameScreen extends BasicScreen {
 	private Entity helmetSystemEntity;
 	private Entity pipeSystemEntity;
 	private TextureComponent backgroundTexComp;
+
+	private Random rng = new Random();
 
 	private PipeSystem pipeSystem = null;
 
@@ -119,7 +121,9 @@ public class GameScreen extends BasicScreen {
 			if (dyingState == 0) {
 				gameOver();
 			} else {
-				addMessage(Integer.toString(dyingState), Severity.FAIL);
+				if (dyingState <= 5) {
+					addMessage(Integer.toString(dyingState), Color.RED, 1.0f, false, true);
+				}
 				dyingState--;
 			}
 		}
@@ -145,14 +149,14 @@ public class GameScreen extends BasicScreen {
 		ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(mapInTween());
 
 		if (success) {
-			addMessage(resource.name().replace("_", " ") + " acquired", Severity.SUCCESS);
+			addMessage(resource.name().replace("_", " ") + " acquired", Color.GREEN, 3.0f, true, false);
 			if (badPipes) {
 				alterResource(resource, GameParameters.RESOURCE_GAIN_ALT.get(resource));
 			} else {
 				alterResource(resource, GameParameters.RESOURCE_GAIN.get(resource));
 			}
 		} else {
-			addMessage(resource + " lost", Severity.FAIL);
+			addMessage(resource + " lost", Color.RED, 3.0f, true, false);
 		}
 	}
 
@@ -167,7 +171,7 @@ public class GameScreen extends BasicScreen {
 			case OXYGEN:
 				if (!dying && next == 0.0f) {
 					dying = true;
-					addMessage("Oxygen depleted, you will die in", Severity.FAIL);
+					addMessage("Oxygen depleted, you will die in...", Color.RED, 4.0f, true, false);
 				} else if (dying && next > 0.0f) {
 					dying = false;
 					dyingTime = GameParameters.DEATH_TIME;
@@ -180,10 +184,10 @@ public class GameScreen extends BasicScreen {
 			case PIPE_CLEANER:
 				if (!badPipes && next == 0.0f) {
 					badPipes = true;
-					addMessage("Pipe cleaner exhausted, resource gain reduced", Severity.FAIL);
+					addMessage("Pipe cleaner exhausted, resource gain reduced", Color.RED, 4.0f, true, false);
 				} else if (badPipes && next > 0.0f) {
 					badPipes = false;
-					addMessage("Resource gain normal", Severity.SUCCESS);
+					addMessage("Resource gain normal", Color.GREEN, 3.0f, true, false);
 				}
 				break;
 			case PLUTONIUM:
@@ -192,16 +196,19 @@ public class GameScreen extends BasicScreen {
 		}
 	}
 
-	private void addMessage(String text, Severity severity) {
-		System.out.println(severity + ": " + text);
+	private void addMessage(String text, Color color, float time, boolean scroll, boolean flash) {
 		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
-		hsc.messages.addLast(new HelmetSystem.LED_Message(text, severity));
+		hsc.messages.addLast(new HelmetSystem.LED_Message(text, color, time, scroll, flash));
 	}
 
 	private void gameOver() {
 		if (currentState != GameState.GAMEOVER) {
 			currentState = GameState.GAMEOVER;
-			addMessage("GAME OVER", Severity.FAIL);
+			addMessage("GAME OVER", Color.RED, 3600.0f, false, true);
+			ComponentMappers.mapscreen.get(mapSystemEntity).currentState = MapScreenComponent.State.PAUSED;
+			if (pipeSystem != null) {
+				pipeSystem.setProcessing(false);
+			}
 		}
 	}
 
@@ -363,9 +370,16 @@ public class GameScreen extends BasicScreen {
 		TweenComponent tweenc = new TweenComponent();
 		pipeSystemEntity.add(tweenc);
 
-		pipeSystem = new PipeSystem(pipeSystemEntity, 0);
+		pipeSystem = new PipeSystem(pipeSystemEntity, getPipeDifficulty(resource));
 		add(pipeSystemEntity);
 		add(pipeSystem);
+	}
+
+	private int getPipeDifficulty(Resource resource) {
+		int diff = GameParameters.RESOURCE_MIN_PIPE_DIFFICULTY.get(resource)
+				+ rng.nextInt(GameParameters.RESOURCE_SPREAD_PIPE_DIFFICULTY.get(resource));
+		System.out.println(diff);
+		return diff;
 	}
 
 	private Entity createBackground() {

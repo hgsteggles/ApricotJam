@@ -11,6 +11,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 
 public class HelmetSystem extends EntitySystem {
@@ -46,7 +47,7 @@ public class HelmetSystem extends EntitySystem {
 		if (helmetScreenComp.messages.size != 0) {
 			if (leds.size() == 0) {
 				LED_Message message = helmetScreenComp.messages.removeFirst();
-				getEngine().addEntity(world.createLED(message.text, message.severity));
+				getEngine().addEntity(world.createLED(message.text, message.color, message.time, message.scroll, message.flash));
 			}
 		}
 		
@@ -84,13 +85,17 @@ public class HelmetSystem extends EntitySystem {
 	
 	public static class LED_Message {
 		public String text;
-		public Severity severity;
-		
-		public LED_Message(String text, Severity severity) {
+		public Color color;
+		public float time = 2.0f;
+		public boolean flash = false;
+		public boolean scroll = false;
+
+		public LED_Message(String text, Color color, float time, boolean scroll, boolean flash) {
 			this.text = text;
-			this.severity = severity;
+			this.color = color;
+			this.time = time;
+			this.flash = flash;
+			this.scroll = scroll;
 		}
-		
-		public enum Severity { HINT, FAIL, SUCCESS };
 	}
 }

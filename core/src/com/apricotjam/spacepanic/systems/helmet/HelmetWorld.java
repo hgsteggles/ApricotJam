@@ -16,7 +16,6 @@ import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severity;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
@@ -671,7 +670,7 @@ public class HelmetWorld {
 		return entity;
 	}
 	
-	public Entity createLED(String text, Severity severity) {
+	public Entity createLED(String text, Color color, float time, boolean scroll, boolean flash) {
 		Entity entity = new Entity();
 		
 		LED_Component ledComp = new LED_Component();
@@ -685,13 +684,7 @@ public class HelmetWorld {
 		layout.setText(MiscArt.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
-		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
-		if (severity == Severity.HINT)
-			fontComp.color.set(1f, 1f, 0f, 1f);
-		else if (severity == Severity.SUCCESS)
-			fontComp.color.set(0f, 1f, 0f, width > LEDBG_W ? 1f : 0f);
-		else
-			fontComp.color.set(1f, 0f, 0f, 1f);
+		fontComp.color.set(color);
 		entity.add(fontComp);
 		
 		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
@@ -699,48 +692,36 @@ public class HelmetWorld {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
 		entity.add(transComp);
-		
+
 		TweenComponent tweenComp = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		if (severity == Severity.HINT || width > LEDBG_W) {
+		if (scroll) {
 			transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, HELMET_Z + 4);
-			
+			TweenSpec tweenSpec = new TweenSpec();
+
 			tweenSpec.start = 0.0f;
 			tweenSpec.end = 1.0f;
-			tweenSpec.period = 4f;
-			tweenSpec.loops = severity == Severity.HINT ? 2 : 1;
+			tweenSpec.period = time;
+			tweenSpec.loops = 1;
 			tweenSpec.cycle = TweenSpec.Cycle.LOOP;
 			tweenSpec.interp = Interpolation.linear;
 			tweenSpec.tweenInterface = new TweenInterface() {
 				@Override
 				public void applyTween(Entity e, float a) {
 					TransformComponent tc = ComponentMappers.transform.get(e);
-					BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e); 
+					BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
 					float w = bfc.layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;
 					tc.position.x = LEDBG_X + (LEDBG_W + w)/2f - a*(LEDBG_W + w);
 				}
 			};
+			tweenComp.tweenSpecs.add(tweenSpec);
 		}
-		else if (severity == Severity.SUCCESS) {
-			tweenSpec.start = 0.0f;
-			tweenSpec.end = 1.0f;
-			tweenSpec.period = 2f;
-			tweenSpec.cycle = TweenSpec.Cycle.ONCE;
-			tweenSpec.interp = Interpolation.linear;
-			tweenSpec.tweenInterface = new TweenInterface() {
-				@Override
-				public void applyTween(Entity e, float a) {
-					BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
-					bfc.color.a = Math.min(2.0f*Math.max(a, 0), 1);
-				}
-			};
-		}
-		else {
+		if (flash) {
+			TweenSpec tweenSpec = new TweenSpec();
 			tweenSpec.start = 0.0f;
 			tweenSpec.end = 1.0f;
 			tweenSpec.period = 0.8f;
 			tweenSpec.cycle = TweenSpec.Cycle.LOOP;
-			tweenSpec.loops = 8;
+			tweenSpec.loops = (int)(time / tweenSpec.period);
 			tweenSpec.reverse = true;
 			tweenSpec.interp = Interpolation.sine;
 			tweenSpec.tweenInterface = new TweenInterface() {
@@ -750,8 +731,24 @@ public class HelmetWorld {
 					bfc.color.a = a;
 				}
 			};
+			tweenComp.tweenSpecs.add(tweenSpec);
 		}
-		tweenComp.tweenSpecs.add(tweenSpec);
+
+		TweenSpec tweenCompAP = new TweenSpec();
+		tweenCompAP.start = 0.0f;
+		tweenCompAP.end = 1.0f;
+		tweenCompAP.period = 0.8f;
+		tweenCompAP.cycle = TweenSpec.Cycle.ONCE;
+		tweenCompAP.interp = Interpolation.linear;
+		tweenCompAP.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				BitmapFontComponent bfc = ComponentMappers.bitmapfont.get(e);
+				bfc.color.a = Math.min(2.0f*a, 1);
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenCompAP);
+
 		entity.add(tweenComp);
 		
 		return entity;
