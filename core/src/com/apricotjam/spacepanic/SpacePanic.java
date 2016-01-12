@@ -1,6 +1,7 @@
 package com.apricotjam.spacepanic;
 
 import com.apricotjam.spacepanic.art.Art;
+import com.apricotjam.spacepanic.art.Audio;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
@@ -9,6 +10,7 @@ import com.apricotjam.spacepanic.screen.TitleScreen;
 import com.apricotjam.spacepanic.testscreen.PipeTestScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.RandomXS128;
 
@@ -27,10 +29,19 @@ public class SpacePanic extends ApplicationAdapter {
 	@Override
 	public void create() {
 		Art.load();
+		Audio.load();
 		Shaders.load();
 		InputManager.create();
-		setScreen(new TitleScreen(this));
-		//setScreen(new PipeTestScreen(this));
+		//setScreen(new TitleScreen(this));
+		//setScreen(new GameScreen(this));
+		setScreen(new PipeTestScreen(this));
+		//setScreen(new PipeFillTestScreen(this));
+		//setScreen(new CRT_TestScreen(this));
+		//setScreen(new MaskRectTestScreen(this));
+		
+		Music soundtrack = Audio.music.get("soundtrack");
+		soundtrack.setLooping(true);
+		soundtrack.play();
 	}
 
 	@Override
@@ -61,6 +72,8 @@ public class SpacePanic extends ApplicationAdapter {
 		if (screen != null) {
 			screen.dispose();
 		}
+		Art.dispose();
+		Audio.dispose();
 		Shaders.dispose();
 	}
 

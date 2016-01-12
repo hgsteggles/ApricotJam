@@ -2,6 +2,7 @@ package com.apricotjam.spacepanic.testscreen;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.MovementComponent;
 import com.apricotjam.spacepanic.components.ScrollComponent;
@@ -19,6 +20,7 @@ import com.apricotjam.spacepanic.systems.MovementSystem;
 import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.apricotjam.spacepanic.systems.ScrollSystem;
 import com.apricotjam.spacepanic.systems.ShaderLightingSystem;
+import com.apricotjam.spacepanic.systems.SoundSystem;
 import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
@@ -41,7 +43,7 @@ public class PipeTestScreen extends BasicScreen {
 		add(createBackground());
 
 		add(new HelmetSystem(helmetSystemEntity));
-		PipeSystem pipeSystem = new PipeSystem(pipeSystemEntity, 15);
+		PipeSystem pipeSystem = new PipeSystem(pipeSystemEntity, 2);
 		add(pipeSystem);
 		add(new MovementSystem());
 		add(new ScrollSystem());
@@ -51,6 +53,7 @@ public class PipeTestScreen extends BasicScreen {
 		add(new AnimatedShaderSystem());
 		add(new ShaderLightingSystem());
 		add(new TickerSystem());
+		add(new SoundSystem());
 		
 		pipeSystem.start();
 	}
@@ -81,8 +84,6 @@ public class PipeTestScreen extends BasicScreen {
 			//helmetScreenComp.messages.addLast(new LED_Message("FAILURE", Severity.FAIL));
 			//helmetScreenComp.messages.addLast(new LED_Message("RESOURCE NOT COLLECTED", Severity.HINT));
 		}
-		
-		helmetScreenComp.demisterSpread = Math.max(helmetScreenComp.demisterSpread - 10f*delta, 0);
 		
 		alterResource(Resource.OXYGEN, -0.02f*delta);
 	}
