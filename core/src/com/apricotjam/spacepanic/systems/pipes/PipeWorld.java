@@ -43,6 +43,7 @@ public class PipeWorld {
 	static public final int GRID_LENGTH = 5;
 	static public final Array<GridPoint2> GridDeltas = createGridDeltas();
 	static public float PIPE_Z = 0f;
+	static public float FLUID_FILL_DURATION = 4f;
 	
 	private PipePuzzleGenerator generator = new PipePuzzleGenerator();
 	private RandomXS128 rng = new RandomXS128(0);
@@ -54,8 +55,6 @@ public class PipeWorld {
 	private Array<Entity> exitPipes = new Array<Entity>();
 	
 	private int difficulty;
-	
-	private enum TileType {CORNER, SIDE, CENTRE};
 	
 	private Array<Entity> allEntities = new Array<Entity>();
 	
@@ -195,11 +194,9 @@ public class PipeWorld {
 			if (verticalDirection > 0) {
 				Entity startPipe = createPipe((byte)(1), timer_i, timer_j.get(istart), false);
 				entryPipes.add(startPipe);
-				Entity startFluid = createFluid(startPipe, 2);
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
 				addToEngine(engine, startPipe);
-				//addToEngine(engine, startFluid);
 				
 				for (int j = timer_j.get(istart) + 1; j <= starts.get(istart).y; ++j) {
 					byte mask = (byte)((j == starts.get(istart).y) ? 6 : 5);
@@ -216,11 +213,9 @@ public class PipeWorld {
 			else if (verticalDirection < 0) {
 				Entity startPipe = createPipe((byte)(4), timer_i, timer_j.get(istart), false);
 				entryPipes.add(startPipe);
-				Entity startFluid = createFluid(startPipe, 0);
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
 				addToEngine(engine, startPipe);
-				//addToEngine(engine, startFluid);
 				
 				for (int j = timer_j.get(istart) - 1; j >= starts.get(istart).y; --j) {
 					byte mask = (byte)((j == starts.get(istart).y) ? 3 : 5);
@@ -237,11 +232,9 @@ public class PipeWorld {
 			else {
 				Entity startPipe = createPipe((byte)(2), timer_i, timer_j.get(istart), false);
 				entryPipes.add(startPipe);
-				Entity startFluid = createFluid(startPipe, 3);
 				PipeTileComponent parentPipeTileComp = ComponentMappers.pipetile.get(startPipe);
 				
 				addToEngine(engine, startPipe);
-				//addToEngine(engine, startFluid);
 				
 				parentPipeTileComp.neighbours[1] = pipeGrid[0][starts.get(istart).y];
 			}
@@ -385,7 +378,7 @@ public class PipeWorld {
 		
 		PipeFluidComponent pipeFluidComp = new PipeFluidComponent();
 		pipeFluidComp.filling = true;
-		pipeFluidComp.fillDuration = 4f;
+		pipeFluidComp.fillDuration = FLUID_FILL_DURATION;
 		int exitDirection = exitFromEntryDirection(pipeTileComp.mask, entryDirection);
 		pipeFluidComp.exitMask = maskFromDirection(exitDirection);
 		pipeFluidComp.parentPipe = pipe;

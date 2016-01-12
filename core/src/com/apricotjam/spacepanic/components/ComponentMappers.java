@@ -41,4 +41,5 @@ public class ComponentMappers {
 	public static ComponentMapper<ResourceCountComponent> resourcecount = ComponentMapper.getFor(ResourceCountComponent.class);
 	public static ComponentMapper<ResourcePipeComponent> resourcepipe = ComponentMapper.getFor(ResourcePipeComponent.class);
 	public static ComponentMapper<ColorInterpolationComponent> colorinterps = ComponentMapper.getFor(ColorInterpolationComponent.class);
+	public static ComponentMapper<SoundComponent> sound = ComponentMapper.getFor(SoundComponent.class);
 }

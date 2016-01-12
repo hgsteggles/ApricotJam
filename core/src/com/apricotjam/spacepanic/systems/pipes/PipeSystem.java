@@ -1,16 +1,26 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
+import com.apricotjam.spacepanic.art.Audio;
+import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.components.ClickComponent;
+import com.apricotjam.spacepanic.components.ColorInterpolationComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.SoundComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
+import com.apricotjam.spacepanic.components.TextureComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.Colors;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.math.Interpolation;
 
 public class PipeSystem extends EntitySystem {
 	private ImmutableArray<Entity> pipeFluids, pipeTiles;
@@ -103,7 +113,11 @@ public class PipeSystem extends EntitySystem {
 			else if (!startedSolutionAnimation) {
 				boolean isSolved = true;
 				
+				int maxPipesLeft = 1;
+				
 				for (int ipipe = 0; ipipe < world.getEntryPoints().size; ++ipipe) {
+					int pipesLeft = 1;
+					
 					Entity currPipe = world.getEntryPipes().get(ipipe);
 					PipeTileComponent currPipeTileComp = ComponentMappers.pipetile.get(currPipe);
 					int currExitDirection = PipeWorld.directionFromMask(currPipeTileComp.mask);
@@ -111,6 +125,9 @@ public class PipeSystem extends EntitySystem {
 					boolean isCurrPipeSolved = false;
 					
 					while (!isCurrPipeSolved) {
+						if (!PipeWorld.connectedAtIndex(currPipeTileComp.usedExitMask, currExitDirection))
+							pipesLeft += 1;
+						
 						currPipe = currPipeTileComp.neighbours[currExitDirection];
 						if (currPipe == null)
 							break;
@@ -129,14 +146,16 @@ public class PipeSystem extends EntitySystem {
 						}
 					}
 					
+					maxPipesLeft = Math.max(maxPipesLeft, pipesLeft);
+					
 					if (!isCurrPipeSolved) {
 						isSolved = false;
 						break;
-					}	
+					}
 				}
 				
 				if (isSolved) {
-					solved();
+					solved(maxPipesLeft);
 				}
 			}
 		}
@@ -165,7 +184,7 @@ public class PipeSystem extends EntitySystem {
 		pipeScreenComp.currentState = PipeScreenComponent.State.PLAYING;
 	}
 	
-	public void solved() {
+	public void solved(float npipesLeft) {
 		// Prevent user from rotating tiles.
 		for (Entity pipeTile : pipeTiles) {
 			ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
@@ -182,6 +201,8 @@ public class PipeSystem extends EntitySystem {
 		//timerTickerComp.finishActive = false;
 		
 		startedSolutionAnimation = true;
+		
+		getEngine().addEntity(createFluidFillingSound(npipesLeft*PipeWorld.FLUID_FILL_DURATION/solvedFluidSpeedup));
 	}
 	
 	public void failed() {
@@ -197,5 +218,35 @@ public class PipeSystem extends EntitySystem {
 		
 		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(masterEntity);
 		pipeScreenComp.currentState = PipeScreenComponent.State.FAIL;
+	}
+	
+	private Entity createFluidFillingSound(float duration) {
+		Entity entity = new Entity();
+		
+		SoundComponent soundComp = new SoundComponent();
+		soundComp.sound = Audio.sounds.get("fluid-fill");
+		soundComp.soundID = soundComp.sound.loop(0f, 1f, -0.3f);
+		entity.add(soundComp);
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 0.0f;
+		tweenSpec.end = 1.0f;
+		tweenSpec.period = duration/2f;
+		tweenSpec.reverse = true;
+		tweenSpec.cycle = TweenSpec.Cycle.LOOP;
+		tweenSpec.loops = 2;
+		tweenSpec.interp = Interpolation.sine;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				SoundComponent sc = ComponentMappers.sound.get(e);
+				sc.sound.setVolume(sc.soundID, a);
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+		entity.add(tweenComp);
+		
+		return entity;
 	}
 }
