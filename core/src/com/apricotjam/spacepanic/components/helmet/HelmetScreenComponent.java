@@ -10,6 +10,7 @@ public class HelmetScreenComponent implements Component {
 	public ObjectMap<Resource, Float> resourceCount = new ObjectMap<Resource, Float>();
 	public ObjectMap<Resource, Float> maxCount = new ObjectMap<Resource, Float>();
 	public Queue<HelmetSystem.LED_Message> messages = new Queue<HelmetSystem.LED_Message>();
+	public float demisterSpread = 100f;
 	
 	public HelmetScreenComponent() {
 		maxCount.put(Resource.OXYGEN, 1.0f);

@@ -25,7 +25,6 @@ import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severity;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -61,12 +60,13 @@ public class PipeTestScreen extends BasicScreen {
 	public void render(float delta) {
 		super.render(delta);
 		
+		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+		
 		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(pipeSystemEntity);
 		if (pipeScreenComp.currentState == PipeScreenComponent.State.SUCCESS) {
 			System.out.println("Solved the pipe puzzle!");
 			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
 			
-			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 			helmetScreenComp.resourceCount.put(pipeScreenComp.resource, helmetScreenComp.resourceCount.get(pipeScreenComp.resource) + 10);
 			
 			helmetScreenComp.messages.addLast(new LED_Message("SUCCESS", Severity.SUCCESS));
@@ -77,11 +77,13 @@ public class PipeTestScreen extends BasicScreen {
 			
 			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
 			
-			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+			
 			
 			helmetScreenComp.messages.addLast(new LED_Message("FAILURE", Severity.FAIL));
 			helmetScreenComp.messages.addLast(new LED_Message("RESOURCE NOT COLLECTED", Severity.HINT));
 		}
+		
+		helmetScreenComp.demisterSpread = Math.max(helmetScreenComp.demisterSpread - 10f*delta, 0);
 		
 		alterResource(Resource.OXYGEN, -0.02f*delta);
 	}

@@ -4,6 +4,7 @@ import java.util.EnumMap;
 
 import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.helmet.LED_Component;
@@ -78,6 +79,10 @@ public class HelmetSystem extends EntitySystem {
 			resourcePipeComp.currCount = targetCount;
 			updateResourcePipe(entity);
 		}
+
+		
+		ShaderSpreadComponent shaderSpreadComp = ComponentMappers.shaderspread.get(world.getDemisterFog());
+		shaderSpreadComp.spread = helmetScreenComp.demisterSpread;
 	}
 
 	private void updateResourcePipe(Entity e) {
