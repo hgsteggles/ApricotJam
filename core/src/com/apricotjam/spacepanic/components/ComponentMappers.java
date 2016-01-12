@@ -29,6 +29,7 @@ public class ComponentMappers {
 	public static ComponentMapper<ShaderComponent> shader = ComponentMapper.getFor(ShaderComponent.class);
 	public static ComponentMapper<ShaderTimeComponent> shadertime = ComponentMapper.getFor(ShaderTimeComponent.class);
 	public static ComponentMapper<ShaderLightingComponent> shaderlight = ComponentMapper.getFor(ShaderLightingComponent.class);
+	public static ComponentMapper<ShaderSpreadComponent> shaderspread = ComponentMapper.getFor(ShaderSpreadComponent.class);
 	public static ComponentMapper<ShaderDirectionComponent> shaderdirection = ComponentMapper.getFor(ShaderDirectionComponent.class);
 	public static ComponentMapper<FBO_Component> fbo = ComponentMapper.getFor(FBO_Component.class);
 	public static ComponentMapper<FBO_ItemComponent> fboitem = ComponentMapper.getFor(FBO_ItemComponent.class);

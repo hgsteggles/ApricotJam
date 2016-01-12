@@ -13,6 +13,7 @@ import com.apricotjam.spacepanic.components.FBO_ItemComponent;
 import com.apricotjam.spacepanic.components.ShaderComponent;
 import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
 import com.apricotjam.spacepanic.components.ShaderLightingComponent;
+import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
@@ -200,6 +201,10 @@ public class RenderingSystem extends EntitySystem {
 			if (ComponentMappers.shaderdirection.has(entity)) {
 				ShaderDirectionComponent shaderDirComp = ComponentMappers.shaderdirection.get(entity);
 				shaderComp.shader.setUniformf("direction", shaderDirComp.direction);
+			}
+			if (ComponentMappers.shaderspread.has(entity)) {
+				ShaderSpreadComponent shaderSpreadComp = ComponentMappers.shaderspread.get(entity);
+				shaderComp.shader.setUniformf("spread", shaderSpreadComp.spread);
 			}
 		}
 		

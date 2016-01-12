@@ -38,7 +38,7 @@ fog
   orig: 1280, 720
   offset: 0, 0
   index: -1
-helmetBase
+fog2
   rotate: false
   xy: 2, 181
   size: 1280, 720
@@ -75,6 +75,19 @@ sidepanel
   index: -1
 
 art3.png
+size: 2048,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+helmetBase
+  rotate: false
+  xy: 2, 2
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+
+art4.png
 size: 2048,512
 format: RGBA8888
 filter: Nearest,Nearest
@@ -171,7 +184,7 @@ resource3Icon
   offset: 0, 0
   index: -1
 
-art4.png
+art5.png
 size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
@@ -919,7 +932,7 @@ white_pixel
   offset: 0, 0
   index: -1
 
-art5.png
+art6.png
 size: 512,1024
 format: RGBA8888
 filter: Nearest,Nearest
@@ -946,7 +959,7 @@ pipe15-old
   offset: 0, 0
   index: -1
 
-art6.png
+art7.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
