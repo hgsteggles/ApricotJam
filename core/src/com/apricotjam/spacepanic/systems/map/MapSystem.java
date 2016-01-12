@@ -307,13 +307,13 @@ public class MapSystem extends EntitySystem {
 			case OXYGEN:
 				texc.region = MapArt.resourceIcons.get(0);
 				break;
-			case OIL:
+			case DEMISTER:
 				texc.region = MapArt.resourceIcons.get(1);
 				break;
-			case RESOURCE2:
+			case PIPE_CLEANER:
 				texc.region = MapArt.resourceIcons.get(2);
 				break;
-			case RESOURCE3:
+			case PLUTONIUM:
 				texc.region = MapArt.resourceIcons.get(3);
 				break;
 		}
