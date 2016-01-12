@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.ArrayList;
 
 public class MapArt {
-	public static AtlasRegion computerBackground;
 	public static AtlasRegion computerFrame;
 
 	public static ArrayList<AtlasRegion> asteroids;
@@ -22,7 +21,6 @@ public class MapArt {
 	public static AtlasRegion crossBad;
 
 	public static void load(TextureAtlas atlas) {
-		computerBackground = atlas.findRegion("computerBackground");
 		computerFrame = atlas.findRegion("computerFrame");
 
 		asteroids = new ArrayList<AtlasRegion>();

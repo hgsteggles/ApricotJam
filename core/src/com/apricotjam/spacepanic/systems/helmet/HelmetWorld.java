@@ -32,7 +32,7 @@ public class HelmetWorld {
 	public static float LEDBG_W = 3f;
 	public static float LEDBG_H = 0.7f;
 
-	private static final float[] PIPE_LENGTHS = {2.4f, 1.8f, 1.2f, 0.6f};
+	private static final float[] PIPE_LENGTHS = {2.8f, 2.25f, 1.7f, 1.15f};
 	private static final float PIPE_HEIGHT = 0.6f;
 	private static final float PIPE_SPACING = 0.42f;
 	

@@ -18,6 +18,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 
 public class GameScreen extends BasicScreen {
 
@@ -131,14 +132,32 @@ public class GameScreen extends BasicScreen {
 
 	private void alterResource(Resource resource, float amount) {
 		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
-		float current = hsc.resourceCount.get(resource);
-		float next = Math.max(current + amount, 0.0f);
+		float old = hsc.resourceCount.get(resource);
+		float max = GameParameters.RESOURCE_MAX.get(resource);
+		float next = MathUtils.clamp(old + amount, 0.0f, max);
 		hsc.resourceCount.put(resource, next);
+
+		switch (resource) {
+			case OXYGEN:
+				break;
+			case DEMISTER:
+				break;
+			case PIPE_CLEANER:
+				break;
+			case PLUTONIUM:
+				updateViewSize(next / max);
+				break;
+		}
 	}
 
 	private void addMessage(String text, Severity severity) {
 		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 		hsc.messages.addLast(new HelmetSystem.LED_Message(text, severity));
+	}
+
+	private void updateViewSize(float fraction) {
+		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
+		msc.viewSize = GameParameters.MIN_VIEWSIZE + fraction * (GameParameters.MAX_VIEWSIZE - GameParameters.MIN_VIEWSIZE);
 	}
 
 	private TweenSpec mapOutTween() {
@@ -288,7 +307,7 @@ public class GameScreen extends BasicScreen {
 		TweenComponent tweenc = new TweenComponent();
 		pipeSystemEntity.add(tweenc);
 
-		pipeSystem = new PipeSystem(pipeSystemEntity, 15);
+		pipeSystem = new PipeSystem(pipeSystemEntity, 0);
 		add(pipeSystemEntity);
 		add(pipeSystem);
 	}

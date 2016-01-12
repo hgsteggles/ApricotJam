@@ -38,7 +38,7 @@ public class GameParameters {
 	public static final float MAX_VIEWSIZE = 15.0f;
 	public static final float MIN_VIEWSIZE = 5.0f;
 
-	public static final float[] RESOURCE_FRACTIONS = { 0.6f, 0.2f, 0.15f, 0.05f };
+	public static final float[] RESOURCE_FRACTIONS = { 0.5f, 0.2f, 0.15f, 0.15f };
 	public static int MAX_RESOURCES_PER_PATCH = 4;
 
 	private GameParameters() {}

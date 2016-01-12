@@ -203,7 +203,7 @@ public class MapSystem extends EntitySystem {
 		FBO_Component fboc = Shaders.generateFBOComponent("map-screen-fb", texc);
 		fboc.camera.viewportWidth = mapScreenComponent.viewSize;
 		fboc.camera.viewportHeight = mapScreenComponent.viewSize / aspectRatio;
-		fboc.clearColor.set(0.8f, 1.0f, 0.8f, 1.0f);
+		fboc.clearColor.set(0.8f, 0.95f, 0.8f, 1.0f);
 		screen.add(fboc);
 
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -226,11 +226,12 @@ public class MapSystem extends EntitySystem {
 			@Override
 			public void onClick(Entity entity) {
 				Vector2 pos = new Vector2(InputManager.screenInput.getPointerDownLocation());
-				TransformComponent tc = screenTrans.getTotalTransform();
+				TransformComponent tc = ComponentMappers.transform.get(masterEntity);
+				FBO_Component fboc = ComponentMappers.fbo.get(entity);
 				pos.sub(tc.position.x, tc.position.y);
+				pos.x *= fboc.camera.viewportWidth / width;
+				pos.y *= fboc.camera.viewportHeight / height;
 				pos.sub(mapCentreTrans.position.x, mapCentreTrans.position.y);
-				pos.x /= ASTEROID_SIZE;
-				pos.y /= ASTEROID_SIZE;
 				click(Math.round(pos.x), Math.round(pos.y));
 			}
 		};
