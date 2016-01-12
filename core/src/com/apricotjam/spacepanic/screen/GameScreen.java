@@ -5,7 +5,7 @@ import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
-import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
+import com.apricotjam.spacepanic.components.map.MapScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
@@ -15,7 +15,6 @@ import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severit
 import com.apricotjam.spacepanic.systems.map.MapSystem;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -105,6 +104,7 @@ public class GameScreen extends BasicScreen {
 	private void resourceEncountered(Resource resource) {
 		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
 		addMessage(resource + " located", Severity.HINT);
+		msc.viewSize++;
 		msc.currentState = MapScreenComponent.State.PAUSED;
 		ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(mapOutTween());
 		currentState = GameState.TRANSITIONING;
@@ -239,7 +239,9 @@ public class GameScreen extends BasicScreen {
 	private void addMapSystem() {
 		mapSystemEntity = new Entity();
 
-		mapSystemEntity.add(new MapScreenComponent());
+		MapScreenComponent msc = new MapScreenComponent();
+		msc.viewSize = GameParameters.BASE_VIEWSIZE;
+		mapSystemEntity.add(msc);
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = MAP_X;

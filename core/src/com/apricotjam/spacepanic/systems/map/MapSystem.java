@@ -5,8 +5,8 @@ import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.*;
-import com.apricotjam.spacepanic.components.mapComponents.MapScreenComponent;
-import com.apricotjam.spacepanic.components.mapComponents.ResourceComponent;
+import com.apricotjam.spacepanic.components.map.MapScreenComponent;
+import com.apricotjam.spacepanic.components.map.ResourceComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
@@ -25,10 +25,11 @@ import java.util.Random;
 
 public class MapSystem extends EntitySystem {
 
-	public static final float ASTEROID_SIZE = 0.5f;
+	public static final float ASTEROID_SIZE = 1.0f;
 
 	private float width;
 	private float height;
+	private float aspectRatio;
 
 	private Engine engine = null;
 
@@ -37,7 +38,7 @@ public class MapSystem extends EntitySystem {
 
 	private Entity screen;
 	private TransformComponent screenTrans;
-	private Entity screenBackground;
+	//private Entity screenBackground;
 	private Entity screenFrame;
 	private Entity mapCentre;
 	private TransformComponent mapCentreTrans;
@@ -62,14 +63,15 @@ public class MapSystem extends EntitySystem {
 		System.out.println("Seed: " + seed);
 
 		this.masterEntity = masterEntity;
+		mapScreenComponent = ComponentMappers.mapscreen.get(masterEntity);
 		this.width = width;
 		this.height = height;
+		this.aspectRatio = this.width / this.height;
 
 		screen = createScreen();
 		screenTrans = ComponentMappers.transform.get(screen);
-		mapScreenComponent = ComponentMappers.mapscreen.get(masterEntity);
 
-		screenBackground = createScreenBackground();
+		//screenBackground = createScreenBackground();
 		screenFrame = createScreenFrame();
 
 		mapCentre = createMapCentre();
@@ -86,7 +88,7 @@ public class MapSystem extends EntitySystem {
 	public void addedToEngine(Engine engine) {
 		this.engine = engine;
 		engine.addEntity(screen);
-		engine.addEntity(screenBackground);
+		//engine.addEntity(screenBackground);
 		engine.addEntity(screenFrame);
 		engine.addEntity(mapCentre);
 		engine.addEntity(playerIcon);
@@ -113,6 +115,7 @@ public class MapSystem extends EntitySystem {
 		}
 		checkForEncounter();
 		patchConveyor.update(engine);
+		setScreenSize(mapScreenComponent.viewSize);
 	}
 
 	private void move(float dx, float dy) {
@@ -179,6 +182,13 @@ public class MapSystem extends EntitySystem {
 		return mapScreenComponent;
 	}
 
+	private void setScreenSize(float size) {
+		FBO_Component fboc = ComponentMappers.fbo.get(screen);
+		fboc.camera.viewportWidth = size;
+		fboc.camera.viewportHeight = size / aspectRatio;
+		fboc.camera.update();
+	}
+
 	private Entity createScreen() {
 		Entity screen = new Entity();
 
@@ -190,7 +200,11 @@ public class MapSystem extends EntitySystem {
 		texc.size.y = height;
 		screen.add(texc);
 
-		screen.add(Shaders.generateFBOComponent("map-screen-fb", texc));
+		FBO_Component fboc = Shaders.generateFBOComponent("map-screen-fb", texc);
+		fboc.camera.viewportWidth = mapScreenComponent.viewSize;
+		fboc.camera.viewportHeight = mapScreenComponent.viewSize / aspectRatio;
+		fboc.clearColor.set(0.8f, 1.0f, 0.8f, 1.0f);
+		screen.add(fboc);
 
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("crt");
@@ -223,26 +237,6 @@ public class MapSystem extends EntitySystem {
 		screen.add(cc);
 
 		return screen;
-	}
-
-	private Entity createScreenBackground() {
-		Entity screenBackground = new Entity();
-
-		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = 0.0f;
-		tranc.position.y = 0.0f;
-		tranc.position.z = 0.0f;
-		screenBackground.add(tranc);
-
-		TextureComponent texc = new TextureComponent();
-		texc.region = MapArt.computerBackground;
-		texc.size.x = width;
-		texc.size.y = height;
-		screenBackground.add(texc);
-
-		screenBackground.add(Shaders.generateFBOItemComponent("map-screen-fb"));
-
-		return screenBackground;
 	}
 
 	private Entity createScreenFrame() {

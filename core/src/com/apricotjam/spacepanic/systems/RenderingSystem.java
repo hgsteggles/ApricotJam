@@ -148,7 +148,7 @@ public class RenderingSystem extends EntitySystem {
 
 	private void startFBO(String id, HashMap<String, Entity> fboIndex) {
 		FBO_Component fboComp = ComponentMappers.fbo.get(fboIndex.get(id));
-		Shaders.manager.beginFB(fboComp.FBO_ID);
+		Shaders.manager.beginFB(fboComp.FBO_ID, fboComp.clearColor);
 		fboComp.batch.setProjectionMatrix(fboComp.camera.combined);
 		fboComp.batch.begin();
 	}
@@ -156,27 +156,6 @@ public class RenderingSystem extends EntitySystem {
 	private void endFBO(String id, HashMap<String, Entity> fboIndex) {
 		Entity entity = fboIndex.get(id);
 		FBO_Component fboComp = ComponentMappers.fbo.get(entity);
-		fboComp.batch.end();
-		Shaders.manager.endFB();
-		TextureComponent textComp = ComponentMappers.texture.get(entity);
-		textComp.region = new TextureRegion(Shaders.manager.getFBTexture(fboComp.FBO_ID));
-		textComp.region.flip(false, true);
-	}
-	
-	private void renderFbo(Entity entity) {
-		FBO_Component fboComp = ComponentMappers.fbo.get(entity);
-		Shaders.manager.beginFB(fboComp.FBO_ID);
-		fboComp.batch.setProjectionMatrix(fboComp.camera.combined);
-		fboComp.batch.begin();
-		
-		Array<Entity> fboItemEntities = fboRenderQueue.getSortedEntities();
-		for (Entity e : fboItemEntities) {
-			FBO_ItemComponent fboItemComp = ComponentMappers.fboitem.get(e);
-			if (fboItemComp.fboBatch == fboComp.batch) {
-				render(e, fboItemComp.fboBatch);
-			}
-		}
-		
 		fboComp.batch.end();
 		Shaders.manager.endFB();
 		TextureComponent textComp = ComponentMappers.texture.get(entity);

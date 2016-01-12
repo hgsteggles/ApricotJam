@@ -34,6 +34,9 @@ public class GameParameters {
 	// Amount of deadends, 0.0f - basically none, 1.0f quite a bit (but still playable)
 	public static final float DEADENDNESS = 1.0f;
 	public static final float SPEED = 3.0f;
+	public static final float BASE_VIEWSIZE = 15.0f;
+	public static final float MAX_VIEWSIZE = 15.0f;
+	public static final float MIN_VIEWSIZE = 5.0f;
 
 	public static final float[] RESOURCE_FRACTIONS = { 0.6f, 0.2f, 0.15f, 0.05f };
 	public static int MAX_RESOURCES_PER_PATCH = 4;
