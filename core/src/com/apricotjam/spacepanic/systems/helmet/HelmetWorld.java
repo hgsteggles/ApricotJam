@@ -27,7 +27,7 @@ import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
 	public static float HELMET_Z = 100f;
-	public static float LEDBG_X = (70f/80f)*BasicScreen.WORLD_WIDTH;
+	public static float LEDBG_X = (71f/80f)*BasicScreen.WORLD_WIDTH;
 	public static float LEDBG_Y = (7f/80f)*BasicScreen.WORLD_HEIGHT;
 	public static float LEDBG_W = 3f;
 	public static float LEDBG_H = 0.7f;
@@ -54,7 +54,7 @@ public class HelmetWorld {
 		Entity resourcePanel = createResourcePanel();
 		resourcePanelTransform = ComponentMappers.transform.get(resourcePanel);
 		engine.addEntity(resourcePanel);
-		//engine.addEntity(createLED_Frame(LEDBG_X, LEDBG_Y));
+		engine.addEntity(createLED_Frame(LEDBG_X, LEDBG_Y));
 		
 		//// Screws.
 		engine.addEntity(createScrew((46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));
@@ -207,7 +207,7 @@ public class HelmetWorld {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = x;
 		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 4;
+		transComp.position.z = HELMET_Z + 5;
 		e.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -466,7 +466,7 @@ public class HelmetWorld {
 		TextureComponent texComp = new TextureComponent();
 		texComp.region = PipeGameArt.ledBG;
 		texComp.color = new Color(Color.BLACK);
-		texComp.size.x = LEDBG_W;
+		texComp.size.x = (1.01f)*LEDBG_W;
 		texComp.size.y = LEDBG_H;
 		entity.add(texComp);
 		
