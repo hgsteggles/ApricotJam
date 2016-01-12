@@ -32,12 +32,7 @@ public class SpacePanic extends ApplicationAdapter {
 		Audio.load();
 		Shaders.load();
 		InputManager.create();
-		//setScreen(new TitleScreen(this));
-		//setScreen(new GameScreen(this));
-		setScreen(new PipeTestScreen(this));
-		//setScreen(new PipeFillTestScreen(this));
-		//setScreen(new CRT_TestScreen(this));
-		//setScreen(new MaskRectTestScreen(this));
+		setScreen(new TitleScreen(this));
 		
 		Music soundtrack = Audio.music.get("soundtrack");
 		soundtrack.setLooping(true);

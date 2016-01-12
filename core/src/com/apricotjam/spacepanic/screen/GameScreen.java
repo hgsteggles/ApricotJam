@@ -378,7 +378,6 @@ public class GameScreen extends BasicScreen {
 	private int getPipeDifficulty(Resource resource) {
 		int diff = GameParameters.RESOURCE_MIN_PIPE_DIFFICULTY.get(resource)
 				+ rng.nextInt(GameParameters.RESOURCE_SPREAD_PIPE_DIFFICULTY.get(resource));
-		System.out.println(diff);
 		return diff;
 	}
 
