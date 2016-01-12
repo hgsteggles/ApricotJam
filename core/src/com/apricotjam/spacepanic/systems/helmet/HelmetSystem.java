@@ -1,21 +1,16 @@
 package com.apricotjam.spacepanic.systems.helmet;
 
-import java.util.EnumMap;
-
-import com.apricotjam.spacepanic.components.AnimationComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.helmet.LED_Component;
 import com.apricotjam.spacepanic.components.helmet.ResourcePipeComponent;
-import com.apricotjam.spacepanic.gameelements.Resource;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.MathUtils;
 
 public class HelmetSystem extends EntitySystem {
@@ -49,13 +44,6 @@ public class HelmetSystem extends EntitySystem {
 		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(masterEntity);
 		
 		if (helmetScreenComp.messages.size != 0) {
-			/*
-			if (leds.size() > 0) {
-				for (Entity entity : leds) {
-					getEngine().removeEntity(entity);
-				}
-			}
-			*/
 			if (leds.size() == 0) {
 				LED_Message message = helmetScreenComp.messages.removeFirst();
 				getEngine().addEntity(world.createLED(message.text, message.severity));

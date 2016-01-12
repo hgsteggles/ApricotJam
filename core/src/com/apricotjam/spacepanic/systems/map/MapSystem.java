@@ -197,7 +197,8 @@ public class MapSystem extends EntitySystem {
 		FBO_Component fboc = Shaders.generateFBOComponent("map-screen-fb", texc);
 		fboc.camera.viewportWidth = mapScreenComponent.viewSize;
 		fboc.camera.viewportHeight = mapScreenComponent.viewSize / aspectRatio;
-		fboc.clearColor.set(0.8f, 0.95f, 0.8f, 1.0f);
+		//fboc.clearColor.set(0.8f, 0.95f, 0.8f, 1.0f);
+		fboc.clearColor.set(rng.nextFloat(), rng.nextFloat(), rng.nextFloat(), 1.0f);
 		screen.add(fboc);
 
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -342,7 +343,7 @@ public class MapSystem extends EntitySystem {
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = 0.0f;
 		tranc.position.y = 0.0f;
-		tranc.position.z = 2.5f;
+		tranc.position.z = 5.0f;
 		playerIcon.add(tranc);
 
 		return playerIcon;

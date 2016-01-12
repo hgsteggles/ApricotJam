@@ -8,6 +8,7 @@ import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.map.MapScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
+import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
@@ -15,6 +16,7 @@ import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message.Severit
 import com.apricotjam.spacepanic.systems.map.MapSystem;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -23,7 +25,7 @@ import com.badlogic.gdx.math.MathUtils;
 public class GameScreen extends BasicScreen {
 
 	public enum GameState {
-		MAZING, PIPING, TRANSITIONING
+		MAZING, PIPING, TRANSITIONING, GAMEOVER
 	}
 
 	public static float BACKGROUND_MOVEMENT_FACTOR = 0.1f;
@@ -43,6 +45,11 @@ public class GameScreen extends BasicScreen {
 	private TextureComponent backgroundTexComp;
 
 	private PipeSystem pipeSystem = null;
+
+	private boolean badPipes = false;
+	private boolean dying = false;
+	private float dyingTime = GameParameters.DEATH_TIME;
+	private int dyingState = (int)GameParameters.DEATH_TIME;
 
 	public GameScreen(SpacePanic spacePanic) {
 		super(spacePanic);
@@ -82,6 +89,10 @@ public class GameScreen extends BasicScreen {
 		for (Resource r: Resource.values()) {
 			alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
 		}
+
+		if (dying) {
+			updateDying(delta);
+		}
 	}
 
 	private void updateMaze() {
@@ -102,9 +113,20 @@ public class GameScreen extends BasicScreen {
 		}
 	}
 
+	private void updateDying(float delta) {
+		dyingTime -= delta;
+		if (dyingTime < dyingState) {
+			if (dyingState == 0) {
+				gameOver();
+			} else {
+				addMessage(Integer.toString(dyingState), Severity.FAIL);
+				dyingState--;
+			}
+		}
+	}
+
 	private void resourceEncountered(Resource resource) {
 		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
-		addMessage(resource + " located", Severity.HINT);
 		msc.viewSize++;
 		msc.currentState = MapScreenComponent.State.PAUSED;
 		ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(mapOutTween());
@@ -123,8 +145,12 @@ public class GameScreen extends BasicScreen {
 		ComponentMappers.tween.get(mapSystemEntity).tweenSpecs.add(mapInTween());
 
 		if (success) {
-			addMessage(resource + " acquired", Severity.SUCCESS);
-			alterResource(resource, GameParameters.RESOURCE_GAIN.get(resource));
+			addMessage(resource.name().replace("_", " ") + " acquired", Severity.SUCCESS);
+			if (badPipes) {
+				alterResource(resource, GameParameters.RESOURCE_GAIN_ALT.get(resource));
+			} else {
+				alterResource(resource, GameParameters.RESOURCE_GAIN.get(resource));
+			}
 		} else {
 			addMessage(resource + " lost", Severity.FAIL);
 		}
@@ -133,16 +159,32 @@ public class GameScreen extends BasicScreen {
 	private void alterResource(Resource resource, float amount) {
 		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 		float old = hsc.resourceCount.get(resource);
-		float max = GameParameters.RESOURCE_MAX.get(resource);
+		float max = hsc.maxCount.get(resource);
 		float next = MathUtils.clamp(old + amount, 0.0f, max);
 		hsc.resourceCount.put(resource, next);
 
 		switch (resource) {
 			case OXYGEN:
+				if (!dying && next == 0.0f) {
+					dying = true;
+					addMessage("Oxygen depleted, you will die in", Severity.FAIL);
+				} else if (dying && next > 0.0f) {
+					dying = false;
+					dyingTime = GameParameters.DEATH_TIME;
+					dyingState = (int)GameParameters.DEATH_TIME;
+				}
 				break;
 			case DEMISTER:
+				updateFog(next / max);
 				break;
 			case PIPE_CLEANER:
+				if (!badPipes && next == 0.0f) {
+					badPipes = true;
+					addMessage("Pipe cleaner exhausted, resource gain reduced", Severity.FAIL);
+				} else if (badPipes && next > 0.0f) {
+					badPipes = false;
+					addMessage("Resource gain normal", Severity.SUCCESS);
+				}
 				break;
 			case PLUTONIUM:
 				updateViewSize(next / max);
@@ -151,8 +193,21 @@ public class GameScreen extends BasicScreen {
 	}
 
 	private void addMessage(String text, Severity severity) {
+		System.out.println(severity + ": " + text);
 		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 		hsc.messages.addLast(new HelmetSystem.LED_Message(text, severity));
+	}
+
+	private void gameOver() {
+		if (currentState != GameState.GAMEOVER) {
+			currentState = GameState.GAMEOVER;
+			addMessage("GAME OVER", Severity.FAIL);
+		}
+	}
+
+	private void updateFog(float fraction) {
+		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+		hsc.demisterSpread = GameParameters.FOG_MIN + (fraction * fraction) * (GameParameters.FOG_MAX - GameParameters.FOG_MIN);
 	}
 
 	private void updateViewSize(float fraction) {
@@ -259,7 +314,7 @@ public class GameScreen extends BasicScreen {
 		mapSystemEntity = new Entity();
 
 		MapScreenComponent msc = new MapScreenComponent();
-		msc.viewSize = GameParameters.BASE_VIEWSIZE;
+		msc.viewSize = GameParameters.MAX_VIEWSIZE;
 		mapSystemEntity.add(msc);
 
 		TransformComponent tranc = new TransformComponent();
@@ -282,6 +337,7 @@ public class GameScreen extends BasicScreen {
 			helmetScreenComponent.maxCount.put(r, GameParameters.RESOURCE_MAX.get(r));
 			helmetScreenComponent.resourceCount.put(r, GameParameters.RESOURCE_MAX.get(r));
 		}
+		helmetScreenComponent.demisterSpread = 3.0f;
 		helmetSystemEntity.add(helmetScreenComponent);
 
 		add(helmetSystemEntity);
