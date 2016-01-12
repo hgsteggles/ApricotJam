@@ -11,7 +11,6 @@ import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ColorInterpolationComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.FBO_Component;
-import com.apricotjam.spacepanic.components.FBO_ItemComponent;
 import com.apricotjam.spacepanic.components.ShaderComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
@@ -29,7 +28,6 @@ import com.apricotjam.spacepanic.interfaces.EventInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.misc.Colors;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
@@ -149,8 +147,8 @@ public class PipeWorld {
 		addToEngine(engine, createBackPanel());
 		
 		// Create timer.
-		timer = createTimer(30);
-		addToEngine(engine, timer);
+		//timer = createTimer(30);
+		//addToEngine(engine, timer);
 		
 		// Create led display.
 		//addToEngine(engine, createLED_Panel());

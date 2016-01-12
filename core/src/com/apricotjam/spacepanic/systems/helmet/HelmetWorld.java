@@ -63,7 +63,7 @@ public class HelmetWorld {
 		Entity resourcePanel = createResourcePanel();
 		resourcePanelTransform = ComponentMappers.transform.get(resourcePanel);
 		engine.addEntity(resourcePanel);
-		engine.addEntity(createLED_Frame(LEDBG_X, LEDBG_Y));
+		//engine.addEntity(createLED_Frame(LEDBG_X, LEDBG_Y));
 		
 		//// Screws.
 		engine.addEntity(createScrew((46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));

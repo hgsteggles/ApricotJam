@@ -3,7 +3,6 @@ package com.apricotjam.spacepanic.systems.pipes;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.StateComponent;
-import com.apricotjam.spacepanic.components.TickerComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
@@ -36,6 +35,8 @@ public class PipeSystem extends EntitySystem {
 	@Override
 	public void removedFromEngine(Engine engine) {
 		for (Entity entity : world.getAllPipeEntities())
+			engine.removeEntity(entity);
+		for (Entity entity : pipeFluids)
 			engine.removeEntity(entity);
 	}
 
@@ -156,8 +157,8 @@ public class PipeSystem extends EntitySystem {
 		}
 		
 		// Start timer.
-		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
-		timerTickerComp.start();
+		//TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
+		//timerTickerComp.start();
 		
 		// Set screen state.
 		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(masterEntity);
@@ -176,9 +177,9 @@ public class PipeSystem extends EntitySystem {
 			stateComp.timescale = solvedFluidSpeedup;
 		}
 		// Stop timer;
-		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
-		timerTickerComp.tickerActive = false;
-		timerTickerComp.finishActive = false;
+		//TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
+		//timerTickerComp.tickerActive = false;
+		//timerTickerComp.finishActive = false;
 		
 		startedSolutionAnimation = true;
 	}
@@ -190,9 +191,9 @@ public class PipeSystem extends EntitySystem {
 			clickComp.active = false;
 		}
 		// Stop timer;
-		TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
-		timerTickerComp.tickerActive = false;
-		timerTickerComp.finishActive = false;
+		//TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
+		//timerTickerComp.tickerActive = false;
+		//timerTickerComp.finishActive = false;
 		
 		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(masterEntity);
 		pipeScreenComp.currentState = PipeScreenComponent.State.FAIL;
