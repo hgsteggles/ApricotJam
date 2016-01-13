@@ -226,6 +226,7 @@ public class PipeSystem extends EntitySystem {
 		SoundComponent soundComp = new SoundComponent();
 		soundComp.sound = Audio.sounds.get("fluid-fill");
 		soundComp.soundID = soundComp.sound.loop(0f, 1f, -0.3f);
+		soundComp.duration = duration;
 		entity.add(soundComp);
 		
 		TweenComponent tweenComp = new TweenComponent();

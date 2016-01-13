@@ -3,6 +3,7 @@ package com.apricotjam.spacepanic;
 import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.Audio;
 import com.apricotjam.spacepanic.art.Shaders;
+import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
 import com.apricotjam.spacepanic.screen.BasicScreen;
@@ -26,6 +27,8 @@ public class SpacePanic extends ApplicationAdapter {
 
 	private BasicScreen screen;
 
+	private Music soundtrack;
+
 	@Override
 	public void create() {
 		Art.load();
@@ -33,10 +36,13 @@ public class SpacePanic extends ApplicationAdapter {
 		Shaders.load();
 		InputManager.create();
 		setScreen(new TitleScreen(this));
-		
-		Music soundtrack = Audio.music.get("soundtrack");
+
+		soundtrack = Audio.music.get("soundtrack");
 		soundtrack.setLooping(true);
 		soundtrack.play();
+		if (!GameSettings.isSoundOn()) {
+			soundtrack.setVolume(0.0f);
+		}
 	}
 
 	@Override
@@ -50,6 +56,12 @@ public class SpacePanic extends ApplicationAdapter {
 			float deltatime = Gdx.graphics.getDeltaTime();
 			screen.render(deltatime);
 			InputManager.reset();
+
+			if (!GameSettings.isSoundOn()) {
+				soundtrack.setVolume(0.0f);
+			} else {
+				soundtrack.setVolume(1.0f);
+			}
 			
 			if (video && nprints > 0) {
 				accum += deltatime;
