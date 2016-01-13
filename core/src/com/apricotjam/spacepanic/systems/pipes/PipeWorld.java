@@ -329,13 +329,15 @@ public class PipeWorld {
 	}
 	
 	private Entity createPipe(byte mask, int ipos, int jpos, boolean withinGrid) {
-		Entity pipe = new Entity();
+		Entity entity = new Entity();
 
 		PipeTileComponent pipeTileComp = new PipeTileComponent();
 		pipeTileComp.mask = mask;
+		entity.add(pipeTileComp);
 
 		TextureComponent textureComp = new TextureComponent();
 		textureComp.region = PipeGameArt.pipeRegions.get(mask).region;
+		entity.add(textureComp);
 
 		TransformComponent transComp = new TransformComponent();
 		float pipeWidth = textureComp.size.x;
@@ -343,28 +345,29 @@ public class PipeWorld {
 		float gridOffsetX = -GRID_LENGTH * pipeWidth / 2f;
 		float gridOffsetY = -GRID_LENGTH * pipeHeight / 2f;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * pipeWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * pipeHeight, 0);
-		
 		transComp.rotation = PipeGameArt.pipeRegions.get(mask).rotation;
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
+		entity.add(transComp);
 		
-		ClickComponent clickComp = new ClickComponent();
-		clickComp.active = withinGrid;
-		clickComp.clicker = new ClickInterface() {
-			@Override
-			public void onClick(Entity entity) {
-				TransformComponent tc = ComponentMappers.transform.get(entity);
-				tc.rotation -= 90f;
-				if (tc.rotation > 360f)
-					tc.rotation += 360f;
-				PipeTileComponent ptc = ComponentMappers.pipetile.get(entity);
-				ptc.mask = rotateMask(ptc.mask);
-			}
-		};
-		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
+		if (withinGrid) {
+			ClickComponent clickComp = new ClickComponent();
+			clickComp.active = false;
+			clickComp.clicker = new ClickInterface() {
+				@Override
+				public void onClick(Entity entity) {
+					TransformComponent tc = ComponentMappers.transform.get(entity);
+					tc.rotation -= 90f;
+					if (tc.rotation > 360f)
+						tc.rotation += 360f;
+					PipeTileComponent ptc = ComponentMappers.pipetile.get(entity);
+					ptc.mask = rotateMask(ptc.mask);
+				}
+			};
+			clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0f, 0f);
+			entity.add(clickComp);
+		}
 		
-		pipe.add(pipeTileComp).add(textureComp).add(transComp).add(clickComp);
-
-		return pipe;
+		return entity;
 	}
 	
 	public Entity createFluid(Entity pipe, int entryDirection) {

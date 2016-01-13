@@ -20,6 +20,74 @@ title
   index: -1
 
 art2.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+comsSpeaker
+  rotate: false
+  xy: 1688, 1495
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+fog
+  rotate: false
+  xy: 2, 903
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+fog2
+  rotate: false
+  xy: 2, 181
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+ledFrame
+  rotate: false
+  xy: 1284, 1344
+  size: 288, 96
+  orig: 288, 96
+  offset: 0, 0
+  index: -1
+resource-panel
+  rotate: false
+  xy: 2, 36
+  size: 304, 143
+  orig: 304, 143
+  offset: 0, 0
+  index: -1
+screw
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+sidepanel
+  rotate: false
+  xy: 1284, 1442
+  size: 402, 181
+  orig: 402, 181
+  offset: 0, 0
+  index: -1
+
+art3.png
+size: 2048,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+helmetBase
+  rotate: false
+  xy: 2, 2
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+
+art4.png
 size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -80,107 +148,32 @@ playerIcon
   orig: 128, 128
   offset: 0, 0
   index: -1
-playerIconOld
+resource0Icon
   rotate: false
   xy: 486, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-resource0Icon
+resource1Icon
   rotate: false
   xy: 552, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-resource1Icon
+resource2Icon
   rotate: false
   xy: 618, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-resource2Icon
+resource3Icon
   rotate: false
   xy: 684, 38
   size: 64, 64
   orig: 64, 64
-  offset: 0, 0
-  index: -1
-resource3Icon
-  rotate: false
-  xy: 750, 38
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-
-art3.png
-size: 2048,2048
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-comsSpeaker
-  rotate: false
-  xy: 1688, 1495
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-fog
-  rotate: false
-  xy: 2, 903
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-fog2
-  rotate: false
-  xy: 2, 181
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-ledFrame
-  rotate: false
-  xy: 1284, 1344
-  size: 288, 96
-  orig: 288, 96
-  offset: 0, 0
-  index: -1
-resource-panel
-  rotate: false
-  xy: 2, 36
-  size: 304, 143
-  orig: 304, 143
-  offset: 0, 0
-  index: -1
-screw
-  rotate: false
-  xy: 2, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-sidepanel
-  rotate: false
-  xy: 1284, 1442
-  size: 402, 181
-  orig: 402, 181
-  offset: 0, 0
-  index: -1
-
-art4.png
-size: 2048,1024
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-helmetBase
-  rotate: false
-  xy: 2, 2
-  size: 1280, 720
-  orig: 1280, 720
   offset: 0, 0
   index: -1
 

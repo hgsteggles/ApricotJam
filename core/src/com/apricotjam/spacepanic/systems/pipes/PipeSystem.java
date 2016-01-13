@@ -1,20 +1,16 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
 import com.apricotjam.spacepanic.art.Audio;
-import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.components.ClickComponent;
-import com.apricotjam.spacepanic.components.ColorInterpolationComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.SoundComponent;
 import com.apricotjam.spacepanic.components.StateComponent;
-import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
-import com.apricotjam.spacepanic.misc.Colors;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -90,7 +86,8 @@ public class PipeSystem extends EntitySystem {
 							
 							// Stop player rotating the filling pipe.
 							ClickComponent clickComp = ComponentMappers.click.get(nextPipe);
-							clickComp.active = false;
+							if (clickComp != null)
+								clickComp.active = false;
 							
 							// Set exit mask to prevent fluid collisions.
 							nextPipeTileComp.usedExitMask = PipeWorld.connectAtIndex(nextPipeTileComp.usedExitMask, PipeWorld.exitFromEntryDirection(nextPipeTileComp.mask, entryDirection));
@@ -172,7 +169,8 @@ public class PipeSystem extends EntitySystem {
 		// Set clickable to active so user can rotate tiles.
 		for (Entity pipeTile : pipeTiles) {
 			ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
-			clickComp.active = true;
+			if (clickComp != null)
+				clickComp.active = true;
 		}
 		
 		// Start timer.
@@ -188,7 +186,8 @@ public class PipeSystem extends EntitySystem {
 		// Prevent user from rotating tiles.
 		for (Entity pipeTile : pipeTiles) {
 			ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
-			clickComp.active = false;
+			if (clickComp != null)
+				clickComp.active = false;
 		}
 		// Speed up the fluid filling.
 		for (Entity pipeFluid : pipeFluids) {
@@ -209,7 +208,8 @@ public class PipeSystem extends EntitySystem {
 		// Prevent user from rotating tiles.
 		for (Entity pipeTile : pipeTiles) {
 			ClickComponent clickComp = ComponentMappers.click.get(pipeTile);
-			clickComp.active = false;
+			if (clickComp != null)
+				clickComp.active = false;
 		}
 		// Stop timer;
 		//TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
