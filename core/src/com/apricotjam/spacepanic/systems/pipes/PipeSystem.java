@@ -76,7 +76,7 @@ public class PipeSystem extends EntitySystem {
 						
 						if (PipeWorld.connectedAtIndex(nextPipeTileComp.mask, entryDirection) && !PipeWorld.connectedAtIndex(nextPipeTileComp.usedExitMask, entryDirection)) {
 							// Next pipe is connected, start filling.
-							Entity nextFluid = world.createFluid(nextPipe, entryDirection);
+							Entity nextFluid = world.createFluid(nextPipe, entryDirection, pipeScreenComp.resource);
 							ComponentMappers.shadertime.get(nextFluid).time = ComponentMappers.shadertime.get(pipeFluid).time;
 							if (startedSolutionAnimation) {
 								StateComponent nextStateComp = ComponentMappers.state.get(nextFluid);
@@ -159,11 +159,12 @@ public class PipeSystem extends EntitySystem {
 	}
 	
 	public void start() {
+		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(masterEntity);
 		// Add fluid entities.
 		for (Entity pipeTile : world.getEntryPipes()) {
 			PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipeTile);			
 			int entryDirection = PipeWorld.oppositeDirectionIndex(PipeWorld.directionFromMask(pipeTileComp.mask));
-			getEngine().addEntity(world.createFluid(pipeTile, entryDirection));
+			getEngine().addEntity(world.createFluid(pipeTile, entryDirection, pipeScreenComp.resource));
 		}
 		
 		// Set clickable to active so user can rotate tiles.
@@ -178,7 +179,6 @@ public class PipeSystem extends EntitySystem {
 		//timerTickerComp.start();
 		
 		// Set screen state.
-		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(masterEntity);
 		pipeScreenComp.currentState = PipeScreenComponent.State.PLAYING;
 	}
 	
