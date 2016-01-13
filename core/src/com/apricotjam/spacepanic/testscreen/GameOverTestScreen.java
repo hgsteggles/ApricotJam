@@ -2,7 +2,7 @@ package com.apricotjam.spacepanic.testscreen;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
-import com.apricotjam.spacepanic.art.PipeGameArt;
+import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.MovementComponent;
 import com.apricotjam.spacepanic.components.ScrollComponent;
@@ -11,11 +11,8 @@ import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
-import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
-import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.screen.GameScreen.GameState;
 import com.apricotjam.spacepanic.systems.AnimatedShaderSystem;
 import com.apricotjam.spacepanic.systems.AnimationSystem;
 import com.apricotjam.spacepanic.systems.ClickSystem;
@@ -27,28 +24,25 @@ import com.apricotjam.spacepanic.systems.SoundSystem;
 import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
-import com.apricotjam.spacepanic.systems.helmet.HelmetSystem.LED_Message;
-import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
+import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
-public class PipeTestScreen extends BasicScreen {
+public class GameOverTestScreen extends BasicScreen {
 	private Entity helmetSystemEntity;
 	private Entity pipeSystemEntity;
-
-	public PipeTestScreen(SpacePanic spacePanic) {
+	
+	public GameOverTestScreen(SpacePanic spacePanic) {
 		super(spacePanic);
 		
 		helmetSystemEntity = createHelmetMasterEntity();
-		pipeSystemEntity = createPipeMasterEntity();
 		
 		add(createBackground());
 
 		add(new HelmetSystem(helmetSystemEntity));
-		PipeSystem pipeSystem = new PipeSystem(pipeSystemEntity, 2);
-		add(pipeSystem);
 		add(new MovementSystem());
 		add(new ScrollSystem());
 		add(new ClickSystem());
@@ -60,45 +54,42 @@ public class PipeTestScreen extends BasicScreen {
 		add(new SoundSystem());
 		
 		add(helmetSystemEntity);
-		
-		pipeSystem.start();
+		add(createGameOver());
 	}
 	
-	@Override
-	public void render(float delta) {
-		super.render(delta);
+	private Entity createGameOver() {
+		Entity entity = new Entity();
 		
-		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
+		fontComp.string = "GAME OVER";
+		fontComp.color.set(1f, 1f, 1f, 0f);
+		fontComp.centering = true;
+		entity.add(fontComp);
 		
-		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(pipeSystemEntity);
-		if (pipeScreenComp.currentState == PipeScreenComponent.State.SUCCESS) {
-			System.out.println("Solved the pipe puzzle!");
-			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
-			
-			helmetScreenComp.resourceCount.put(pipeScreenComp.resource, helmetScreenComp.resourceCount.get(pipeScreenComp.resource) + 10);
-			
-			//helmetScreenComp.messages.addLast(new LED_Message("SUCCESS", Severity.SUCCESS));
-			//helmetScreenComp.messages.addLast(new LED_Message("RESOURCE COLLECTED", Severity.HINT));
-		}
-		else if (pipeScreenComp.currentState == PipeScreenComponent.State.FAIL) {
-			System.out.println("Failed the pipe puzzle :(");
-			
-			pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
-			
-			
-			
-			//helmetScreenComp.messages.addLast(new LED_Message("FAILURE", Severity.FAIL));
-			//helmetScreenComp.messages.addLast(new LED_Message("RESOURCE NOT COLLECTED", Severity.HINT));
-		}
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
+		entity.add(transComp);
 		
-		alterResource(Resource.OXYGEN, -0.02f*delta);
-	}
-	
-	private void alterResource(Resource resource, float amount) {
-		HelmetScreenComponent hsc = ComponentMappers.helmetscreen.get(helmetSystemEntity);
-		float current = hsc.resourceCount.get(resource);
-		float next = Math.min(Math.max(current + amount, 0.0f), hsc.maxCount.get(resource));
-		hsc.resourceCount.put(resource, next);
+		TweenComponent tweenComponent = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = -2f;
+		tweenSpec.end = 1.0f;
+		tweenSpec.period = 6f;
+		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				BitmapFontComponent bitmapFontComponent = ComponentMappers.bitmapfont.get(e);
+				bitmapFontComponent.color.a = Math.max(a, 0f);
+			}
+		};
+		tweenComponent.tweenSpecs.add(tweenSpec);
+		entity.add(tweenComponent);
+		
+		return entity;
 	}
 	
 	private Entity createHelmetMasterEntity() {
@@ -113,21 +104,23 @@ public class PipeTestScreen extends BasicScreen {
 		transComp.scale.y = 1f;
 		entity.add(transComp);
 		
-		return entity;
-	}
-	
-	private Entity createPipeMasterEntity() {
-		Entity entity = new Entity();
-
-		PipeScreenComponent pipeScreenComp = new PipeScreenComponent();
-		pipeScreenComp.currentState = PipeScreenComponent.State.PAUSED;
-		entity.add(pipeScreenComp);
-
-		TransformComponent tranc = new TransformComponent();
-		tranc.position.set(BasicScreen.WORLD_WIDTH / 2.0f, BasicScreen.WORLD_HEIGHT / 2.0f, -10);
-		entity.add(tranc);
-
-		entity.add(new TweenComponent());
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec ts = new TweenSpec();
+		ts.start = 0f;
+		ts.end =  4f;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.linear;
+		ts.period = 8.0f;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				TransformComponent tc = ComponentMappers.transform.get(e);
+				tc.scale.x = Math.max(a, 1f);
+				tc.scale.y = Math.max(a, 1f);
+			}
+		};
+		tweenComp.tweenSpecs.add(ts);
+		entity.add(tweenComp);
 		
 		return entity;
 	}
@@ -165,6 +158,6 @@ public class PipeTestScreen extends BasicScreen {
 	@Override
 	public void backPressed() {
 		// TODO Auto-generated method stub
-
+		
 	}
 }
