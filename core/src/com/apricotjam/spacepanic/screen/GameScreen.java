@@ -7,6 +7,7 @@ import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.map.MapScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
+import com.apricotjam.spacepanic.gameelements.GameStats;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.*;
@@ -53,6 +54,8 @@ public class GameScreen extends BasicScreen {
 	private float dyingTime = GameParameters.DEATH_TIME;
 	private int dyingState = (int)GameParameters.DEATH_TIME;
 
+	private GameStats gameStats = new GameStats();
+
 	public GameScreen(SpacePanic spacePanic) {
 		super(spacePanic);
 
@@ -94,6 +97,8 @@ public class GameScreen extends BasicScreen {
 
 		if (dying) {
 			updateDying(delta);
+		} else {
+			gameStats.timeAlive += delta;
 		}
 	}
 
@@ -150,6 +155,7 @@ public class GameScreen extends BasicScreen {
 
 		if (success) {
 			addMessage(resource.name().replace("_", " ") + " acquired", Color.GREEN, 3.0f, true, false);
+			gameStats.addResource(resource);
 			if (badPipes) {
 				alterResource(resource, GameParameters.RESOURCE_GAIN_ALT.get(resource));
 			} else {
@@ -209,6 +215,7 @@ public class GameScreen extends BasicScreen {
 			if (pipeSystem != null) {
 				pipeSystem.setProcessing(false);
 			}
+			System.out.println("You survived for " + gameStats.timeAlive + " seconds");
 		}
 	}
 
