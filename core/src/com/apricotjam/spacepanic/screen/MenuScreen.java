@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.ClickSystem;
@@ -18,8 +19,9 @@ public class MenuScreen extends BasicScreen {
 	private static final float TITLETIME = 1.0f;
 	private static final float TITLEENDPOSITION = WORLD_HEIGHT * 3.0f / 4.0f;
 
-	private Entity startButton;
-	private Entity title;
+	private static final float BUTTONS_X = WORLD_WIDTH / 2.0f;
+	private static final float BUTTONS_Y = WORLD_HEIGHT / 4.0f + 1.0f;
+	private static final float BUTTONS_SPACING = 0.6f;
 
 	public MenuScreen(SpacePanic spacePanic) {
 		super(spacePanic);
@@ -27,8 +29,33 @@ public class MenuScreen extends BasicScreen {
 		add(new TweenSystem());
 
 		add(createTitleEntity());
-		add(createStartButton());
 		add(createBackground());
+
+		add(createButton(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
+			@Override
+			public void onClick(Entity entity) {
+				startGame();
+			}
+		}));
+
+		String sound;
+		if (GameSettings.isSoundOn()) {
+			sound = "SOUND ON";
+		} else {
+			sound = "SOUND OFF";
+		}
+		add(createButton(BUTTONS_X, BUTTONS_Y - BUTTONS_SPACING, sound, new ClickInterface() {
+			@Override
+			public void onClick(Entity entity) {
+				if (GameSettings.isSoundOn()) {
+					GameSettings.setSoundOn(false);
+					ComponentMappers.bitmapfont.get(entity).string = "SOUND OFF";
+				} else {
+					GameSettings.setSoundOn(true);
+					ComponentMappers.bitmapfont.get(entity).string = "SOUND ON";
+				}
+			}
+		}));
 	}
 
 	private void startGame() {
@@ -72,39 +99,34 @@ public class MenuScreen extends BasicScreen {
 		return titleEntity;
 	}
 
-	public Entity createStartButton() {
-		Entity clickEntity = new Entity();
+	public Entity createButton(float x, float y, String text, ClickInterface clickInterface) {
+		Entity button = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
-		fontComp.string = "START";
+		fontComp.string = text;
 		fontComp.color = Color.WHITE;
 		fontComp.centering = true;
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 4f;
+		transComp.position.x = x;
+		transComp.position.y = y;
 
 		ClickComponent clickComponent = new ClickComponent();
-		clickComponent.clicker = new ClickInterface() {
-			@Override
-			public void onClick(Entity entity) {
-				startGame();
-			}
-		};
+		clickComponent.clicker = clickInterface;
 		clickComponent.active = true;
 		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f).setCenter(0.0f, 0.0f);
 
 		TextButtonComponent textButtonComponent = new TextButtonComponent();
 		textButtonComponent.base = fontComp.color;
-		textButtonComponent.pressed = Color.RED;
+		textButtonComponent.pressed = Color.DARK_GRAY;
 
-		clickEntity.add(fontComp);
-		clickEntity.add(transComp);
-		clickEntity.add(clickComponent);
-		clickEntity.add(textButtonComponent);
+		button.add(fontComp);
+		button.add(transComp);
+		button.add(clickComponent);
+		button.add(textButtonComponent);
 
-		return clickEntity;
+		return button;
 	}
 
 	private Entity createBackground() {
