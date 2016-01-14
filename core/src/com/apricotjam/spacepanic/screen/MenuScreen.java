@@ -5,6 +5,7 @@ import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.gameelements.GameSettings;
+import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.ClickSystem;
@@ -21,7 +22,7 @@ public class MenuScreen extends BasicScreen {
 
 	private static final float BUTTONS_X = WORLD_WIDTH / 2.0f;
 	private static final float BUTTONS_Y = WORLD_HEIGHT / 4.0f + 1.0f;
-	private static final float BUTTONS_SPACING = 0.6f;
+	private static final float BUTTONS_SPACING = 0.7f;
 
 	public MenuScreen(SpacePanic spacePanic) {
 		this(spacePanic, TITLEENDPOSITION);
@@ -36,12 +37,13 @@ public class MenuScreen extends BasicScreen {
 		add(createTitleEntity(titleStartPosition));
 		add(createBackground());
 
-		add(createTextButton(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
+		MenuButton buttonStart = new MenuButton(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				startGame();
 			}
-		}));
+		});
+		buttonStart.addToEngine(engine);
 
 		String sound;
 		if (GameSettings.isSoundOn()) {
@@ -49,7 +51,7 @@ public class MenuScreen extends BasicScreen {
 		} else {
 			sound = "SOUND OFF";
 		}
-		add(createTextButton(BUTTONS_X, BUTTONS_Y - BUTTONS_SPACING, sound, new ClickInterface() {
+		MenuButton buttonSound = new MenuButton(BUTTONS_X, BUTTONS_Y - BUTTONS_SPACING, sound, new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				if (GameSettings.isSoundOn()) {
@@ -60,14 +62,16 @@ public class MenuScreen extends BasicScreen {
 					ComponentMappers.bitmapfont.get(entity).string = "SOUND ON";
 				}
 			}
-		}));
+		});
+		buttonSound.addToEngine(engine);
 
-		add(createTextButton(BUTTONS_X, BUTTONS_Y - 2 * BUTTONS_SPACING, "ABOUT", new ClickInterface() {
+		MenuButton buttonAbout = new MenuButton(BUTTONS_X, BUTTONS_Y - 2 * BUTTONS_SPACING, "ABOUT", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				spacePanic.setScreen(new AboutScreen(spacePanic));
 			}
-		}));
+		});
+		buttonAbout.addToEngine(engine);
 	}
 
 	private void startGame() {

@@ -60,7 +60,6 @@ public class GameScreen extends BasicScreen {
 	public GameScreen(SpacePanic spacePanic) {
 		super(spacePanic);
 
-		add(new RenderingSystem(spriteBatch, worldCamera));
 		add(new ClickSystem());
 		add(new TweenSystem());
 		add(new MovementSystem());

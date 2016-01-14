@@ -25,11 +25,9 @@ import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 public class GameOverTestScreen extends BasicScreen {
 	private Entity helmetSystemEntity;

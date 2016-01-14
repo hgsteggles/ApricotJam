@@ -17,7 +17,7 @@ public class MenuButton {
 	private Entity ninepatch, bitmapfont;
 
 	public MenuButton(float x, float y, String text, ClickInterface clickInterface) {
-		this(x, y, 1.0f, 4.0f, 0.5f, text, clickInterface);
+		this(x, y, 1.0f, 4.0f, 0.6f, text, clickInterface);
 	}
 	
 	public MenuButton(float x, float y, float z, float w, float h, String text, ClickInterface clickInterface) {

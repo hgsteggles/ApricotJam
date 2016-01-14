@@ -27,7 +27,6 @@ public class GameOverScreen extends BasicScreen {
 	public GameOverScreen(SpacePanic spacePanic, Entity backgroundEntity) {
 		super(spacePanic);
 
-		add(new RenderingSystem(spriteBatch, worldCamera));
 		add(new ClickSystem());
 		add(new TweenSystem());
 		add(new MovementSystem());

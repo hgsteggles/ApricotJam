@@ -5,6 +5,7 @@ import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.TextButtonComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.systems.RenderingSystem;
@@ -53,11 +54,6 @@ public abstract class BasicScreen implements Screen {
 
 	public void render(float delta) {
 		engine.update(delta);
-		
-		//if (engine.getEntities().size() > 400) {
-		//	System.out.println("(Basic Screen) Too many entities: " + engine.getEntities().size() + " > 400");
-		//	System.exit(0);
-		//}
 	}
 
 	@Override
@@ -101,24 +97,6 @@ public abstract class BasicScreen implements Screen {
 	}
 
 	public abstract void backPressed();
-
-	public Entity createTextButton(float x, float y, String text, ClickInterface clickInterface) {
-		Entity button = createText(x, y, text);
-
-		ClickComponent clickComponent = new ClickComponent();
-		clickComponent.clicker = clickInterface;
-		clickComponent.active = true;
-		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f).setCenter(0.0f, 0.0f);
-
-		TextButtonComponent textButtonComponent = new TextButtonComponent();
-		textButtonComponent.base = Color.WHITE;
-		textButtonComponent.pressed = Color.DARK_GRAY;
-
-		button.add(clickComponent);
-		button.add(textButtonComponent);
-
-		return button;
-	}
 
 	public Entity createText(float x, float y, String text) {
 		Entity entity = new Entity();
