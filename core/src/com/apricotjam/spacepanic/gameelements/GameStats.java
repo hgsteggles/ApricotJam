@@ -1,11 +1,13 @@
 package com.apricotjam.spacepanic.gameelements;
 
+import com.apricotjam.spacepanic.systems.pipes.PuzzleDifficulty;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class GameStats {
 	public float timeAlive = 0.0f;
 	public ObjectMap<Resource, Integer> resourceIndex = new ObjectMap<Resource, Integer>();
 	public int[] resourceCount = new int[Resource.values().length];
+	public float difficulty = 0;
 
 	public GameStats() {
 		int i = 0;
