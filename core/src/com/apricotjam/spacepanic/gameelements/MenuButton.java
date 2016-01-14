@@ -62,6 +62,7 @@ public class MenuButton {
 		NinepatchComponent nineComp = new NinepatchComponent();
 		nineComp.patch = MiscArt.buttonBorder;
 		nineComp.size.set(4f, 1f);
+		//nineComp.size.set(w, h);
 		nineComp.color.a = 0f;
 		entity.add(nineComp);
 		
