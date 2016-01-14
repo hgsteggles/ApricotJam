@@ -99,7 +99,7 @@ public class MenuScreen extends BasicScreen {
 		return titleEntity;
 	}
 
-	public Entity createButton(float x, float y, String text, ClickInterface clickInterface) {
+	static public Entity createButton(float x, float y, String text, ClickInterface clickInterface) {
 		Entity button = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();

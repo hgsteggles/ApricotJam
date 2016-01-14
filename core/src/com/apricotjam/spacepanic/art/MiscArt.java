@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class MiscArt {
@@ -17,6 +19,10 @@ public class MiscArt {
 	public static ObjectMap<String, BitmapFont> fonts = new ObjectMap<String, BitmapFont>();
 	
 	public static TextureRegion marioRegion;
+	
+	public static NinePatchDrawable buttonBorder;
+	
+	private static Skin skin = new Skin();;
 
 	public static void load(TextureAtlas atlas) {
 		title = atlas.findRegion("title");
@@ -30,5 +36,8 @@ public class MiscArt {
 				  Gdx.files.internal("fonts/led1.png"), false));
 		
 		marioRegion = atlas.findRegion("mario");
+		
+		skin.addRegions(atlas);
+		buttonBorder = (NinePatchDrawable)skin.getDrawable("button-border");
 	}
 }
