@@ -15,6 +15,10 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class MenuButton {
 	private Entity ninepatch, bitmapfont;
+
+	public MenuButton(float x, float y, String text, ClickInterface clickInterface) {
+		this(x, y, 1.0f, 4.0f, 0.5f, text, clickInterface);
+	}
 	
 	public MenuButton(float x, float y, float z, float w, float h, String text, ClickInterface clickInterface) {
 		ninepatch = createButton(x, y, z, w, h);
@@ -62,9 +66,7 @@ public class MenuButton {
 		
 		NinepatchComponent nineComp = new NinepatchComponent();
 		nineComp.patch = MiscArt.buttonBorder;
-		nineComp.size.set(4f, 1f);
-		//nineComp.size.set(w, h);
-		nineComp.color.a = 0f;
+		nineComp.size.set(w, h);
 		entity.add(nineComp);
 		
 		TransformComponent transComp = new TransformComponent();
