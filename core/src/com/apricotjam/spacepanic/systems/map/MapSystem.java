@@ -39,6 +39,7 @@ public class MapSystem extends EntitySystem {
 	private Entity mapCentre;
 	private TransformComponent mapCentreTrans;
 	private Entity playerIcon;
+	private TextureComponent playerIconTexture;
 
 	private boolean moving = false;
 
@@ -71,7 +72,9 @@ public class MapSystem extends EntitySystem {
 
 		mapCentre = createMapCentre();
 		mapCentreTrans = ComponentMappers.transform.get(mapCentre);
+
 		playerIcon = createPlayerIcon();
+		playerIconTexture = ComponentMappers.texture.get(playerIcon);
 
 		mazeGenerator = new MazeGenerator(seed, GameParameters.PATHINESS, GameParameters.DEADENDNESS);
 		resourceGenerator = new ResourceGenerator(seed);
@@ -117,6 +120,15 @@ public class MapSystem extends EntitySystem {
 		mapCentreTrans.position.y -= dy;
 		mapScreenComponent.playerPosition.add(dx, dy);
 		patchConveyor.move(dx, dy);
+
+		playerIconTexture.region = MapArt.playerIconMove;
+		if (dx > 0 && !playerIconTexture.region.isFlipX()) {
+			playerIconTexture.region.flip(true, false);
+			MapArt.playerIcon.flip(true, false);
+		} else if (dx < 0 && playerIconTexture.region.isFlipX()) {
+			playerIconTexture.region.flip(true, false);
+			MapArt.playerIcon.flip(true, false);
+		}
 	}
 
 	private void softStop() {
@@ -125,6 +137,7 @@ public class MapSystem extends EntitySystem {
 
 	private void hardStop() {
 		path.hardStop(engine);
+		playerIconTexture.region = MapArt.playerIcon;
 		moving = false;
 	}
 

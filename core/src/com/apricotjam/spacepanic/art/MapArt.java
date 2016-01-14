@@ -13,6 +13,7 @@ public class MapArt {
 	public static ArrayList<AtlasRegion> asteroids;
 
 	public static AtlasRegion playerIcon;
+	public static AtlasRegion playerIconMove;
 
 	public static ArrayList<AtlasRegion> resourceIcons;
 
@@ -29,6 +30,7 @@ public class MapArt {
 		asteroids.add(atlas.findRegion("asteroid3"));
 
 		playerIcon = atlas.findRegion("playerIcon");
+		playerIconMove = atlas.findRegion("playerIconMove");
 
 		resourceIcons = new ArrayList<AtlasRegion>();
 		resourceIcons.add(atlas.findRegion("resource0Icon"));
