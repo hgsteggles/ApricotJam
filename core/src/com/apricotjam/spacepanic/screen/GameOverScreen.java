@@ -161,8 +161,6 @@ public class GameOverScreen extends BasicScreen {
 
 	@Override
 	public void backPressed() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

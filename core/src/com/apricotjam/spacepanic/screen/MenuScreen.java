@@ -17,33 +17,35 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class MenuScreen extends BasicScreen {
 
-	private static final float TITLETIME = 1.0f;
+	private static final float TITLETIME = 0.5f;
 	private static final float TITLEENDPOSITION = WORLD_HEIGHT * 3.0f / 4.0f;
 
 	private static final float BUTTONS_X = WORLD_WIDTH / 2.0f;
 	private static final float BUTTONS_Y = WORLD_HEIGHT / 4.0f + 1.0f;
 	private static final float BUTTONS_SPACING = 0.7f;
 
+	Entity title;
+
 	public MenuScreen(SpacePanic spacePanic) {
 		this(spacePanic, TITLEENDPOSITION);
 	}
 
 
-	public MenuScreen(final SpacePanic spacePanic, float titleStartPosition) {
+	public MenuScreen(SpacePanic spacePanic, float titleStartPosition) {
 		super(spacePanic);
 		add(new ClickSystem());
 		add(new TweenSystem());
 
-		add(createTitleEntity(titleStartPosition));
+		title = createTitleEntity(titleStartPosition);
+		add(title);
 		add(createBackground());
 
-		MenuButton buttonStart = new MenuButton(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
+		addMenuItem(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				startGame();
 			}
-		});
-		buttonStart.addToEngine(engine);
+		}, 0);
 
 		String sound;
 		if (GameSettings.isSoundOn()) {
@@ -51,7 +53,7 @@ public class MenuScreen extends BasicScreen {
 		} else {
 			sound = "SOUND OFF";
 		}
-		MenuButton buttonSound = new MenuButton(BUTTONS_X, BUTTONS_Y - BUTTONS_SPACING, sound, new ClickInterface() {
+		addMenuItem(BUTTONS_X, BUTTONS_Y - BUTTONS_SPACING, sound, new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				if (GameSettings.isSoundOn()) {
@@ -62,21 +64,23 @@ public class MenuScreen extends BasicScreen {
 					ComponentMappers.bitmapfont.get(entity).string = "SOUND ON";
 				}
 			}
-		});
-		buttonSound.addToEngine(engine);
+		}, 1);
 
-		MenuButton buttonAbout = new MenuButton(BUTTONS_X, BUTTONS_Y - 2 * BUTTONS_SPACING, "ABOUT", new ClickInterface() {
+		addMenuItem(BUTTONS_X, BUTTONS_Y - 2 * BUTTONS_SPACING, "ABOUT", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
-				spacePanic.setScreen(new AboutScreen(spacePanic));
+				aboutScreen();
 			}
-		});
-		buttonAbout.addToEngine(engine);
+		}, 2);
 	}
 
 	private void startGame() {
 		System.out.println("Starting game!");
 		spacePanic.setScreen(new GameScreen(spacePanic));
+	}
+
+	private void aboutScreen() {
+		spacePanic.setScreen(new AboutScreen(spacePanic, ComponentMappers.transform.get(title).position.y));
 	}
 
 	public Entity createTitleEntity(float startPosition) {
@@ -114,36 +118,6 @@ public class MenuScreen extends BasicScreen {
 		return titleEntity;
 	}
 
-	static public Entity createButton(float x, float y, String text, ClickInterface clickInterface) {
-		Entity button = new Entity();
-
-		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "retro";
-		fontComp.string = text;
-		fontComp.color = Color.WHITE;
-		fontComp.centering = true;
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
-		transComp.position.y = y;
-
-		ClickComponent clickComponent = new ClickComponent();
-		clickComponent.clicker = clickInterface;
-		clickComponent.active = true;
-		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f).setCenter(0.0f, 0.0f);
-
-		TextButtonComponent textButtonComponent = new TextButtonComponent();
-		textButtonComponent.base = fontComp.color;
-		textButtonComponent.pressed = Color.DARK_GRAY;
-
-		button.add(fontComp);
-		button.add(transComp);
-		button.add(clickComponent);
-		button.add(textButtonComponent);
-
-		return button;
-	}
-
 	private Entity createBackground() {
 		Entity e = new Entity();
 
@@ -161,6 +135,11 @@ public class MenuScreen extends BasicScreen {
 		e.add(transComp);
 
 		return e;
+	}
+
+	private void addMenuItem(float x, float y, String text, ClickInterface clickInterface, int n) {
+		MenuButton menuButton = new MenuButton(x, y, text, clickInterface);
+		menuButton.addToEngine(engine);
 	}
 
 	@Override
