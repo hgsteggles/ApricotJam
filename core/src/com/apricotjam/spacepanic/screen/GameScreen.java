@@ -388,7 +388,7 @@ public class GameScreen extends BasicScreen {
 	
 	private TweenSpec helmetGoneTween(float delay, float helmetGoneDuration) {
 		final float origStart = 1f;
-		float origEnd = 4f;
+		float origEnd = 2f;
 		float speed = (origEnd - origStart)/helmetGoneDuration;
 		float start = origStart - speed*delay;
 		
