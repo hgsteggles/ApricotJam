@@ -197,8 +197,8 @@ public class MapSystem extends EntitySystem {
 		FBO_Component fboc = Shaders.generateFBOComponent("map-screen-fb", texc);
 		fboc.camera.viewportWidth = mapScreenComponent.viewSize;
 		fboc.camera.viewportHeight = mapScreenComponent.viewSize / aspectRatio;
-		//fboc.clearColor.set(0.8f, 0.95f, 0.8f, 1.0f);
-		fboc.clearColor.set(rng.nextFloat(), rng.nextFloat(), rng.nextFloat(), 1.0f);
+		fboc.clearColor.set(0.7f, 0.85f, 0.7f, 1.0f);
+		//fboc.clearColor.set(rng.nextFloat(), rng.nextFloat(), rng.nextFloat(), 1.0f);
 		screen.add(fboc);
 
 		ShaderComponent shaderComp = new ShaderComponent();

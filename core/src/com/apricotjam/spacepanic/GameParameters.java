@@ -7,7 +7,7 @@ public class GameParameters {
 
 	public static final ObjectMap<Resource, Float> RESOURCE_MAX = new ObjectMap<Resource, Float>();
 	static {
-		RESOURCE_MAX.put(Resource.OXYGEN, 20.0f);
+		RESOURCE_MAX.put(Resource.OXYGEN, 2.0f);
 		RESOURCE_MAX.put(Resource.DEMISTER, 20.0f);
 		RESOURCE_MAX.put(Resource.PIPE_CLEANER, 20.0f);
 		RESOURCE_MAX.put(Resource.PLUTONIUM, 10.0f);

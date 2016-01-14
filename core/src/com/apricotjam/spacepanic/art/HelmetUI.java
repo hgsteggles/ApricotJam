@@ -59,9 +59,9 @@ public class HelmetUI {
 		fog = atlas.findRegion("fog");
 		fog2 = atlas.findRegion("fog2");
 		
-		resourceColors.put(Resource.OXYGEN, new Color(0f, 0f, 1f, 1f));
-		resourceColors.put(Resource.DEMISTER, new Color(0f, 0f, 0f, 1f));
-		resourceColors.put(Resource.PIPE_CLEANER, new Color(0f, 1f, 0f, 1f));
-		resourceColors.put(Resource.PLUTONIUM, new Color(1f, 0f, 1f, 1f));
+		resourceColors.put(Resource.OXYGEN, new Color(0f, 0.8f, 0.8f, 1f));
+		resourceColors.put(Resource.DEMISTER, new Color(1f, 1f, 0f, 1f));
+		resourceColors.put(Resource.PIPE_CLEANER, new Color(1f, 0f, 1f, 1f));
+		resourceColors.put(Resource.PLUTONIUM, new Color(0f, 1f, 0f, 1f));
 	}
 }
