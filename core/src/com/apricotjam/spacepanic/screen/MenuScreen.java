@@ -24,14 +24,19 @@ public class MenuScreen extends BasicScreen {
 	private static final float BUTTONS_SPACING = 0.6f;
 
 	public MenuScreen(SpacePanic spacePanic) {
+		this(spacePanic, TITLEENDPOSITION);
+	}
+
+
+	public MenuScreen(final SpacePanic spacePanic, float titleStartPosition) {
 		super(spacePanic);
 		add(new ClickSystem());
 		add(new TweenSystem());
 
-		add(createTitleEntity());
+		add(createTitleEntity(titleStartPosition));
 		add(createBackground());
 
-		add(createButton(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
+		add(createTextButton(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				startGame();
@@ -44,7 +49,7 @@ public class MenuScreen extends BasicScreen {
 		} else {
 			sound = "SOUND OFF";
 		}
-		add(createButton(BUTTONS_X, BUTTONS_Y - BUTTONS_SPACING, sound, new ClickInterface() {
+		add(createTextButton(BUTTONS_X, BUTTONS_Y - BUTTONS_SPACING, sound, new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				if (GameSettings.isSoundOn()) {
@@ -56,6 +61,13 @@ public class MenuScreen extends BasicScreen {
 				}
 			}
 		}));
+
+		add(createTextButton(BUTTONS_X, BUTTONS_Y - 2 * BUTTONS_SPACING, "ABOUT", new ClickInterface() {
+			@Override
+			public void onClick(Entity entity) {
+				spacePanic.setScreen(new AboutScreen(spacePanic));
+			}
+		}));
 	}
 
 	private void startGame() {
@@ -63,7 +75,7 @@ public class MenuScreen extends BasicScreen {
 		spacePanic.setScreen(new GameScreen(spacePanic));
 	}
 
-	public Entity createTitleEntity() {
+	public Entity createTitleEntity(float startPosition) {
 		Entity titleEntity = new Entity();
 
 		TextureComponent textComp = new TextureComponent();
@@ -73,15 +85,14 @@ public class MenuScreen extends BasicScreen {
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
+		transComp.position.y = startPosition;
 
 		TweenComponent tweenComp = new TweenComponent();
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = transComp.position.y;
 		tweenSpec.end = TITLEENDPOSITION;
 		tweenSpec.period = TITLETIME;
-		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
-		tweenSpec.reverse = true;
+		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
 		tweenSpec.interp = Interpolation.linear;
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
@@ -97,36 +108,6 @@ public class MenuScreen extends BasicScreen {
 		titleEntity.add(tweenComp);
 
 		return titleEntity;
-	}
-
-	public Entity createButton(float x, float y, String text, ClickInterface clickInterface) {
-		Entity button = new Entity();
-
-		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "retro";
-		fontComp.string = text;
-		fontComp.color = Color.WHITE;
-		fontComp.centering = true;
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
-		transComp.position.y = y;
-
-		ClickComponent clickComponent = new ClickComponent();
-		clickComponent.clicker = clickInterface;
-		clickComponent.active = true;
-		clickComponent.shape = new Rectangle().setSize(2.0f, 0.5f).setCenter(0.0f, 0.0f);
-
-		TextButtonComponent textButtonComponent = new TextButtonComponent();
-		textButtonComponent.base = fontComp.color;
-		textButtonComponent.pressed = Color.DARK_GRAY;
-
-		button.add(fontComp);
-		button.add(transComp);
-		button.add(clickComponent);
-		button.add(textButtonComponent);
-
-		return button;
 	}
 
 	private Entity createBackground() {
