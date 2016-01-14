@@ -10,6 +10,7 @@ import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.FBO_Component;
 import com.apricotjam.spacepanic.components.FBO_ItemComponent;
+import com.apricotjam.spacepanic.components.NinepatchComponent;
 import com.apricotjam.spacepanic.components.ShaderComponent;
 import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
 import com.apricotjam.spacepanic.components.ShaderLightingComponent;
@@ -49,15 +50,15 @@ public class RenderingSystem extends EntitySystem {
 		
 		fboRenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class)
 				.exclude(FBO_Component.class)
-				.one(TextureComponent.class, BitmapFontComponent.class)
+				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
 				.get(), new DepthFBOComparator());
 		
 		fbo2RenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class, FBO_Component.class)
-				.one(TextureComponent.class, BitmapFontComponent.class)
+				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
 				.get(), new DepthFBOComparator());
 		
 		screenRenderQueue = new SortedEntityList(Family.all(TransformComponent.class)
-				.one(TextureComponent.class, BitmapFontComponent.class)
+				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
 				.exclude(FBO_ItemComponent.class)
 				.get(), new DepthComparator());
 
@@ -252,6 +253,38 @@ public class RenderingSystem extends EntitySystem {
 
 			spriteBatch.setProjectionMatrix(worldCamera.combined);
 			
+		} else if (ComponentMappers.ninepatch.has(entity)) {
+			spriteBatch.setProjectionMatrix(pixelcamera.combined);
+			
+			NinepatchComponent nine = ComponentMappers.ninepatch.get(entity);
+
+			if (nine.patch == null) {
+				return;
+			}
+
+			TransformComponent t = ComponentMappers.transform.get(entity);
+			TransformComponent totalTransform = t.getTotalTransform();
+			
+			Vector2 pospixel = new Vector2(totalTransform.position.x * WORLD_TO_PIXELS, totalTransform.position.y * WORLD_TO_PIXELS);
+
+			float width = nine.size.x * WORLD_TO_PIXELS;
+			float height = nine.size.y * WORLD_TO_PIXELS;
+			float originX = 0.0f;
+			float originY = 0.0f;
+
+			if (nine.centre) {
+				originX = width * 0.5f;
+				originY = height * 0.5f;
+			}
+			
+			spriteBatch.setColor(nine.color);
+			
+			nine.patch.draw(spriteBatch,
+					   pospixel.x - originX, pospixel.y - originY,
+					   width, height);
+			
+			spriteBatch.setColor(Color.WHITE);
+			spriteBatch.setProjectionMatrix(worldCamera.combined);
 		}
 		
 		spriteBatch.setShader(null);
