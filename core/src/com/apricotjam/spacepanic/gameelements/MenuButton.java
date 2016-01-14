@@ -8,6 +8,7 @@ import com.apricotjam.spacepanic.components.TextButtonComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
@@ -71,5 +72,15 @@ public class MenuButton {
 		entity.add(transComp);
 
 		return entity;
+	}
+
+	public void addToEngine(Engine engine) {
+		engine.addEntity(ninepatch);
+		engine.addEntity(bitmapfont);
+	}
+
+	public void removeFromEngine(Engine engine) {
+		engine.removeEntity(ninepatch);
+		engine.removeEntity(bitmapfont);
 	}
 }
