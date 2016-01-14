@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class PipePuzzleGenerator {
 	private RandomXS128 rng = new RandomXS128(0);
-	private byte[][] maskGrid = new byte[PipeWorld.GRID_LENGTH][PipeWorld.GRID_LENGTH];
+	private byte[][] maskGrid;
 	private byte[] randomMasks = createRandomMasks();
 	
 	private Array<GridPoint2> starts = new Array<GridPoint2>();
@@ -16,40 +16,47 @@ public class PipePuzzleGenerator {
 	
 	private int length = 2;
 	
-	public void generatePuzzle(int difficulty, int npipes) {
+	private int gridLength;
+	
+	public PipePuzzleGenerator(int gridLength) {
+		this.gridLength = gridLength;
+		maskGrid = new byte[gridLength][gridLength];
+	}
+	
+	public void generatePuzzle(int npipes, int turnOffs) {
 		// Difficulty from 1 to 10;
 		// TODO: modify generation parameters to reflect difficulty.
 		
 		if (npipes == 1) {
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 1));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 1));
+			starts.add(new GridPoint2(-1, gridLength - 1));
+			ends.add(new GridPoint2(gridLength, gridLength - 1));
 		}
 		else if (npipes == 2) {
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 4));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, 0));
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 2));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 1));
+			starts.add(new GridPoint2(-1, gridLength - 4));
+			ends.add(new GridPoint2(gridLength, 0));
+			starts.add(new GridPoint2(-1, gridLength - 2));
+			ends.add(new GridPoint2(gridLength, gridLength - 1));
 		}
 		else if (npipes == 3) {
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 4));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, 0));
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 2));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 1));
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 3));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 3));
+			starts.add(new GridPoint2(-1, gridLength - 4));
+			ends.add(new GridPoint2(gridLength, 0));
+			starts.add(new GridPoint2(-1, gridLength - 2));
+			ends.add(new GridPoint2(gridLength, gridLength - 1));
+			starts.add(new GridPoint2(-1, gridLength - 3));
+			ends.add(new GridPoint2(gridLength, gridLength - 3));
 		}
 		else {
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 4));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, 0));
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 2));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 3));
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 3));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 4));
-			starts.add(new GridPoint2(-1, PipeWorld.GRID_LENGTH - 1));
-			ends.add(new GridPoint2(PipeWorld.GRID_LENGTH, PipeWorld.GRID_LENGTH - 2));
+			starts.add(new GridPoint2(-1, gridLength - 4));
+			ends.add(new GridPoint2(gridLength, 0));
+			starts.add(new GridPoint2(-1, gridLength - 2));
+			ends.add(new GridPoint2(gridLength, gridLength - 3));
+			starts.add(new GridPoint2(-1, gridLength - 3));
+			ends.add(new GridPoint2(gridLength, gridLength - 4));
+			starts.add(new GridPoint2(-1, gridLength - 1));
+			ends.add(new GridPoint2(gridLength, gridLength - 2));
 		}
 		
-		int totalTurnOffCounter = Math.min(difficulty, 9);
+		int totalTurnOffCounter = Math.min(turnOffs, 9);
 		
 		for (int i = 0; i < npipes - 1; ++i)
 			turnOffCounters.add(totalTurnOffCounter/npipes);
@@ -65,8 +72,8 @@ public class PipePuzzleGenerator {
 		}
 		
 		// Fill out the rest.
-		for (int i = 0; i < PipeWorld.GRID_LENGTH; ++i) {
-			for (int j = 0; j < PipeWorld.GRID_LENGTH; ++j) {
+		for (int i = 0; i < gridLength; ++i) {
+			for (int j = 0; j < gridLength; ++j) {
 				if (maskGrid[i][j] == 0) {
 					maskGrid[i][j] = randomMasks[rng.nextInt(randomMasks.length)];
 				}
@@ -93,11 +100,15 @@ public class PipePuzzleGenerator {
 	private void resetMaskGrid() {
 		currPipe = 0;
 		length = 2;
-		for (int i = 0; i < PipeWorld.GRID_LENGTH; ++i) {
-			for (int j = 0; j < PipeWorld.GRID_LENGTH; ++j) {
+		for (int i = 0; i < gridLength; ++i) {
+			for (int j = 0; j < gridLength; ++j) {
 				maskGrid[i][j] = 0;
 			}
 		}
+	}
+	
+	private boolean withinBounds(int i, int j) {
+		return !(i < 0 || i >= gridLength || j < 0 || j >= gridLength);
 	}
 	
 	private boolean updateMask(int parent_i, int parent_j, int i, int j) {
@@ -142,7 +153,7 @@ public class PipePuzzleGenerator {
 				int inew = i + PipeWorld.GridDeltas.get(idir).x;
 				int jnew = j + PipeWorld.GridDeltas.get(idir).y;
 				
-				if (PipeWorld.withinBounds(inew, jnew) || (inew == ends.get(currPipe).x && jnew == ends.get(currPipe).y)) {
+				if (withinBounds(inew, jnew) || (inew == ends.get(currPipe).x && jnew == ends.get(currPipe).y)) {
 					boolean isStart = (inew == starts.get(currPipe).x) && (jnew == starts.get(currPipe).y);
 					if (!isStart) { // Pipe cannot connect to start tile.
 						// Check if pipe can turn off from a direct route to exit.

@@ -14,6 +14,7 @@ import com.apricotjam.spacepanic.systems.*;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
+import com.apricotjam.spacepanic.systems.pipes.PuzzleDifficulty;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,8 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.Random;
+
+import shaders.DiffuseShader;
 
 public class GameScreen extends BasicScreen {
 
@@ -49,6 +52,8 @@ public class GameScreen extends BasicScreen {
 	private Random rng = new Random();
 
 	private PipeSystem pipeSystem = null;
+	
+	private float currDifficulty = 0;
 
 	private boolean badPipes = false;
 	private boolean dying = false;
@@ -160,6 +165,12 @@ public class GameScreen extends BasicScreen {
 		if (success) {
 			addMessage(resource.name().replace("_", " ") + " acquired", Color.GREEN, 3.0f, true, false);
 			gameStats.addResource(resource);
+			gameStats.difficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
+			
+			currDifficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
+			while (currDifficulty >= PuzzleDifficulty.gridSize.size)
+				currDifficulty -= PuzzleDifficulty.gridSize.size;
+				
 			if (badPipes) {
 				alterResource(resource, GameParameters.RESOURCE_GAIN_ALT.get(resource));
 			} else {
@@ -387,7 +398,7 @@ public class GameScreen extends BasicScreen {
 	
 	private TweenSpec helmetGoneTween(float delay, float helmetGoneDuration) {
 		final float origStart = 1f;
-		float origEnd = 4f;
+		float origEnd = 2f;
 		float speed = (origEnd - origStart)/helmetGoneDuration;
 		float start = origStart - speed*delay;
 		
@@ -527,10 +538,13 @@ public class GameScreen extends BasicScreen {
 	}
 
 	private int getPipeDifficulty(Resource resource) {
+		/*
 		int diff = GameParameters.RESOURCE_MIN_PIPE_DIFFICULTY.get(resource)
 				+ rng.nextInt(GameParameters.RESOURCE_SPREAD_PIPE_DIFFICULTY.get(resource));
 		diff = Math.min(diff, 25);
-		return diff;
+		*/
+		
+		return Math.min((int)currDifficulty, PuzzleDifficulty.gridSize.size-1);
 	}
 
 	private Entity createBackground() {

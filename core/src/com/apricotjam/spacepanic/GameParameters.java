@@ -51,12 +51,13 @@ public class GameParameters {
 	public static float FOG_MAX = 15.0f;
 	public static float FOG_MIN = 0.1f;
 
+	/*
 	public static final ObjectMap<Resource, Integer> RESOURCE_MIN_PIPE_DIFFICULTY = new ObjectMap<Resource, Integer>();
 	static {
-		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.OXYGEN, 1);
-		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.DEMISTER, 5);
-		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.PIPE_CLEANER, 10);
-		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.PLUTONIUM, 15);
+		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.OXYGEN, 0);
+		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.DEMISTER, 0);
+		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.PIPE_CLEANER, 0);
+		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.PLUTONIUM, 0);
 	}
 
 	public static final ObjectMap<Resource, Integer> RESOURCE_SPREAD_PIPE_DIFFICULTY = new ObjectMap<Resource, Integer>();
@@ -66,6 +67,15 @@ public class GameParameters {
 		RESOURCE_SPREAD_PIPE_DIFFICULTY.put(Resource.PIPE_CLEANER, 12);
 		RESOURCE_SPREAD_PIPE_DIFFICULTY.put(Resource.PLUTONIUM, 14);
 	}
+	*/
+	
+	public static final float PUZZLE_DIFFICULTY_INC = 1f;
+	
+	public static final float[] TIMER_SLOWDOWN = {1f, 0.5f, 0.2f, 0.1f};
+	
+	public static final float FLUID_FILL_DURATION_BASE = 4f;
+	public static final float FLUID_FILL_DURATION_TIMER = 4f;
+	public static final float FLUID_FILL_DURATION_SOLVED = FLUID_FILL_DURATION_BASE/32f;
 
 	public static float DEATH_TIME = 11.0f;
 

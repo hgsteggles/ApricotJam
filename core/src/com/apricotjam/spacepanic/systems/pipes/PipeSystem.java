@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
+import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.art.Audio;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
@@ -22,7 +23,6 @@ public class PipeSystem extends EntitySystem {
 	private ImmutableArray<Entity> pipeFluids, pipeTiles;
 	private PipeWorld world;
 	private boolean startedSolutionAnimation = false;
-	private float solvedFluidSpeedup = 32f;
 	
 	private Entity masterEntity;
 	
@@ -80,7 +80,7 @@ public class PipeSystem extends EntitySystem {
 							ComponentMappers.shadertime.get(nextFluid).time = ComponentMappers.shadertime.get(pipeFluid).time;
 							if (startedSolutionAnimation) {
 								StateComponent nextStateComp = ComponentMappers.state.get(nextFluid);
-								nextStateComp.timescale = solvedFluidSpeedup;
+								nextStateComp.timescale = GameParameters.FLUID_FILL_DURATION_BASE/GameParameters.FLUID_FILL_DURATION_SOLVED;
 							}
 							getEngine().addEntity(nextFluid);
 							
@@ -192,7 +192,7 @@ public class PipeSystem extends EntitySystem {
 		// Speed up the fluid filling.
 		for (Entity pipeFluid : pipeFluids) {
 			StateComponent stateComp = ComponentMappers.state.get(pipeFluid);
-			stateComp.timescale = solvedFluidSpeedup;
+			stateComp.timescale = GameParameters.FLUID_FILL_DURATION_BASE/GameParameters.FLUID_FILL_DURATION_SOLVED;
 		}
 		// Stop timer;
 		//TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
@@ -201,7 +201,7 @@ public class PipeSystem extends EntitySystem {
 		
 		startedSolutionAnimation = true;
 		
-		getEngine().addEntity(createFluidFillingSound(npipesLeft*PipeWorld.FLUID_FILL_DURATION/solvedFluidSpeedup));
+		getEngine().addEntity(createFluidFillingSound(npipesLeft*GameParameters.FLUID_FILL_DURATION_SOLVED));
 	}
 	
 	public void failed() {

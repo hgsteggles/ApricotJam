@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
+import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.PipeGameArt;
@@ -41,11 +42,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 public class PipeWorld {
-	static public final int GRID_LENGTH = 5;
+	//static public final int gridLength = 5;
 	static public final Array<GridPoint2> GridDeltas = createGridDeltas();
-	static public float FLUID_FILL_DURATION = 4f;
 	
-	private PipePuzzleGenerator generator = new PipePuzzleGenerator();
+	private PipePuzzleGenerator generator;
 	private RandomXS128 rng = new RandomXS128(0);
 	
 	private Entity masterEntity;
@@ -55,12 +55,16 @@ public class PipeWorld {
 	private Array<Entity> exitPipes = new Array<Entity>();
 	
 	private int difficulty;
+	private int gridLength;
 	
 	private Array<Entity> allEntities = new Array<Entity>();
 	
 	public PipeWorld(Entity masterEntity, int difficulty) {
 		this.masterEntity = masterEntity;
 		this.difficulty = difficulty;
+		this.gridLength = PuzzleDifficulty.gridSize.get(difficulty);
+		
+		generator = new PipePuzzleGenerator(gridLength);
 	}
 	
 	public void build(Engine engine) {
@@ -68,15 +72,16 @@ public class PipeWorld {
 		addToEngine(engine, createFluidFBO());
 		
 		// Generate puzzle.
-		generator.generatePuzzle(difficulty%10, 1 + (int)(difficulty/10f));
+		generator.generatePuzzle(PuzzleDifficulty.npipes.get(difficulty), PuzzleDifficulty.turnOffs.get(difficulty));
+		//generator.generatePuzzle(difficulty%10, 1 + (int)(difficulty/10f));
 		
 		byte[][] maskGrid = generator.getMaskGrid();
 		
-		Entity[][] pipeEntities = new Entity[GRID_LENGTH][GRID_LENGTH];
+		Entity[][] pipeEntities = new Entity[gridLength][gridLength];
 		
 		// Create puzzle pipes and fluid.
-		for (int i = 0; i < GRID_LENGTH; ++i) {
-			for (int j = 0; j < GRID_LENGTH; ++j) {
+		for (int i = 0; i < gridLength; ++i) {
+			for (int j = 0; j < gridLength; ++j) {
 				Entity pipe = createPipe(maskGrid[i][j], i, j, true);
 				
 				if (rng.nextBoolean())
@@ -94,29 +99,29 @@ public class PipeWorld {
 		}
 		
 		// Create circuit borders.
-		for (int i = -1; i < GRID_LENGTH + 1; ++i) {
+		for (int i = -1; i < gridLength + 1; ++i) {
 			addToEngine(engine, createCircuitBorder(i, -1, false));
-			addToEngine(engine, createCircuitBorder(i, GRID_LENGTH, false));
+			addToEngine(engine, createCircuitBorder(i, gridLength, false));
 		}
-		for (int j = 0; j < GRID_LENGTH; ++j) {
+		for (int j = 0; j < gridLength; ++j) {
 			addToEngine(engine, createCircuitBorder(-2, j, false));
-			addToEngine(engine, createCircuitBorder(GRID_LENGTH + 1, j, false));
+			addToEngine(engine, createCircuitBorder(gridLength + 1, j, false));
 		}
 		addToEngine(engine, createCircuitBorder(-2, -1, true));
-		addToEngine(engine, createCircuitBorder(-2, GRID_LENGTH, true));
-		addToEngine(engine, createCircuitBorder(GRID_LENGTH + 1, -1, true));
-		addToEngine(engine, createCircuitBorder(GRID_LENGTH + 1, GRID_LENGTH, true));
+		addToEngine(engine, createCircuitBorder(-2, gridLength, true));
+		addToEngine(engine, createCircuitBorder(gridLength + 1, -1, true));
+		addToEngine(engine, createCircuitBorder(gridLength + 1, gridLength, true));
 		
 		// Create pipe background tiles.
-		for (int i = 0; i < GRID_LENGTH; ++i) {
-			for (int j = 0; j < GRID_LENGTH; ++j) {
+		for (int i = 0; i < gridLength; ++i) {
+			for (int j = 0; j < gridLength; ++j) {
 				addToEngine(engine, createPipeBG(i, j));
 			}
 		}
 		
 		// Link up puzzle neighbours.
-		for (int i = 0; i < GRID_LENGTH; ++i) {
-			for (int j = 0; j < GRID_LENGTH; ++j) {
+		for (int i = 0; i < gridLength; ++i) {
+			for (int j = 0; j < gridLength; ++j) {
 				for (int idir = 0; idir < 4; ++idir) {
 					int i_child = i + GridDeltas.get(idir).x;
 					int j_child = j + GridDeltas.get(idir).y;
@@ -178,15 +183,15 @@ public class PipeWorld {
 		
 		if (starts.size > 1) {
 			if (starts.size < 4)
-				timer_j.add(GRID_LENGTH - 1);
+				timer_j.add(gridLength - 1);
 			else
-				timer_j.add(GRID_LENGTH - 2);
+				timer_j.add(gridLength - 2);
 			
 			if (starts.size > 2) {
-				timer_j.add(GRID_LENGTH - 3);
+				timer_j.add(gridLength - 3);
 				
 				if (starts.size == 4)
-					timer_j.add(GRID_LENGTH - 1);
+					timer_j.add(gridLength - 1);
 			}
 		}
 			
@@ -267,11 +272,11 @@ public class PipeWorld {
 		
 		TextureComponent textureComp = new TextureComponent();
 		textureComp.region = isLeft ? PipeGameArt.capsuleLeft : PipeGameArt.capsuleRight;
-		textureComp.size.set((260f/896f)*7f, 7f);
+		textureComp.size.set((260f/896f)*(gridLength + 2f), gridLength + 2f);
 		entity.add(textureComp);
 		
 		TransformComponent transComp = new TransformComponent();
-		float halfwidth = (GRID_LENGTH + 4f) / 2f + 1f;
+		float halfwidth = (gridLength + 4f + textureComp.size.x) / 2f;
 		transComp.position.set(isLeft ? -halfwidth : halfwidth, 0, 0);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
@@ -288,12 +293,12 @@ public class PipeWorld {
 		
 		TextureComponent textureComp = new TextureComponent();
 		textureComp.region = isLeft ? PipeGameArt.capsuleMaskLeft : PipeGameArt.capsuleMaskRight;
-		textureComp.size.set((260f/896f)*7f, 7f);
+		textureComp.size.set((260f/896f)*(gridLength + 2f), gridLength + 2f);
 		textureComp.color.set(0f, 0f, 0f, 1f);
 		entity.add(textureComp);
 		
 		TransformComponent transComp = new TransformComponent();
-		float halfwidth = (GRID_LENGTH + 4f) / 2f + 1f;
+		float halfwidth = (gridLength + 4f + textureComp.size.x) / 2f;
 		transComp.position.set(isLeft ? -halfwidth : halfwidth, 0, 0);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
@@ -334,6 +339,7 @@ public class PipeWorld {
 
 		PipeTileComponent pipeTileComp = new PipeTileComponent();
 		pipeTileComp.mask = mask;
+		pipeTileComp.isTimer = !withinGrid;
 		entity.add(pipeTileComp);
 
 		TextureComponent textureComp = new TextureComponent();
@@ -343,8 +349,8 @@ public class PipeWorld {
 		TransformComponent transComp = new TransformComponent();
 		float pipeWidth = textureComp.size.x;
 		float pipeHeight = textureComp.size.y;
-		float gridOffsetX = -GRID_LENGTH * pipeWidth / 2f;
-		float gridOffsetY = -GRID_LENGTH * pipeHeight / 2f;
+		float gridOffsetX = -gridLength * pipeWidth / 2f;
+		float gridOffsetY = -gridLength * pipeHeight / 2f;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1) * pipeWidth, gridOffsetY + 0.5f * (2 * jpos + 1) * pipeHeight, 0);
 		transComp.rotation = PipeGameArt.pipeRegions.get(mask).rotation;
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
@@ -382,7 +388,7 @@ public class PipeWorld {
 		
 		PipeFluidComponent pipeFluidComp = new PipeFluidComponent();
 		pipeFluidComp.filling = true;
-		pipeFluidComp.fillDuration = FLUID_FILL_DURATION;
+		pipeFluidComp.fillDuration = GameParameters.FLUID_FILL_DURATION_BASE;
 		int exitDirection = exitFromEntryDirection(pipeTileComp.mask, entryDirection);
 		pipeFluidComp.exitMask = maskFromDirection(exitDirection);
 		pipeFluidComp.parentPipe = pipe;
@@ -413,6 +419,8 @@ public class PipeWorld {
 		
 		StateComponent stateComp = new StateComponent();
 		stateComp.set(PipeFluidComponent.STATE_FILLING);
+		if (pipeTileComp.isTimer)
+			stateComp.timescale = GameParameters.TIMER_SLOWDOWN[generator.getEntryPoints().size-1]*GameParameters.FLUID_FILL_DURATION_BASE/GameParameters.FLUID_FILL_DURATION_TIMER;
 		entity.add(stateComp);
 		
 		return entity;
@@ -427,8 +435,8 @@ public class PipeWorld {
 		entity.add(textureComp);
 		
 		TransformComponent transComp = new TransformComponent();
-		float gridOffsetX = - GRID_LENGTH / 2f;
-		float gridOffsetY = - GRID_LENGTH / 2f;
+		float gridOffsetX = - gridLength / 2f;
+		float gridOffsetY = - gridLength / 2f;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1), gridOffsetY + 0.5f * (2 * jpos + 1), -2);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
@@ -444,11 +452,11 @@ public class PipeWorld {
 		byte mask = 0;
 		if (ipos > 0)
 			mask = connectAtIndex(mask, 3);
-		if (ipos < GRID_LENGTH - 1)
+		if (ipos < gridLength - 1)
 			mask = connectAtIndex(mask, 1);
 		if (jpos > 0)
 			mask = connectAtIndex(mask, 2);
-		if (jpos < GRID_LENGTH - 1)
+		if (jpos < gridLength - 1)
 			mask = connectAtIndex(mask, 0);
 		
 		Entity entity = new Entity();
@@ -459,8 +467,8 @@ public class PipeWorld {
 		entity.add(textureComp);
 		
 		TransformComponent transComp = new TransformComponent();
-		float gridOffsetX = - GRID_LENGTH / 2f;
-		float gridOffsetY = - GRID_LENGTH / 2f;
+		float gridOffsetX = - gridLength / 2f;
+		float gridOffsetY = - gridLength / 2f;
 		transComp.position.set(gridOffsetX + 0.5f * (2 * ipos + 1), gridOffsetY + 0.5f * (2 * jpos + 1), -2);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
@@ -477,7 +485,7 @@ public class PipeWorld {
 		
 		TextureComponent textureComp = new TextureComponent();
 		textureComp.region = PipeGameArt.whitePixel;
-		textureComp.size.set(GRID_LENGTH + 2, GRID_LENGTH + 2);
+		textureComp.size.set(gridLength + 2, gridLength + 2);
 		textureComp.color.set(0.4f, 0.4f, 0.4f, 1f);
 		entity.add(textureComp);
 		
@@ -507,7 +515,7 @@ public class PipeWorld {
 		entity.add(fontComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(0, GRID_LENGTH / 2f + 0.5f, 0);
+		transComp.position.set(0, gridLength / 2f + 0.5f, 0);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		
@@ -584,8 +592,8 @@ public class PipeWorld {
 		return (index + 2)%4;
 	}
 	
-	static public boolean withinBounds(int i, int j) {
-		return !(i < 0 || i >= GRID_LENGTH || j < 0 || j >= GRID_LENGTH);
+	private boolean withinBounds(int i, int j) {
+		return !(i < 0 || i >= gridLength || j < 0 || j >= gridLength);
 	}
 	
 	static public int directionFromMask(byte mask) {
