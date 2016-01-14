@@ -25,9 +25,9 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Interpolation;
 
 public class HelmetWorld {
-	public static float HELMET_Z = 100f;
-	public static float LEDBG_X = (71f/80f)*BasicScreen.WORLD_WIDTH;
-	public static float LEDBG_Y = (7f/80f)*BasicScreen.WORLD_HEIGHT;
+	public static float HELMET_Z = 20f;
+	public static float LEDBG_X = (71f/80f)*BasicScreen.WORLD_WIDTH - 0.5f*BasicScreen.WORLD_WIDTH;
+	public static float LEDBG_Y = (7f/80f)*BasicScreen.WORLD_HEIGHT - 0.5f*BasicScreen.WORLD_HEIGHT;
 	public static float LEDBG_W = 3f;
 	public static float LEDBG_H = 0.7f;
 
@@ -35,8 +35,14 @@ public class HelmetWorld {
 	private static final float PIPE_HEIGHT = 0.6f;
 	private static final float PIPE_SPACING = 0.42f;
 	
+	private Entity masterEntity;
+	
 	private TransformComponent resourcePanelTransform;
 	private Entity demisterFog;
+	
+	public HelmetWorld(Entity masterEntity) {
+		this.masterEntity = masterEntity;
+	}
 	
 	public void build(Engine engine) {
 		
@@ -54,15 +60,15 @@ public class HelmetWorld {
 		Entity resourcePanel = createResourcePanel();
 		resourcePanelTransform = ComponentMappers.transform.get(resourcePanel);
 		engine.addEntity(resourcePanel);
-		engine.addEntity(createLED_Frame(LEDBG_X, LEDBG_Y));
+		engine.addEntity(createLED_Frame());
 		
 		//// Screws.
-		engine.addEntity(createScrew((46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));
-		engine.addEntity(createScrew((48f/1280f)*BasicScreen.WORLD_WIDTH, (560f/720f)*BasicScreen.WORLD_HEIGHT, true));
-		engine.addEntity(createScrew((439f/1280f)*BasicScreen.WORLD_WIDTH, (699f/720f)*BasicScreen.WORLD_HEIGHT));
-		engine.addEntity(createScrew((1.0f - 46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f)*BasicScreen.WORLD_HEIGHT));
-		engine.addEntity(createScrew((1.0f - 48f/1280f)*BasicScreen.WORLD_WIDTH, (560f/720f)*BasicScreen.WORLD_HEIGHT));
-		engine.addEntity(createScrew((1.0f - 439f/1280f)*BasicScreen.WORLD_WIDTH, (699f/720f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((46f/1280f - 0.5f)*BasicScreen.WORLD_WIDTH, (240f/720f - 0.5f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((48f/1280f - 0.5f)*BasicScreen.WORLD_WIDTH, (560f/720f - 0.5f)*BasicScreen.WORLD_HEIGHT, true));
+		engine.addEntity(createScrew((439f/1280f - 0.5f)*BasicScreen.WORLD_WIDTH, (699f/720f - 0.5f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((0.5f - 46f/1280f)*BasicScreen.WORLD_WIDTH, (240f/720f - 0.5f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((0.5f - 48f/1280f)*BasicScreen.WORLD_WIDTH, (560f/720f - 0.5f)*BasicScreen.WORLD_HEIGHT));
+		engine.addEntity(createScrew((0.5f - 439f/1280f)*BasicScreen.WORLD_WIDTH, (699f/720f - 0.5f)*BasicScreen.WORLD_HEIGHT));
 		
 		//// Speaker.
 		engine.addEntity(createSpeaker());
@@ -110,9 +116,8 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = HELMET_Z;
+		transComp.position.set(0f, 0f, 0f);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		e.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -132,9 +137,8 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = 0.5f*BasicScreen.WORLD_WIDTH;
-		transComp.position.y = -0.06f*BasicScreen.WORLD_HEIGHT;
-		transComp.position.z = HELMET_Z + 1;
+		transComp.position.set(0, -0.56f*BasicScreen.WORLD_HEIGHT, 1);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		e.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -158,9 +162,8 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
-		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 1;
+		transComp.position.set(x, y, 1f);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		e.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -200,7 +203,7 @@ public class HelmetWorld {
 		return ts;
 	}
 
-	private Entity createLED_Frame(float x, float y) {
+	private Entity createLED_Frame() {
 		Entity e = new Entity();
 
 		TextureComponent texComp = new TextureComponent();
@@ -210,9 +213,8 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
-		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 5;
+		transComp.position.set(LEDBG_X, LEDBG_Y, 5);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		e.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -233,9 +235,10 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = isLeft ? texComp.size.x/2f : BasicScreen.WORLD_WIDTH - texComp.size.x/2f;
-		transComp.position.y = texComp.size.y/2f;
-		transComp.position.z = HELMET_Z + 1;
+		transComp.position.x = isLeft ? texComp.size.x/2f - 0.5f*BasicScreen.WORLD_WIDTH : 0.5f*BasicScreen.WORLD_WIDTH - texComp.size.x/2f;
+		transComp.position.y = texComp.size.y/2f - 0.5f*BasicScreen.WORLD_HEIGHT;
+		transComp.position.z = 1;
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		e.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -256,9 +259,10 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = texComp.size.x/2f + (16f/1280f)*BasicScreen.WORLD_WIDTH;
-		transComp.position.y = texComp.size.y/2f + (16f/720f)*BasicScreen.WORLD_HEIGHT;
-		transComp.position.z = HELMET_Z + 2;
+		transComp.position.x = texComp.size.x/2f + (16f/1280f - 0.5f)*BasicScreen.WORLD_WIDTH;
+		transComp.position.y = texComp.size.y/2f + (16f/720f - 0.5f)*BasicScreen.WORLD_HEIGHT;
+		transComp.position.z = 2;
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		e.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -280,9 +284,7 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
-		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 4;
+		transComp.position.set(x, y, 2);
 		transComp.rotation = rotRegionData.rotation;
 		transComp.parent = resourcePanelTransform;
 		e.add(transComp);
@@ -307,9 +309,7 @@ public class HelmetWorld {
 		entity.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
-		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 3;
+		transComp.position.set(x, y, 1);
 		transComp.rotation = animData.rotation;
 		transComp.parent = resourcePanelTransform;
 		entity.add(transComp);
@@ -339,9 +339,9 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
+		transComp.position.set(x, y, 3);
 		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 5;
+		transComp.position.z = 3;
 		transComp.parent = resourcePanelTransform;
 		e.add(transComp);
 		
@@ -358,9 +358,7 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = x;
-		transComp.position.y = y;
-		transComp.position.z = HELMET_Z + 4;
+		transComp.position.set(x, y, 4);
 		transComp.parent = resourcePanelTransform;
 		e.add(transComp);
 		
@@ -377,9 +375,8 @@ public class HelmetWorld {
 		e.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = HELMET_Z - 1;
+		transComp.position.set(0f, 0f, -1f);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		e.add(transComp);
 		
 		TweenComponent tweenComp = new TweenComponent();
@@ -414,6 +411,7 @@ public class HelmetWorld {
 		entity.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
+		transComp.position.set(0f, 0f, -1f);
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
 		transComp.position.z = HELMET_Z - 1;
@@ -458,7 +456,8 @@ public class HelmetWorld {
 		entity.add(texComp);
 		
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
+		transComp.position.set(LEDBG_X, LEDBG_Y, 2);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		
 		ShaderComponent shaderComp = new ShaderComponent();
@@ -482,8 +481,8 @@ public class HelmetWorld {
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("led-blur-mask");
 		Shaders.manager.begin("led-blur-mask");
-		float normX = (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
-		float normY = (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
+		float normX = 0.5f + (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
+		float normY = 0.5f + (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
 		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
 		Shaders.manager.end();
 		entity.add(shaderComp);
@@ -493,9 +492,8 @@ public class HelmetWorld {
 		entity.add(shaderDirComp);
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = BasicScreen.WORLD_WIDTH/2f;
-		tranc.position.y = BasicScreen.WORLD_HEIGHT/2f;
-		tranc.position.z = HELMET_Z + 5;
+		tranc.position.set(0f, 0f, 3f);
+		tranc.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(tranc);
 		
 		return entity;
@@ -514,8 +512,8 @@ public class HelmetWorld {
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("led-blur-mask");
 		Shaders.manager.begin("led-blur-mask");
-		float normX = (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
-		float normY = (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
+		float normX = 0.5f + (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
+		float normY = 0.5f + (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
 		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
 		Shaders.manager.end();
 		entity.add(shaderComp);
@@ -525,9 +523,8 @@ public class HelmetWorld {
 		entity.add(shaderDirComp);
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.x = BasicScreen.WORLD_WIDTH/2f;
-		tranc.position.y = BasicScreen.WORLD_HEIGHT/2f;
-		tranc.position.z = HELMET_Z + 5;
+		tranc.position.set(0f, 0f, 3f);
+		tranc.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(tranc);
 		
 		return entity;
@@ -554,7 +551,8 @@ public class HelmetWorld {
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, HELMET_Z + 4);
+		transComp.position.set(LEDBG_X + (LEDBG_W + width)/2f, LEDBG_Y, 0);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		
 		TweenComponent tweenComp = new TweenComponent();
@@ -601,7 +599,8 @@ public class HelmetWorld {
 		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
 		
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
+		transComp.position.set(LEDBG_X, LEDBG_Y, 0);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		
 		TweenComponent tweenComp = new TweenComponent();	
@@ -647,7 +646,8 @@ public class HelmetWorld {
 		float width = layout.width*BasicScreen.WORLD_WIDTH/SpacePanic.WIDTH;// contains the width of the current set text
 		float height = layout.height*BasicScreen.WORLD_HEIGHT/SpacePanic.HEIGHT; // contains the height of the current set text
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
+		transComp.position.set(LEDBG_X, LEDBG_Y, 0);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		
 		TweenComponent tweenComp = new TweenComponent();
@@ -690,7 +690,8 @@ public class HelmetWorld {
 		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
 		
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(LEDBG_X, LEDBG_Y, HELMET_Z + 4);
+		transComp.position.set(LEDBG_X, LEDBG_Y, 100f);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 
 		TweenComponent tweenComp = new TweenComponent();

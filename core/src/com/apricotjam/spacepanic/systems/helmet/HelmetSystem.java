@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class HelmetSystem extends EntitySystem {
 	static private float RESOURCE_FILL_SPEED = 5.0f;
-	private HelmetWorld world = new HelmetWorld();
+	private HelmetWorld world;
 	
 	private Entity masterEntity;
 	private ImmutableArray<Entity> leds;
@@ -24,6 +24,7 @@ public class HelmetSystem extends EntitySystem {
 	
 	public HelmetSystem(Entity masterEntity) {
 		this.masterEntity = masterEntity;
+		world = new HelmetWorld(masterEntity);
 	}
 	
 	@Override

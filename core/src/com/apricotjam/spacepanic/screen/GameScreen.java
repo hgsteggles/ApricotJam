@@ -353,6 +353,14 @@ public class GameScreen extends BasicScreen {
 		}
 		helmetScreenComponent.demisterSpread = 3.0f;
 		helmetSystemEntity.add(helmetScreenComponent);
+		
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH/2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT/2f;
+		transComp.position.z = 20.0f;
+		transComp.scale.x = 1f;
+		transComp.scale.y = 1f;
+		helmetSystemEntity.add(transComp);
 
 		add(helmetSystemEntity);
 		add(new HelmetSystem(helmetSystemEntity));

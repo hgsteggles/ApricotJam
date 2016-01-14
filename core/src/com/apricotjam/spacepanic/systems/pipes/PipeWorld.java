@@ -21,6 +21,7 @@ import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.pipe.PipeComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
+import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
@@ -42,7 +43,6 @@ import com.badlogic.gdx.utils.Array;
 public class PipeWorld {
 	static public final int GRID_LENGTH = 5;
 	static public final Array<GridPoint2> GridDeltas = createGridDeltas();
-	static public float PIPE_Z = 0f;
 	static public float FLUID_FILL_DURATION = 4f;
 	
 	private PipePuzzleGenerator generator = new PipePuzzleGenerator();
@@ -153,10 +153,11 @@ public class PipeWorld {
 		//addToEngine(engine, createLED_Panel());
 		
 		// Create capsule parts.
+		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(masterEntity);
 		addToEngine(engine, createCapsulePart(true));
 		addToEngine(engine, createCapsulePart(false));
-		addToEngine(engine, createCapsuleMaskPart(true));
-		addToEngine(engine, createCapsuleMaskPart(false));
+		addToEngine(engine, createCapsuleLights(true, pipeScreenComp.resource));
+		addToEngine(engine, createCapsuleLights(false, pipeScreenComp.resource));
 	}
 	
 	public Array<Entity> getAllPipeEntities() {
@@ -271,7 +272,7 @@ public class PipeWorld {
 		
 		TransformComponent transComp = new TransformComponent();
 		float halfwidth = (GRID_LENGTH + 4f) / 2f + 1f;
-		transComp.position.set(isLeft ? -halfwidth : halfwidth, 0, PIPE_Z);
+		transComp.position.set(isLeft ? -halfwidth : halfwidth, 0, 0);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		
@@ -282,7 +283,7 @@ public class PipeWorld {
 		return entity;
 	}
 	
-	private Entity createCapsuleMaskPart(boolean isLeft) {
+	private Entity createCapsuleLights(boolean isLeft, Resource resource) {
 		Entity entity = new Entity();
 		
 		TextureComponent textureComp = new TextureComponent();
@@ -293,13 +294,13 @@ public class PipeWorld {
 		
 		TransformComponent transComp = new TransformComponent();
 		float halfwidth = (GRID_LENGTH + 4f) / 2f + 1f;
-		transComp.position.set(isLeft ? -halfwidth : halfwidth, 0, PIPE_Z);
+		transComp.position.set(isLeft ? -halfwidth : halfwidth, 0, 0);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		
 		ColorInterpolationComponent colorInterpComp = new ColorInterpolationComponent();
 		colorInterpComp.start.set(0f, 0f, 0f, 1f);
-		colorInterpComp.finish.set(HelmetUI.resourceColors.get(Resource.OXYGEN));
+		colorInterpComp.finish.set(HelmetUI.resourceColors.get(resource));
 		entity.add(colorInterpComp);
 		
 		TweenComponent tweenComp = new TweenComponent();
@@ -327,7 +328,7 @@ public class PipeWorld {
 		
 		return entity;
 	}
-	
+		
 	private Entity createPipe(byte mask, int ipos, int jpos, boolean withinGrid) {
 		Entity entity = new Entity();
 
@@ -370,7 +371,7 @@ public class PipeWorld {
 		return entity;
 	}
 	
-	public Entity createFluid(Entity pipe, int entryDirection) {
+	public Entity createFluid(Entity pipe, int entryDirection, Resource resource) {
 		Entity entity = new Entity();
 		
 		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipe);
@@ -402,7 +403,7 @@ public class PipeWorld {
 		entity.add(shaderTimeComp);
 		
 		TextureComponent textureComp = new TextureComponent();
-		textureComp.color.set(0.2f, 0.2f, 1.0f, 1f);
+		textureComp.color.set(HelmetUI.resourceColors.get(resource));
 		entity.add(textureComp);
 		
 		TransformComponent transComp = new TransformComponent();
