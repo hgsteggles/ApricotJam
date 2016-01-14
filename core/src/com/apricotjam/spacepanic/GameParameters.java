@@ -66,6 +66,12 @@ public class GameParameters {
 		RESOURCE_SPREAD_PIPE_DIFFICULTY.put(Resource.PIPE_CLEANER, 12);
 		RESOURCE_SPREAD_PIPE_DIFFICULTY.put(Resource.PLUTONIUM, 14);
 	}
+	
+	public static final float[] TIMER_SLOWDOWN = {1f, 0.5f, 0.25f};
+	
+	public static float FLUID_FILL_DURATION_BASE = 4f;
+	public static float FLUID_FILL_DURATION_TIMER = 4f;
+	public static float FLUID_FILL_DURATION_SOLVED = FLUID_FILL_DURATION_BASE/32f;
 
 	public static float DEATH_TIME = 11.0f;
 

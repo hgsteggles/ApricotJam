@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
+import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.HelmetUI;
 import com.apricotjam.spacepanic.art.PipeGameArt;
@@ -43,7 +44,6 @@ import com.badlogic.gdx.utils.Array;
 public class PipeWorld {
 	static public final int GRID_LENGTH = 5;
 	static public final Array<GridPoint2> GridDeltas = createGridDeltas();
-	static public float FLUID_FILL_DURATION = 4f;
 	
 	private PipePuzzleGenerator generator = new PipePuzzleGenerator();
 	private RandomXS128 rng = new RandomXS128(0);
@@ -334,6 +334,7 @@ public class PipeWorld {
 
 		PipeTileComponent pipeTileComp = new PipeTileComponent();
 		pipeTileComp.mask = mask;
+		pipeTileComp.isTimer = !withinGrid;
 		entity.add(pipeTileComp);
 
 		TextureComponent textureComp = new TextureComponent();
@@ -382,7 +383,7 @@ public class PipeWorld {
 		
 		PipeFluidComponent pipeFluidComp = new PipeFluidComponent();
 		pipeFluidComp.filling = true;
-		pipeFluidComp.fillDuration = FLUID_FILL_DURATION;
+		pipeFluidComp.fillDuration = GameParameters.FLUID_FILL_DURATION_BASE;
 		int exitDirection = exitFromEntryDirection(pipeTileComp.mask, entryDirection);
 		pipeFluidComp.exitMask = maskFromDirection(exitDirection);
 		pipeFluidComp.parentPipe = pipe;
@@ -413,6 +414,8 @@ public class PipeWorld {
 		
 		StateComponent stateComp = new StateComponent();
 		stateComp.set(PipeFluidComponent.STATE_FILLING);
+		if (pipeTileComp.isTimer)
+			stateComp.timescale = GameParameters.TIMER_SLOWDOWN[generator.getEntryPoints().size-1]*GameParameters.FLUID_FILL_DURATION_BASE/GameParameters.FLUID_FILL_DURATION_TIMER;
 		entity.add(stateComp);
 		
 		return entity;
