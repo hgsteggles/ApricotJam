@@ -43,6 +43,7 @@ public class GameScreen extends BasicScreen {
 	private Entity mapSystemEntity;
 	private Entity helmetSystemEntity;
 	private Entity pipeSystemEntity;
+	private Entity backgroundEntity;
 	private TextureComponent backgroundTexComp;
 
 	private Random rng = new Random();
@@ -73,7 +74,9 @@ public class GameScreen extends BasicScreen {
 		addHelmetSystem();
 		addMapSystem();
 
-		add(createBackground());
+		backgroundEntity = createBackground();
+		setBackgroundPosition();
+		add(backgroundEntity);
 
 		currentState = GameState.MAZING;
 	}
@@ -91,14 +94,16 @@ public class GameScreen extends BasicScreen {
 				break;
 		}
 
-		for (Resource r: Resource.values()) {
-			alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
-		}
-
-		if (dying) {
-			updateDying(delta);
-		} else {
-			gameStats.timeAlive += delta;
+		if (currentState != GameState.GAMEOVER) {
+			for (Resource r: Resource.values()) {
+				alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
+			}
+	
+			if (dying) {
+				updateDying(delta);
+			} else {
+				gameStats.timeAlive += delta;
+			}
 		}
 	}
 
@@ -208,14 +213,43 @@ public class GameScreen extends BasicScreen {
 	}
 
 	private void gameOver() {
-		if (currentState != GameState.GAMEOVER) {
-			currentState = GameState.GAMEOVER;
+		if (currentState != GameState.GAMEOVER && currentState != GameState.TRANSITIONING) {
 			addMessage("GAME OVER", Color.RED, 3600.0f, false, true);
 			ComponentMappers.mapscreen.get(mapSystemEntity).currentState = MapScreenComponent.State.PAUSED;
 			if (pipeSystem != null) {
 				pipeSystem.setProcessing(false);
 			}
+			
+			// Start zooming into outer space for the next screen.
+			// TODO: the stencil location on screen for LED won't scale properly.
+			// TODO: might want to move stars too.
+			
+			float duration = 2f;
+			
+			if (currentState == GameState.PIPING) {
+				PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(pipeSystemEntity);
+				TweenComponent pipeTweenComp = ComponentMappers.tween.get(pipeSystemEntity);
+				float currPipeY = ComponentMappers.transform.get(pipeSystemEntity).position.y;
+				pipeTweenComp.tweenSpecs.add(pipeGoneTween(duration));
+			}
+			
+			MapScreenComponent mapScreenComp = ComponentMappers.mapscreen.get(mapSystemEntity);
+			TweenComponent mapTweenComp = ComponentMappers.tween.get(mapSystemEntity);
+			float currMapY = ComponentMappers.transform.get(mapSystemEntity).position.y;
+			mapTweenComp.tweenSpecs.add(mapGoneTween(duration));
+			
+			float helmetTweenDuration = 3f;
+			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
+			TweenComponent helmetTweenComp = new TweenComponent();
+			helmetTweenComp.tweenSpecs.add(helmetGoneTween(duration, helmetTweenDuration));
+			helmetTweenComp.tweenSpecs.add(fogGoneTween(helmetScreenComp.demisterSpread, duration));
+			helmetSystemEntity.add(helmetTweenComp);
+			
+			add(createEndEntity(duration + helmetTweenDuration));
+			
 			System.out.println("You survived for " + gameStats.timeAlive + " seconds");
+			
+			currentState = GameState.GAMEOVER;
 		}
 	}
 
@@ -311,6 +345,109 @@ public class GameScreen extends BasicScreen {
 		};
 		return ts;
 	}
+	
+	private TweenSpec mapGoneTween(float duration) {
+		float currMapY = ComponentMappers.transform.get(mapSystemEntity).position.y;
+		
+		TweenSpec ts = new TweenSpec();
+		ts.start = currMapY;
+		ts.end =  2f*MAP_Y_OFF;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.linear;
+		ts.period = duration;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.transform.get(e).position.y = a;
+			}
+		};
+		return ts;
+	}
+	
+	private TweenSpec pipeGoneTween(float duration) {
+		TweenSpec ts = new TweenSpec();
+		ts.start = PIPE_X;
+		ts.end = PIPE_X + BasicScreen.WORLD_WIDTH;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.linear;
+		ts.period = duration;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.transform.get(e).position.x = a;
+			}
+
+			@Override
+			public void endTween(Entity e) {
+				engine.removeSystem(pipeSystem);
+				engine.removeEntity(pipeSystemEntity);
+			}
+		};
+		return ts;
+	}
+	
+	private TweenSpec helmetGoneTween(float delay, float helmetGoneDuration) {
+		final float origStart = 1f;
+		float origEnd = 4f;
+		float speed = (origEnd - origStart)/helmetGoneDuration;
+		float start = origStart - speed*delay;
+		
+		TweenSpec ts = new TweenSpec();
+		ts.start = start;
+		ts.end =  origEnd;
+		ts.cycle = TweenSpec.Cycle.ONCE;
+		ts.interp = Interpolation.linear;
+		ts.period = helmetGoneDuration + delay;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				TransformComponent tc = ComponentMappers.transform.get(e);
+				tc.scale.x = Math.max(a, origStart);
+				tc.scale.y = Math.max(a, origStart);
+			}
+		};
+		
+		return ts;
+	}
+	
+	private TweenSpec fogGoneTween(float currDemisterSpread, float duration) {
+		TweenSpec ts = new TweenSpec();
+		ts.start = currDemisterSpread;
+		ts.end = 10*GameParameters.FOG_MAX;
+		ts.period = duration;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.helmetscreen.get(e).demisterSpread = a;
+			}
+		};
+		
+		return ts;
+	}
+	
+	private Entity createEndEntity(float delay) {
+		Entity entity = new Entity();
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec ts = new TweenSpec();
+		ts.period = delay;
+		ts.tweenInterface = new TweenInterface() {
+			@Override
+			public void endTween(Entity e) {
+				Entity nextBackgroundEntity = createBackground();
+				ComponentMappers.texture.get(nextBackgroundEntity).region = ComponentMappers.texture.get(backgroundEntity).region;
+				spacePanic.setScreen(new GameOverScreen(spacePanic, nextBackgroundEntity));
+			}
+
+			@Override
+			public void applyTween(Entity e, float a) {
+			}
+		};
+		tweenComp.tweenSpecs.add(ts);
+		entity.add(tweenComp);
+		
+		return entity;
+	}
 
 	private void setBackgroundPosition() {
 		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
@@ -393,6 +530,7 @@ public class GameScreen extends BasicScreen {
 	private int getPipeDifficulty(Resource resource) {
 		int diff = GameParameters.RESOURCE_MIN_PIPE_DIFFICULTY.get(resource)
 				+ rng.nextInt(GameParameters.RESOURCE_SPREAD_PIPE_DIFFICULTY.get(resource));
+		diff = Math.min(diff, 25);
 		return diff;
 	}
 
