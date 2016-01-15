@@ -117,4 +117,8 @@ public class HelmetSystem extends EntitySystem {
 			this.scroll = scroll;
 		}
 	}
+
+	public void killBreathing() {
+		ComponentMappers.sound.get(breathingSound).sound.stop(ComponentMappers.sound.get(breathingSound).soundID);
+	}
 }

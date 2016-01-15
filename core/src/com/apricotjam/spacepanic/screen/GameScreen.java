@@ -49,6 +49,8 @@ public class GameScreen extends BasicScreen {
 	private Entity backgroundEntity;
 	private TextureComponent backgroundTexComp;
 
+	private HelmetSystem helmetSystem;
+
 	private Random rng = new Random();
 
 	private PipeSystem pipeSystem = null;
@@ -228,6 +230,7 @@ public class GameScreen extends BasicScreen {
 
 	private void gameOver() {
 		if (currentState != GameState.GAMEOVER && currentState != GameState.TRANSITIONING) {
+			helmetSystem.killBreathing();
 			addMessage("GAME OVER", Color.RED, 3600.0f, false, true);
 			ComponentMappers.mapscreen.get(mapSystemEntity).currentState = MapScreenComponent.State.PAUSED;
 			if (pipeSystem != null) {
@@ -513,7 +516,8 @@ public class GameScreen extends BasicScreen {
 		helmetSystemEntity.add(transComp);
 
 		add(helmetSystemEntity);
-		add(new HelmetSystem(helmetSystemEntity));
+		helmetSystem = new HelmetSystem(helmetSystemEntity);
+		add(helmetSystem);
 	}
 
 	private void addPipeSystem(Resource resource) {
