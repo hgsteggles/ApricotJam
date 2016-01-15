@@ -5,7 +5,6 @@ import com.apricotjam.spacepanic.art.Audio;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.input.InputManager;
-import com.apricotjam.spacepanic.misc.PipePuzzleDifficultyTest;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.screen.TitleScreen;
