@@ -34,6 +34,11 @@ public class ResourceGenerator {
 		for (int i = 0; i < Patch.PATCH_WIDTH; i++) {
 			for (int j = 0; j < Patch.PATCH_HEIGHT; j++) {
 				resources[i][j] = null;
+				if (x == 0 && y == 0) {
+					if (Math.abs(i - Patch.PATCH_WIDTH / 2.0f) <= 1.0f && Math.abs(j - Patch.PATCH_HEIGHT / 2.0f) <= 1.0f) {
+						continue;
+					}
+				}
 				if (maze[i][j] == MazeGenerator.PATH) {
 					potentialLocations.add(new Point(i, j));
 				}
