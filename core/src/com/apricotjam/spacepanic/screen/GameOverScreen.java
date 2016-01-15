@@ -40,6 +40,7 @@ public class GameOverScreen extends BasicScreen {
 		addMovementScroll(backgroundEntity);
 		add(backgroundEntity);
 		add(createGameOver(2.0f, 0.0f));
+		add(createScoreMessage(2.0f, 0.5f));
 		
 		MenuButton button = new MenuButton(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/4f, "MAIN MENU", new ClickInterface() {
 			@Override
@@ -126,28 +127,33 @@ public class GameOverScreen extends BasicScreen {
 		
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f + 1.0f;
 		transComp.position.z = 1f;
 		entity.add(transComp);
-		
-		/*TweenComponent tweenComponent = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = 0f;
-		tweenSpec.end = 1.0f;
-		tweenSpec.period = 2f;
-		tweenSpec.interp = Interpolation.linear;
-		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
-		tweenSpec.tweenInterface = new TweenInterface() {
-			@Override
-			public void applyTween(Entity e, float a) {
-				BitmapFontComponent bitmapFontComponent = ComponentMappers.bitmapfont.get(e);
-				bitmapFontComponent.color.a = Math.max(a, 0f);
-			}
-		};
-		tweenComponent.tweenSpecs.add(tweenSpec);
-		entity.add(tweenComponent);*/
+
 		entity.add(createTextFadeTween(duration, delay));
 		
+		return entity;
+	}
+
+	private Entity createScoreMessage(float duration, float delay) {
+		Entity entity = new Entity();
+
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
+		fontComp.string = "You survived for " + Math.round(gameStats.timeAlive) + " seconds";
+		fontComp.color.set(1f, 1f, 1f, 0f);
+		fontComp.centering = true;
+		entity.add(fontComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f + 0.25f;
+		transComp.position.z = 1f;
+		entity.add(transComp);
+
+		entity.add(createTextFadeTween(duration, delay));
+
 		return entity;
 	}
 	

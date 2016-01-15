@@ -261,8 +261,6 @@ public class GameScreen extends BasicScreen {
 			
 			add(createEndEntity(helmetDelay + helmetTweenDuration));
 			
-			System.out.println("You survived for " + gameStats.timeAlive + " seconds");
-			
 			currentState = GameState.GAMEOVER;
 		}
 	}
