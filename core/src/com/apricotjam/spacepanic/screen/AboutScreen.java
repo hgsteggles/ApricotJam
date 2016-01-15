@@ -33,10 +33,10 @@ public class AboutScreen extends BasicScreen {
 	private static final float TITLETIME = 1.0f;
 	private static final float TITLEENDPOSITION = WORLD_HEIGHT * 5.0f / 6.0f;
 
-	private static final float CREDITS_X = WORLD_WIDTH / 2.0f;
+	private static final float CREDITS_X = WORLD_WIDTH / 2.0f + 1.0f;
 	private static final float CREDITS_Y = WORLD_HEIGHT / 2.0f - 1.75f;
 	private static final float CREDITS_SPACING = 0.5f;
-	private static final float LINK_X = WORLD_WIDTH / 2.0f + 5.5f;
+	private static final float LINK_X = WORLD_WIDTH / 2.0f + 6.0f;
 	private static final float BACK_X = 1.5f;
 	private static final float BACK_Y = WORLD_HEIGHT - 0.5f;
 
@@ -51,7 +51,7 @@ public class AboutScreen extends BasicScreen {
 	static {
 		CREDITS.add(new Credit("Jacob Close", "Code", "GITHUB", "https://github.com/drumber-1"));
 		CREDITS.add(new Credit("Harry Steggles", "Code", "GITHUB", "https://github.com/ridoncules"));
-		CREDITS.add(new Credit("Russ MacCarles", "Art", "FACEBOOK", "https://facebook.com/pcgamestudio"));
+		CREDITS.add(new Credit("Russ MacCharles (PCGS)", "Art", "FACEBOOK", "https://facebook.com/pcgamestudio"));
 		CREDITS.add(new Credit("Rory Hebblethwaite", "Music", "", ""));
 		CREDITS.add(new Credit("Jordan Swales", "Music", "", ""));
 	}
