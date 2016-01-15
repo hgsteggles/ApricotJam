@@ -138,7 +138,7 @@ public class MenuScreen extends BasicScreen {
 	}
 
 	private void addMenuItem(float x, float y, String text, ClickInterface clickInterface, int n) {
-		MenuButton menuButton = new MenuButton(x, y, text, clickInterface);
+		MenuButton menuButton = new MenuButton(x, y, 3.7f, text, clickInterface);
 		menuButton.addToEngine(engine);
 	}
 
