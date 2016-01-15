@@ -17,7 +17,6 @@ public class MenuButton {
 	private Entity ninepatch, bitmapfont;
 
 	public MenuButton(float x, float y, String text, ClickInterface clickInterface) {
-		//this(x, y, 1.0f, 4.0f, 0.6f, text, clickInterface);
 		this(x, y, 1.0f, text.length() / 2.3f, 0.6f, text, clickInterface); //2.5 gives exactly text width, 2.3 allows for a little padding
 	}
 

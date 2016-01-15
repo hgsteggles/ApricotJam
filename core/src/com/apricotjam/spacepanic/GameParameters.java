@@ -64,24 +64,6 @@ public class GameParameters {
 	public static float FOG_MAX = 15.0f;
 	//Fog value at min DEMISTER
 	public static float FOG_MIN = 0.1f;
-
-	/*
-	public static final ObjectMap<Resource, Integer> RESOURCE_MIN_PIPE_DIFFICULTY = new ObjectMap<Resource, Integer>();
-	static {
-		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.OXYGEN, 0);
-		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.DEMISTER, 0);
-		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.PIPE_CLEANER, 0);
-		RESOURCE_MIN_PIPE_DIFFICULTY.put(Resource.PLUTONIUM, 0);
-	}
-
-	public static final ObjectMap<Resource, Integer> RESOURCE_SPREAD_PIPE_DIFFICULTY = new ObjectMap<Resource, Integer>();
-	static {
-		RESOURCE_SPREAD_PIPE_DIFFICULTY.put(Resource.OXYGEN, 8);
-		RESOURCE_SPREAD_PIPE_DIFFICULTY.put(Resource.DEMISTER, 10);
-		RESOURCE_SPREAD_PIPE_DIFFICULTY.put(Resource.PIPE_CLEANER, 12);
-		RESOURCE_SPREAD_PIPE_DIFFICULTY.put(Resource.PLUTONIUM, 14);
-	}
-	*/
 	
 	public static final float PUZZLE_DIFFICULTY_INC = 1f;
 	
