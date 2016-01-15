@@ -19,11 +19,14 @@ public class MazeGenerator {
 	private float boundaryPathChance;
 	private float blockChance;
 
-	/** Creates a new maze generator
+	/**
+	 * Creates a new maze generator
+	 *
 	 * @param boundaryPathChance Probability that a cell on the boundary will be a path, 0.5 seems good
-	 * @param blockChance Probability it will try and block connections to top and right patches
-	 *                    Will always leave at least one, although this might not be connected on the other side
-	 *                    1.0 is quite hard but still playable, 0.0 is very easy (In regards to pathing) */
+	 * @param blockChance        Probability it will try and block connections to top and right patches
+	 *                           Will always leave at least one, although this might not be connected on the other side
+	 *                           1.0 is quite hard but still playable, 0.0 is very easy (In regards to pathing)
+	 */
 	public MazeGenerator(long seed, float boundaryPathChance, float blockChance) {
 		this.seed = seed;
 		this.boundaryPathChance = boundaryPathChance;
@@ -230,29 +233,37 @@ public class MazeGenerator {
 		}
 
 		if (edgeState == 1) {
-			if (getCell(i + 1, j - 1, maze, width, height) == PATH)
+			if (getCell(i + 1, j - 1, maze, width, height) == PATH) {
 				return false;
-			if (getCell(i + 1, j + 1, maze, width, height) == PATH)
+			}
+			if (getCell(i + 1, j + 1, maze, width, height) == PATH) {
 				return false;
+			}
 
 			return true;
 		} else if (edgeState == 2) {
-			if (getCell(i - 1, j - 1, maze, width, height) == PATH)
+			if (getCell(i - 1, j - 1, maze, width, height) == PATH) {
 				return false;
-			if (getCell(i - 1, j + 1, maze, width, height) == PATH)
+			}
+			if (getCell(i - 1, j + 1, maze, width, height) == PATH) {
 				return false;
+			}
 			return true;
 		} else if (edgeState == 4) {
-			if (getCell(i - 1, j + 1, maze, width, height) == PATH)
+			if (getCell(i - 1, j + 1, maze, width, height) == PATH) {
 				return false;
-			if (getCell(i + 1, j + 1, maze, width, height) == PATH)
+			}
+			if (getCell(i + 1, j + 1, maze, width, height) == PATH) {
 				return false;
+			}
 			return true;
 		} else if (edgeState == 8) {
-			if (getCell(i - 1, j - 1, maze, width, height) == PATH)
+			if (getCell(i - 1, j - 1, maze, width, height) == PATH) {
 				return false;
-			if (getCell(i + 1, j - 1, maze, width, height) == PATH)
+			}
+			if (getCell(i + 1, j - 1, maze, width, height) == PATH) {
 				return false;
+			}
 			return true;
 		}
 		return false;
@@ -307,7 +318,7 @@ public class MazeGenerator {
 	}
 
 	private void setRandomState(long x, long y) {
-		rng.setSeed(seed + (x << 16)  + y);
+		rng.setSeed(seed + (x << 16) + y);
 	}
 
 }

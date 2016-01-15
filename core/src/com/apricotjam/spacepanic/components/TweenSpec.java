@@ -14,6 +14,7 @@ public class TweenSpec {
 	public Cycle cycle = Cycle.ONCE;
 	public TweenInterface tweenInterface;
 	public Interpolation interp = Interpolation.linear;
+
 	public enum Cycle {
 		ONCE, INFLOOP, LOOP
 	}

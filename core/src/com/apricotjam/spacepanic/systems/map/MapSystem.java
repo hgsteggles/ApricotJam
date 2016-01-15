@@ -14,7 +14,6 @@ import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -95,14 +94,14 @@ public class MapSystem extends EntitySystem {
 	}
 
 	@Override
-	public void update (float deltaTime) {
+	public void update(float deltaTime) {
 		if (moving) {
 			Vector2 moveVector = path.getNext().cpy().sub(mapScreenComponent.playerPosition);
 			float dist = moveVector.len();
 			Vector2 dir = moveVector.cpy().nor();
 			if (dist > GameParameters.SPEED * deltaTime) {
 				move(dir.x * GameParameters.SPEED * deltaTime, dir.y * GameParameters.SPEED * deltaTime);
-			} else  {
+			} else {
 				move(moveVector.x, moveVector.y);
 				path.legComplete(engine);
 				if (path.size() == 0) {

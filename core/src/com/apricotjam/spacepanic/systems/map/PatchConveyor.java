@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 
-import java.awt.Point;
+import java.awt.*;
 
 public class PatchConveyor {
 
@@ -70,8 +70,8 @@ public class PatchConveyor {
 	}
 
 	public Point getOffset() {
-		int xoff = patches[0][0].x * Patch.PATCH_WIDTH - (int)(Patch.PATCH_WIDTH / 2.0f);
-		int yoff = patches[0][0].y * Patch.PATCH_HEIGHT - (int)(Patch.PATCH_HEIGHT / 2.0f);
+		int xoff = patches[0][0].x * Patch.PATCH_WIDTH - (int) (Patch.PATCH_WIDTH / 2.0f);
+		int yoff = patches[0][0].y * Patch.PATCH_HEIGHT - (int) (Patch.PATCH_HEIGHT / 2.0f);
 		return new Point(xoff, yoff);
 	}
 

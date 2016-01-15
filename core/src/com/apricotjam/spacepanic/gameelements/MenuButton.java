@@ -1,13 +1,8 @@
 package com.apricotjam.spacepanic.gameelements;
 
 import com.apricotjam.spacepanic.art.MiscArt;
-import com.apricotjam.spacepanic.components.BitmapFontComponent;
-import com.apricotjam.spacepanic.components.ClickComponent;
-import com.apricotjam.spacepanic.components.NinepatchComponent;
-import com.apricotjam.spacepanic.components.TextButtonComponent;
-import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
-import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
@@ -23,20 +18,20 @@ public class MenuButton {
 	public MenuButton(float x, float y, float width, String text, ClickInterface clickInterface) {
 		this(x, y, 1.0f, width, 0.6f, text, clickInterface);
 	}
-	
+
 	public MenuButton(float x, float y, float z, float w, float h, String text, ClickInterface clickInterface) {
 		ninepatch = createButton(x, y, z, w, h);
 		bitmapfont = createText(x, y, z, w, h, text, clickInterface);
 	}
-	
+
 	public Entity getBorderEntity() {
 		return ninepatch;
 	}
-	
+
 	public Entity getTextEntity() {
 		return bitmapfont;
 	}
-	
+
 	private Entity createText(float x, float y, float z, float w, float h, String text, ClickInterface clickInterface) {
 		Entity entity = new Entity();
 
@@ -50,7 +45,7 @@ public class MenuButton {
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(x, y, z + 1);
 		entity.add(transComp);
-		
+
 		ClickComponent clickComponent = new ClickComponent();
 		clickComponent.clicker = clickInterface;
 		clickComponent.active = true;
@@ -64,15 +59,15 @@ public class MenuButton {
 
 		return entity;
 	}
-	
+
 	static public Entity createButton(float x, float y, float z, float w, float h) {
 		Entity entity = new Entity();
-		
+
 		NinepatchComponent nineComp = new NinepatchComponent();
 		nineComp.patch = MiscArt.buttonBorder;
 		nineComp.size.set(w, h);
 		entity.add(nineComp);
-		
+
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(x, y, z);
 		entity.add(transComp);

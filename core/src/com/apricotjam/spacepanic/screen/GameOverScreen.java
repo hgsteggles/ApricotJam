@@ -1,15 +1,7 @@
 package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.MiscArt;
-import com.apricotjam.spacepanic.components.BitmapFontComponent;
-import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.MovementComponent;
-import com.apricotjam.spacepanic.components.NinepatchComponent;
-import com.apricotjam.spacepanic.components.ScrollComponent;
-import com.apricotjam.spacepanic.components.TransformComponent;
-import com.apricotjam.spacepanic.components.TweenComponent;
-import com.apricotjam.spacepanic.components.TweenSpec;
+import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.TweenSpec.Cycle;
 import com.apricotjam.spacepanic.gameelements.GameStats;
 import com.apricotjam.spacepanic.gameelements.MenuButton;
@@ -17,7 +9,6 @@ import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.apricotjam.spacepanic.systems.MovementSystem;
-import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.apricotjam.spacepanic.systems.ScrollSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
@@ -36,13 +27,13 @@ public class GameOverScreen extends BasicScreen {
 		add(new TweenSystem());
 		add(new MovementSystem());
 		add(new ScrollSystem());
-		
+
 		addMovementScroll(backgroundEntity);
 		add(backgroundEntity);
 		add(createGameOver(2.0f, 0.0f));
 		add(createScoreMessage(2.0f, 0.5f));
-		
-		MenuButton button = new MenuButton(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/4f, "MAIN MENU", new ClickInterface() {
+
+		MenuButton button = new MenuButton(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 4f, "MAIN MENU", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				startMenu();
@@ -54,7 +45,7 @@ public class GameOverScreen extends BasicScreen {
 		ComponentMappers.ninepatch.get(button.getBorderEntity()).color.a = 0f;
 		button.addToEngine(engine);
 
-		MenuButton button2 = new MenuButton(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/4f - 1.0f, "NEW GAME", new ClickInterface() {
+		MenuButton button2 = new MenuButton(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 4f - 1.0f, "NEW GAME", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				newGame();
@@ -66,7 +57,7 @@ public class GameOverScreen extends BasicScreen {
 		ComponentMappers.ninepatch.get(button2.getBorderEntity()).color.a = 0f;
 		button2.addToEngine(engine);
 	}
-	
+
 	private TweenComponent createTextFadeTween(float duration, float delay) {
 		TweenComponent tweenComp = new TweenComponent();
 		TweenSpec tweenSpec = new TweenSpec();
@@ -83,7 +74,7 @@ public class GameOverScreen extends BasicScreen {
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
-		
+
 		return tweenComp;
 	}
 
@@ -91,7 +82,7 @@ public class GameOverScreen extends BasicScreen {
 		TweenComponent tweenComp = new TweenComponent();
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.end = 1.0f;
-		tweenSpec.start = -1 *  delay * tweenSpec.end / duration;
+		tweenSpec.start = -1 * delay * tweenSpec.end / duration;
 		tweenSpec.period = duration + delay;
 		tweenSpec.interp = Interpolation.linear;
 		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
@@ -106,7 +97,7 @@ public class GameOverScreen extends BasicScreen {
 
 		return tweenComp;
 	}
-	
+
 	private void startMenu() {
 		spacePanic.setScreen(new MenuScreen(spacePanic));
 	}
@@ -114,17 +105,17 @@ public class GameOverScreen extends BasicScreen {
 	private void newGame() {
 		spacePanic.setScreen(new GameScreen(spacePanic));
 	}
-	
+
 	private Entity createGameOver(float duration, float delay) {
 		Entity entity = new Entity();
-		
+
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
 		fontComp.string = "GAME OVER";
 		fontComp.color.set(1f, 1f, 1f, 0f);
 		fontComp.centering = true;
 		entity.add(fontComp);
-		
+
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f + 1.0f;
@@ -132,7 +123,7 @@ public class GameOverScreen extends BasicScreen {
 		entity.add(transComp);
 
 		entity.add(createTextFadeTween(duration, delay));
-		
+
 		return entity;
 	}
 
@@ -156,16 +147,16 @@ public class GameOverScreen extends BasicScreen {
 
 		return entity;
 	}
-	
+
 	private void addMovementScroll(Entity entity) {
 		MovementComponent movementComp = new MovementComponent();
 		movementComp.rotationalVelocity = 0.0f;
 		entity.add(movementComp);
-		
+
 		ScrollComponent scrollComp = new ScrollComponent();
 		scrollComp.speed.x = 0.0f;
 		entity.add(scrollComp);
-		
+
 		TweenComponent tweenComp = new TweenComponent();
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 0f;
@@ -176,8 +167,8 @@ public class GameOverScreen extends BasicScreen {
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
 			public void applyTween(Entity e, float a) {
-				ComponentMappers.movment.get(e).rotationalVelocity = 3.0f*a;
-				ComponentMappers.scroll.get(e).speed.x = 0.5f*a;
+				ComponentMappers.movment.get(e).rotationalVelocity = 3.0f * a;
+				ComponentMappers.scroll.get(e).speed.x = 0.5f * a;
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);

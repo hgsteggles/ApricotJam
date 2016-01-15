@@ -8,7 +8,7 @@ public class ShaderLightingComponent implements Component {
 	public Vector3 lightColor = new Vector3();
 	public Vector3 AmbientColor = new Vector3();
 	public Vector3 fallOff = new Vector3();
-	
+
 	public float lightIntensity = 0;
 	public float ambientIntensity = 0;
 }

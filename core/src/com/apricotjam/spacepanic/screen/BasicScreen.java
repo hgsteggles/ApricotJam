@@ -2,12 +2,8 @@ package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
-import com.apricotjam.spacepanic.components.ClickComponent;
-import com.apricotjam.spacepanic.components.TextButtonComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
-import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.input.InputManager;
-import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -17,7 +13,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 
 public abstract class BasicScreen implements Screen {
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class ResourceGenerator {
 	private static final float[] CUMULATIVE_RESOURCE_PROB = new float[4];
 
-	public int[] nres = {0, 0, 0 ,0};
+	public int[] nres = {0, 0, 0, 0};
 
 	static {
 		CUMULATIVE_RESOURCE_PROB[0] = GameParameters.RESOURCE_FRACTIONS[0];
@@ -47,7 +47,7 @@ public class ResourceGenerator {
 
 		int nResources = rng.nextInt(GameParameters.MAX_RESOURCES_PER_PATCH + 1);
 		if (potentialLocations.size() < nResources) {
-			for (Point p: potentialLocations) {
+			for (Point p : potentialLocations) {
 				resources[p.x][p.y] = rollResource();
 			}
 		} else {
@@ -74,6 +74,6 @@ public class ResourceGenerator {
 	}
 
 	private void setRandomState(long x, long y) {
-		rng.setSeed(seed + (x << 16)  + y);
+		rng.setSeed(seed + (x << 16) + y);
 	}
 }

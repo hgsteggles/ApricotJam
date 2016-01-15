@@ -8,7 +8,8 @@ public class GameSettings {
 
 	private static Preferences options = Gdx.app.getPreferences("game.options");
 
-	private GameSettings() {}
+	private GameSettings() {
+	}
 
 	public static boolean isSoundOn() {
 		return options.getBoolean("sound", true);

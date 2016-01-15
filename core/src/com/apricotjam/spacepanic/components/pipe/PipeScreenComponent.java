@@ -4,7 +4,9 @@ import com.apricotjam.spacepanic.gameelements.Resource;
 import com.badlogic.ashley.core.Component;
 
 public class PipeScreenComponent implements Component {
-	public enum State { PLAYING, PAUSED, FAIL, SUCCESS };
+	public enum State {PLAYING, PAUSED, FAIL, SUCCESS}
+
+	;
 
 	public State currentState = State.PAUSED;
 	public Resource resource = Resource.OXYGEN;

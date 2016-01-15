@@ -14,28 +14,30 @@ public class TickerSystem extends IteratingSystem {
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		TickerComponent tc = ComponentMappers.ticker.get(entity);
-		
+
 		if (tc.tickerActive) {
 			tc.tickTimeLeft -= deltaTime;
-			
+
 			while (tc.tickTimeLeft <= 0) {
 				tc.tickTimeLeft += tc.interval;
-				
-				if (tc.ticker != null)
+
+				if (tc.ticker != null) {
 					tc.ticker.dispatchEvent(entity);
+				}
 			}
 		}
-		
+
 		if (tc.finishActive) {
 			tc.totalTimeLeft -= deltaTime;
-			
+
 			if (tc.totalTimeLeft <= 0) {
 				tc.totalTimeLeft = 0;
 				tc.tickerActive = false;
 				tc.finishActive = false;
-				
-				if (tc.finish != null)
+
+				if (tc.finish != null) {
 					tc.finish.dispatchEvent(entity);
+				}
 			}
 		}
 	}

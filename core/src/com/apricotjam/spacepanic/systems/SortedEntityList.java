@@ -1,13 +1,13 @@
 package com.apricotjam.spacepanic.systems;
 
-import java.util.Comparator;
-
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.utils.Array;
+
+import java.util.Comparator;
 
 public class SortedEntityList implements EntityListener {
 	private Family family;
@@ -18,11 +18,12 @@ public class SortedEntityList implements EntityListener {
 
 	/**
 	 * Instantiates a system that will iterate over the entities described by the Family, with a specific priority.
-	 * @param family The family of entities iterated over in this System
+	 *
+	 * @param family     The family of entities iterated over in this System
 	 * @param comparator The comparator to sort the entities
-	 * @param priority The priority to execute this system with (lower means higher priority)
+	 * @param priority   The priority to execute this system with (lower means higher priority)
 	 */
-	public SortedEntityList (Family family, Comparator<Entity> comparator) {
+	public SortedEntityList(Family family, Comparator<Entity> comparator) {
 		this.family = family;
 		sortedEntities = new Array<Entity>(false, 16);
 		entities = new ImmutableArray<Entity>(sortedEntities);
@@ -32,18 +33,18 @@ public class SortedEntityList implements EntityListener {
 	/**
 	 * Call this if the sorting criteria have changed. The actual sorting will be delayed until the entities are processed.
 	 */
-	public void forceSort () {
+	public void forceSort() {
 		shouldSort = true;
 	}
 
-	private void sort () {
+	private void sort() {
 		if (shouldSort) {
 			sortedEntities.sort(comparator);
 			shouldSort = false;
 		}
 	}
 
-	public void addedToEngine (Engine engine) {
+	public void addedToEngine(Engine engine) {
 		ImmutableArray<Entity> newEntities = engine.getEntitiesFor(family);
 		sortedEntities.clear();
 		if (newEntities.size() > 0) {
@@ -56,24 +57,24 @@ public class SortedEntityList implements EntityListener {
 		engine.addEntityListener(family, this);
 	}
 
-	public void removedFromEngine (Engine engine) {
+	public void removedFromEngine(Engine engine) {
 		engine.removeEntityListener(this);
 		sortedEntities.clear();
 		shouldSort = false;
 	}
 
 	@Override
-	public void entityAdded (Entity entity) {
+	public void entityAdded(Entity entity) {
 		sortedEntities.add(entity);
 		shouldSort = true;
 	}
 
 	@Override
-	public void entityRemoved (Entity entity) {
+	public void entityRemoved(Entity entity) {
 		sortedEntities.removeValue(entity, true);
 		shouldSort = true;
 	}
-	
+
 	public Array<Entity> getSortedEntities() {
 		sort();
 		return sortedEntities;
@@ -82,7 +83,7 @@ public class SortedEntityList implements EntityListener {
 	/**
 	 * @return set of entities processed by the system
 	 */
-	public ImmutableArray<Entity> getEntities () {
+	public ImmutableArray<Entity> getEntities() {
 		sort();
 		return entities;
 	}
@@ -90,7 +91,7 @@ public class SortedEntityList implements EntityListener {
 	/**
 	 * @return the Family used when the system was created
 	 */
-	public Family getFamily () {
+	public Family getFamily() {
 		return family;
 	}
 }

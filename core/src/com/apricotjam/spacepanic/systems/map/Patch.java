@@ -31,7 +31,7 @@ public class Patch {
 		for (int icell = 0; icell < PATCH_WIDTH; icell++) {
 			for (int jcell = 0; jcell < PATCH_HEIGHT; jcell++) {
 				if (maze[icell][jcell] == MazeGenerator.WALL) {
-					float xast = (icell - (PATCH_WIDTH  / 2.0f) + (x * PATCH_WIDTH));
+					float xast = (icell - (PATCH_WIDTH / 2.0f) + (x * PATCH_WIDTH));
 					float yast = (jcell - (PATCH_HEIGHT / 2.0f) + (y * PATCH_HEIGHT));
 					asteroids.add(mapSystem.createAsteroid(xast, yast));
 				}

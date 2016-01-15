@@ -1,35 +1,36 @@
 package com.apricotjam.spacepanic.systems.helmet;
 
 import com.apricotjam.spacepanic.art.Audio;
-import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
+import com.apricotjam.spacepanic.components.SoundComponent;
+import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.helmet.LED_Component;
 import com.apricotjam.spacepanic.components.helmet.ResourcePipeComponent;
-import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
 public class HelmetSystem extends EntitySystem {
 	static private float RESOURCE_FILL_SPEED = 5.0f;
 	private HelmetWorld world;
-	
+
 	private Entity masterEntity;
 	private Entity breathingSound;
 	private ImmutableArray<Entity> leds;
 	private ImmutableArray<Entity> resourcePipes;
-	
+
 	public HelmetSystem(Entity masterEntity) {
 		this.masterEntity = masterEntity;
 		world = new HelmetWorld(masterEntity);
 		breathingSound = createBreathingSound();
 	}
-	
+
 	@Override
 	public void addedToEngine(Engine engine) {
 		world.build(engine);
@@ -48,33 +49,33 @@ public class HelmetSystem extends EntitySystem {
 	@Override
 	public void update(float deltaTime) {
 		HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(masterEntity);
-		
+
 		if (helmetScreenComp.messages.size != 0) {
 			if (leds.size() == 0) {
 				LED_Message message = helmetScreenComp.messages.removeFirst();
 				getEngine().addEntity(world.createLED(message.text, message.color, message.time, message.scroll, message.flash));
 			}
 		}
-		
+
 		for (Entity entity : leds) {
 			if (ComponentMappers.tween.get(entity).tweenSpecs.size == 0) {
 				getEngine().removeEntity(entity);
 			}
 		}
-		
+
 		for (Entity entity : resourcePipes) {
 			ResourcePipeComponent resourcePipeComp = ComponentMappers.resourcepipe.get(entity);
 			float targetCount = helmetScreenComp.resourceCount.get(resourcePipeComp.resource);
 			if (resourcePipeComp.currCount > targetCount) {
-				resourcePipeComp.currCount =  Math.max(resourcePipeComp.currCount - RESOURCE_FILL_SPEED*deltaTime, targetCount);
+				resourcePipeComp.currCount = Math.max(resourcePipeComp.currCount - RESOURCE_FILL_SPEED * deltaTime, targetCount);
 			} else if (resourcePipeComp.currCount < targetCount) {
-				resourcePipeComp.currCount =  Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED*deltaTime, targetCount);
+				resourcePipeComp.currCount = Math.min(resourcePipeComp.currCount + RESOURCE_FILL_SPEED * deltaTime, targetCount);
 			}
 			resourcePipeComp.currCount = targetCount;
 			updateResourcePipe(entity);
 		}
 
-		
+
 		ShaderSpreadComponent shaderSpreadComp = ComponentMappers.shaderspread.get(world.getDemisterFog());
 		shaderSpreadComp.spread = helmetScreenComp.demisterSpread;
 	}
@@ -101,7 +102,7 @@ public class HelmetSystem extends EntitySystem {
 
 		return entity;
 	}
-	
+
 	public static class LED_Message {
 		public String text;
 		public Color color;

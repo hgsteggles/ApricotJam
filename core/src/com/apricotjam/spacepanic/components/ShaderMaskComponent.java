@@ -8,7 +8,7 @@ public class ShaderMaskComponent implements Component {
 	public final Vector3 position = new Vector3();
 	public final Vector2 size = new Vector2();
 	public TransformComponent parent;
-	
+
 	public ShaderMaskComponent getTotalTransformedMask() {
 		ShaderMaskComponent total = new ShaderMaskComponent();
 		total.position.add(position);

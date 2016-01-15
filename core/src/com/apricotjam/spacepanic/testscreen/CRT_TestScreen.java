@@ -15,35 +15,35 @@ public class CRT_TestScreen extends BasicScreen {
 
 	public CRT_TestScreen(SpacePanic spacePanic) {
 		super(spacePanic);
-		
+
 		add(new AnimatedShaderSystem());
-		
+
 		add(createCRT());
 	}
-	
+
 	@Override
 	public void backPressed() {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	private Entity createCRT() {
 		TextureComponent textComp = new TextureComponent();
 		textComp.region = MiscArt.marioRegion;
 		textComp.size.x = 4f;
 		textComp.size.y = 4f;
-		
+
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("crt");
-		
+
 		ShaderTimeComponent shaderTimeComp = new ShaderTimeComponent();
-		
+
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/2f, 0);
-		
+		transComp.position.set(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 2f, 0);
+
 		Entity entity = new Entity();
 		entity.add(textComp).add(shaderComp).add(shaderTimeComp).add(transComp);
-		
+
 		return entity;
 	}
 }

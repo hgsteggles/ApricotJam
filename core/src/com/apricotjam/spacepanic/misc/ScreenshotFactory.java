@@ -1,37 +1,40 @@
 package com.apricotjam.spacepanic.misc;
 
-import java.nio.ByteBuffer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.nio.ByteBuffer;
+
 public class ScreenshotFactory {
 
 	private static int counter = 1;
-	public static void saveScreenshot(){
-		try{
+
+	public static void saveScreenshot() {
+		try {
 			FileHandle fh;
-			do{
+			do {
 				String filename = "gif/screenshot";
-				if (counter < 100)
+				if (counter < 100) {
 					filename += "0";
-				if (counter < 10)
+				}
+				if (counter < 10) {
 					filename += "0";
+				}
 				filename += Integer.toString(counter++) + ".png";
-				
+
 				fh = new FileHandle(filename);
-			}while (fh.exists());
+			} while (fh.exists());
 			Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 			PixmapIO.writePNG(fh, pixmap);
 			pixmap.dispose();
-		}catch (Exception e){           
+		} catch (Exception e) {
 		}
 	}
 
-	private static Pixmap getScreenshot(int x, int y, int w, int h, boolean yDown){
+	private static Pixmap getScreenshot(int x, int y, int w, int h, boolean yDown) {
 		final Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(x, y, w, h);
 
 		if (yDown) {

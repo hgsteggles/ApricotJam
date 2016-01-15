@@ -1,24 +1,9 @@
 package com.apricotjam.spacepanic.systems;
 
-import java.util.Comparator;
-import java.util.HashMap;
-
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.art.Shaders;
-import com.apricotjam.spacepanic.components.BitmapFontComponent;
-import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.FBO_Component;
-import com.apricotjam.spacepanic.components.FBO_ItemComponent;
-import com.apricotjam.spacepanic.components.NinepatchComponent;
-import com.apricotjam.spacepanic.components.ShaderComponent;
-import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
-import com.apricotjam.spacepanic.components.ShaderLightingComponent;
-import com.apricotjam.spacepanic.components.ShaderMaskComponent;
-import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
-import com.apricotjam.spacepanic.components.ShaderTimeComponent;
-import com.apricotjam.spacepanic.components.TextureComponent;
-import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -35,33 +20,28 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Comparator;
+import java.util.HashMap;
+
 public class RenderingSystem extends EntitySystem {
 	public static final float PIXELS_TO_WORLD = BasicScreen.WORLD_WIDTH / SpacePanic.WIDTH;
 	public static final float WORLD_TO_PIXELS = 1.0f / PIXELS_TO_WORLD;
 
 	private Camera worldCamera, pixelcamera;
 	private SpriteBatch batch;
-	
+
 	private ImmutableArray<Entity> fboList;
 	private SortedEntityList fboRenderQueue, fbo2RenderQueue;
 	private SortedEntityList screenRenderQueue;
 
 	public RenderingSystem(SpriteBatch batch, Camera worldCamera) {
 		super();
-		
-		fboRenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class)
-				.exclude(FBO_Component.class)
-				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
-				.get(), new DepthFBOComparator());
-		
-		fbo2RenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class, FBO_Component.class)
-				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
-				.get(), new DepthFBOComparator());
-		
-		screenRenderQueue = new SortedEntityList(Family.all(TransformComponent.class)
-				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
-				.exclude(FBO_ItemComponent.class)
-				.get(), new DepthComparator());
+
+		fboRenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class).exclude(FBO_Component.class).one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class).get(), new DepthFBOComparator());
+
+		fbo2RenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class, FBO_Component.class).one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class).get(), new DepthFBOComparator());
+
+		screenRenderQueue = new SortedEntityList(Family.all(TransformComponent.class).one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class).exclude(FBO_ItemComponent.class).get(), new DepthComparator());
 
 		this.batch = batch;
 
@@ -70,21 +50,21 @@ public class RenderingSystem extends EntitySystem {
 		this.pixelcamera = new OrthographicCamera(SpacePanic.WIDTH, SpacePanic.HEIGHT);
 		this.pixelcamera.position.set(SpacePanic.WIDTH / 2.0f, SpacePanic.HEIGHT / 2.0f, 0);
 	}
-	
+
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		
+
 		fboList = engine.getEntitiesFor(Family.all(FBO_Component.class).get());
-		
+
 		fboRenderQueue.addedToEngine(engine);
 		screenRenderQueue.addedToEngine(engine);
 	}
-	
+
 	@Override
 	public void removedFromEngine(Engine engine) {
 		super.removedFromEngine(engine);
-		
+
 		fboRenderQueue.removedFromEngine(engine);
 		screenRenderQueue.removedFromEngine(engine);
 	}
@@ -119,7 +99,7 @@ public class RenderingSystem extends EntitySystem {
 			}
 			render(entity, fboItemComp.fboBatch);
 		}
-		
+
 		//Render FBOs to FBOs.
 		Array<Entity> fbo2Entities = fbo2RenderQueue.getSortedEntities();
 		for (Entity entity : fbo2Entities) {
@@ -164,13 +144,13 @@ public class RenderingSystem extends EntitySystem {
 		textComp.region = new TextureRegion(Shaders.manager.getFBTexture(fboComp.FBO_ID));
 		textComp.region.flip(false, true);
 	}
-	
+
 	private void render(Entity entity, SpriteBatch spriteBatch) {
 		if (ComponentMappers.shader.has(entity)) {
 			ShaderComponent shaderComp = ComponentMappers.shader.get(entity);
-			
+
 			spriteBatch.setShader(shaderComp.shader);
-			
+
 			if (ComponentMappers.shadertime.has(entity)) {
 				ShaderTimeComponent shaderTimeComp = ComponentMappers.shadertime.get(entity);
 				shaderComp.shader.setUniformf("time", shaderTimeComp.time);
@@ -189,15 +169,15 @@ public class RenderingSystem extends EntitySystem {
 			}
 			if (ComponentMappers.shadermask.has(entity)) {
 				ShaderMaskComponent shaderMaskComp = ComponentMappers.shadermask.get(entity).getTotalTransformedMask();
-				float x = shaderMaskComp.position.x/BasicScreen.WORLD_WIDTH;
-				float y = shaderMaskComp.position.y/BasicScreen.WORLD_HEIGHT;
-				float w = shaderMaskComp.size.x/BasicScreen.WORLD_WIDTH;
-				float h = shaderMaskComp.size.y/BasicScreen.WORLD_HEIGHT;
-				
+				float x = shaderMaskComp.position.x / BasicScreen.WORLD_WIDTH;
+				float y = shaderMaskComp.position.y / BasicScreen.WORLD_HEIGHT;
+				float w = shaderMaskComp.size.x / BasicScreen.WORLD_WIDTH;
+				float h = shaderMaskComp.size.y / BasicScreen.WORLD_HEIGHT;
+
 				shaderComp.shader.setUniformf("maskRect", x, y, w, h);
 			}
 		}
-		
+
 		if (ComponentMappers.texture.has(entity)) {
 			TextureComponent tex = ComponentMappers.texture.get(entity);
 
@@ -217,28 +197,20 @@ public class RenderingSystem extends EntitySystem {
 				originX = width * 0.5f;
 				originY = height * 0.5f;
 			}
-			
+
 			spriteBatch.setColor(tex.color);
-			
+
 			if (tex.normal != null) {
 				tex.normal.getTexture().bind(1);
 				tex.region.getTexture().bind(0);
-				
-				spriteBatch.draw(tex.region.getTexture(), 
-						   totalTransform.position.x - originX, totalTransform.position.y - originY,
-					       width, height);
-			}
-			else {
-				spriteBatch.draw(tex.region,
-						   totalTransform.position.x - originX, totalTransform.position.y - originY,
-						   originX, originY,
-						   width, height,
-						   totalTransform.scale.x, totalTransform.scale.y,
-						   totalTransform.rotation);
+
+				spriteBatch.draw(tex.region.getTexture(), totalTransform.position.x - originX, totalTransform.position.y - originY, width, height);
+			} else {
+				spriteBatch.draw(tex.region, totalTransform.position.x - originX, totalTransform.position.y - originY, originX, originY, width, height, totalTransform.scale.x, totalTransform.scale.y, totalTransform.rotation);
 			}
 
 			spriteBatch.setColor(Color.WHITE);
-			
+
 		} else if (ComponentMappers.bitmapfont.has(entity)) {
 			spriteBatch.setProjectionMatrix(pixelcamera.combined);
 
@@ -251,21 +223,16 @@ public class RenderingSystem extends EntitySystem {
 			Vector2 pospixel = new Vector2(totalTransform.position.x * WORLD_TO_PIXELS, totalTransform.position.y * WORLD_TO_PIXELS);
 			GlyphLayout layout = new GlyphLayout(font, bitmap.string);
 			if (!bitmap.centering) {
-				font.draw(spriteBatch,
-						  bitmap.string,
-						  pospixel.x, pospixel.y + layout.height);
+				font.draw(spriteBatch, bitmap.string, pospixel.x, pospixel.y + layout.height);
 			} else {
-				font.draw(spriteBatch,
-						  bitmap.string,
-						  pospixel.x - layout.width / 2.0f,
-						  pospixel.y + layout.height / 2.0f);
+				font.draw(spriteBatch, bitmap.string, pospixel.x - layout.width / 2.0f, pospixel.y + layout.height / 2.0f);
 			}
 
 			spriteBatch.setProjectionMatrix(worldCamera.combined);
-			
+
 		} else if (ComponentMappers.ninepatch.has(entity)) {
 			spriteBatch.setProjectionMatrix(pixelcamera.combined);
-			
+
 			NinepatchComponent nine = ComponentMappers.ninepatch.get(entity);
 
 			if (nine.patch == null) {
@@ -274,7 +241,7 @@ public class RenderingSystem extends EntitySystem {
 
 			TransformComponent t = ComponentMappers.transform.get(entity);
 			TransformComponent totalTransform = t.getTotalTransform();
-			
+
 			Vector2 pospixel = new Vector2(totalTransform.position.x * WORLD_TO_PIXELS, totalTransform.position.y * WORLD_TO_PIXELS);
 
 			float width = nine.size.x * WORLD_TO_PIXELS;
@@ -286,17 +253,15 @@ public class RenderingSystem extends EntitySystem {
 				originX = width * 0.5f;
 				originY = height * 0.5f;
 			}
-			
+
 			spriteBatch.setColor(nine.color);
-			
-			nine.patch.draw(spriteBatch,
-					   pospixel.x - originX, pospixel.y - originY,
-					   width, height);
-			
+
+			nine.patch.draw(spriteBatch, pospixel.x - originX, pospixel.y - originY, width, height);
+
 			spriteBatch.setColor(Color.WHITE);
 			spriteBatch.setProjectionMatrix(worldCamera.combined);
 		}
-		
+
 		spriteBatch.setShader(null);
 	}
 

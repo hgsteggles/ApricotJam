@@ -1,16 +1,13 @@
 package com.apricotjam.spacepanic.systems;
 
-import com.apricotjam.spacepanic.art.Audio;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.SoundComponent;
-import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
 
 public class SoundSystem extends IteratingSystem implements EntityListener {
 
@@ -20,7 +17,7 @@ public class SoundSystem extends IteratingSystem implements EntityListener {
 		super(Family.all(SoundComponent.class).get());
 		soundOn = GameSettings.isSoundOn();
 	}
-	
+
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
@@ -72,6 +69,6 @@ public class SoundSystem extends IteratingSystem implements EntityListener {
 		SoundComponent soundComp = ComponentMappers.sound.get(entity);
 		soundComp.sound.stop(soundComp.soundID);
 	}
-	
-	
+
+
 }

@@ -24,14 +24,14 @@ public class HelmetUI {
 
 	static public AtlasRegion screw;
 	static public AtlasRegion speaker;
-	
+
 	static public AtlasRegion sidepanelLeft;
 	static public TextureRegion sidepanelRight;
 	static public TextureRegion resourcePanel;
 	static public TextureRegion ledFrame;
 	static public AtlasRegion fog, fog2;
-	
-	static public ObjectMap<Resource, Color> resourceColors = new ObjectMap<Resource, Color>(); 
+
+	static public ObjectMap<Resource, Color> resourceColors = new ObjectMap<Resource, Color>();
 
 	static public void load(TextureAtlas atlas) {
 		fullOverlay = atlas.findRegion("mainOverlay");
@@ -50,7 +50,7 @@ public class HelmetUI {
 
 		screw = atlas.findRegion("screw");
 		speaker = atlas.findRegion("comsSpeaker");
-		
+
 		sidepanelLeft = atlas.findRegion("sidepanel");
 		sidepanelRight = new TextureRegion(sidepanelLeft);
 		sidepanelRight.flip(true, false);
@@ -58,10 +58,10 @@ public class HelmetUI {
 		ledFrame = atlas.findRegion("ledFrame");
 		fog = atlas.findRegion("fog");
 		fog2 = atlas.findRegion("fog2");
-		
-		resourceColors.put(Resource.OXYGEN,       new Color(0.00f, 0.60f, 0.60f, 1.00f));
-		resourceColors.put(Resource.DEMISTER,     new Color(0.85f, 0.85f, 0.00f, 1.00f));
+
+		resourceColors.put(Resource.OXYGEN, new Color(0.00f, 0.60f, 0.60f, 1.00f));
+		resourceColors.put(Resource.DEMISTER, new Color(0.85f, 0.85f, 0.00f, 1.00f));
 		resourceColors.put(Resource.PIPE_CLEANER, new Color(0.85f, 0.00f, 0.85f, 1.00f));
-		resourceColors.put(Resource.PLUTONIUM,    new Color(0.00f, 0.85f, 0.00f, 1.00f));
+		resourceColors.put(Resource.PLUTONIUM, new Color(0.00f, 0.85f, 0.00f, 1.00f));
 	}
 }

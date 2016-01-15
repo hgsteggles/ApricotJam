@@ -48,6 +48,7 @@ public class AboutScreen extends BasicScreen {
 	private static final String TEXTMADEBY = "Made by:";
 
 	private static final ArrayList<Credit> CREDITS = new ArrayList<Credit>();
+
 	static {
 		CREDITS.add(new Credit("Russ MacCharles (PCGS)", "Art", "FACEBOOK", "https://facebook.com/pcgamestudio"));
 		CREDITS.add(new Credit("Harry Steggles", "Code", "GITHUB", "https://github.com/ridoncules"));

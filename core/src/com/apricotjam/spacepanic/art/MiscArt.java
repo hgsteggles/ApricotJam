@@ -17,12 +17,13 @@ public class MiscArt {
 	public static Texture mainBackgroundScrollable;
 
 	public static ObjectMap<String, BitmapFont> fonts = new ObjectMap<String, BitmapFont>();
-	
+
 	public static TextureRegion marioRegion;
-	
+
 	public static NinePatchDrawable buttonBorder;
-	
-	private static Skin skin = new Skin();;
+
+	private static Skin skin = new Skin();
+	;
 
 	public static void load(TextureAtlas atlas) {
 		title = atlas.findRegion("title");
@@ -30,14 +31,12 @@ public class MiscArt {
 		mainBackgroundScrollable = Art.loadTexture("mainBackground.png");
 		mainBackgroundScrollable.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-		fonts.put("retro", new BitmapFont(Gdx.files.internal("fonts/retro3.fnt"),
-										  Gdx.files.internal("fonts/retro3.png"), false));
-		fonts.put("led", new BitmapFont(Gdx.files.internal("fonts/led1.fnt"),
-				  Gdx.files.internal("fonts/led1.png"), false));
-		
+		fonts.put("retro", new BitmapFont(Gdx.files.internal("fonts/retro3.fnt"), Gdx.files.internal("fonts/retro3.png"), false));
+		fonts.put("led", new BitmapFont(Gdx.files.internal("fonts/led1.fnt"), Gdx.files.internal("fonts/led1.png"), false));
+
 		marioRegion = atlas.findRegion("mario");
-		
+
 		skin.addRegions(atlas);
-		buttonBorder = (NinePatchDrawable)skin.getDrawable("button-border");
+		buttonBorder = (NinePatchDrawable) skin.getDrawable("button-border");
 	}
 }

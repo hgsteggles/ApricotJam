@@ -19,11 +19,11 @@ public class SpacePanic extends ApplicationAdapter {
 	static public final int WIDTH = 1280;
 	static public final int HEIGHT = 720;
 	static public RandomXS128 rng = new RandomXS128(0);
-	
+
 	private boolean video = false;
 	private float accum = 0;
-	private float frame_time = 1.0f/30f;
-	private int nprints = (int)(1f/frame_time);
+	private float frame_time = 1.0f / 30f;
+	private int nprints = (int) (1f / frame_time);
 
 	private BasicScreen screen;
 
@@ -63,7 +63,7 @@ public class SpacePanic extends ApplicationAdapter {
 			} else {
 				soundtrack.setVolume(1.0f);
 			}
-			
+
 			if (video && nprints > 0) {
 				accum += deltatime;
 				if (accum > frame_time) {

@@ -16,10 +16,8 @@ public class Art {
 		MapArt.load(atlas);
 		MiscArt.load(atlas);
 		PipeGameArt.load(atlas);
-		
-		
 	}
-	
+
 	public static void dispose() {
 		PipeGameArt.dipose();
 		atlas.dispose();

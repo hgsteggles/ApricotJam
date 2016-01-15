@@ -19,13 +19,13 @@ public class AnimationSystem extends IteratingSystem {
 		TextureComponent tex = ComponentMappers.texture.get(entity);
 		AnimationComponent anim = ComponentMappers.animation.get(entity);
 		StateComponent state = ComponentMappers.state.get(entity);
-		
+
 		Animation animation = anim.animations.get(state.get());
-		
+
 		if (animation != null) {
-			tex.region = animation.getKeyFrame(state.time); 
+			tex.region = animation.getKeyFrame(state.time);
 		}
-		
-		state.time += state.timescale*deltaTime;
+
+		state.time += state.timescale * deltaTime;
 	}
 }

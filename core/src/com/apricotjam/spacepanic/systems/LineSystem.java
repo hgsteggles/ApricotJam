@@ -1,6 +1,9 @@
 package com.apricotjam.spacepanic.systems;
 
-import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.LineComponent;
+import com.apricotjam.spacepanic.components.TextureComponent;
+import com.apricotjam.spacepanic.components.TransformComponent;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;

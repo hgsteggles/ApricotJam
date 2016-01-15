@@ -3,7 +3,6 @@ package com.apricotjam.spacepanic.systems.map;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.LineComponent;
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
@@ -72,7 +71,7 @@ public class Path {
 	}
 
 	public void addToEngine(Engine engine) {
-		for (Entity e: pathLines) {
+		for (Entity e : pathLines) {
 			engine.addEntity(e);
 		}
 		if (cross != null) {
@@ -81,7 +80,7 @@ public class Path {
 	}
 
 	public void removeFromEngine(Engine engine) {
-		for (Entity e: pathLines) {
+		for (Entity e : pathLines) {
 			engine.removeEntity(e);
 		}
 		if (cross != null) {

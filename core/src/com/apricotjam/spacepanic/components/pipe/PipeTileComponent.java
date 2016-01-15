@@ -7,6 +7,6 @@ public class PipeTileComponent implements Component {
 	public byte mask = 0;
 	public byte usedExitMask = 0;
 	public boolean isTimer = false;
-	
-	public Entity[] neighbours = new Entity[]{null, null, null, null};
+
+	public Entity[] neighbours = new Entity[] {null, null, null, null};
 }

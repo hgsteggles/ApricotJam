@@ -18,17 +18,19 @@ public class TestInput extends InputData implements InputProcessor {
 	}
 
 	public boolean isPressed(int key) {
-		if (pressedKeys.containsKey(key))
+		if (pressedKeys.containsKey(key)) {
 			return pressedKeys.get(key);
-		else
+		} else {
 			return false;
+		}
 	}
 
 	public boolean isTyped(int key) {
-		if (typedKeys.containsKey(key))
+		if (typedKeys.containsKey(key)) {
 			return typedKeys.get(key);
-		else
+		} else {
 			return false;
+		}
 	}
 
 	public void resetTypedKeys() {

@@ -1,6 +1,5 @@
 package com.apricotjam.spacepanic.gameelements;
 
-import com.apricotjam.spacepanic.systems.pipes.PuzzleDifficulty;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class GameStats {

@@ -17,10 +17,10 @@ public class ShaderLightingSystem extends IteratingSystem {
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		ShaderLightingComponent slc = ComponentMappers.shaderlight.get(entity);
-		
+
 		Vector2 pos = new Vector2(InputManager.screenInput.getPointerLocation());
-		
-		slc.lightPosition.x = (pos.x)/BasicScreen.WORLD_WIDTH;
-		slc.lightPosition.y = (pos.y)/BasicScreen.WORLD_HEIGHT;
+
+		slc.lightPosition.x = (pos.x) / BasicScreen.WORLD_WIDTH;
+		slc.lightPosition.y = (pos.y) / BasicScreen.WORLD_HEIGHT;
 	}
 }

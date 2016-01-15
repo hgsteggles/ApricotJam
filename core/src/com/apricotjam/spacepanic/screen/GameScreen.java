@@ -24,8 +24,6 @@ import com.badlogic.gdx.math.MathUtils;
 
 import java.util.Random;
 
-import shaders.DiffuseShader;
-
 public class GameScreen extends BasicScreen {
 
 	public enum GameState {
@@ -54,14 +52,14 @@ public class GameScreen extends BasicScreen {
 	private Random rng = new Random();
 
 	private PipeSystem pipeSystem = null;
-	
+
 	private float currDifficulty = 0;
 
 	private boolean badPipes = false;
 	private boolean dying = false;
 	private boolean dead = false;
 	private float dyingTime = GameParameters.DEATH_TIME;
-	private int dyingState = (int)GameParameters.DEATH_TIME;
+	private int dyingState = (int) GameParameters.DEATH_TIME;
 
 	private GameStats gameStats = new GameStats();
 
@@ -103,10 +101,10 @@ public class GameScreen extends BasicScreen {
 		}
 
 		if (currentState != GameState.GAMEOVER) {
-			for (Resource r: Resource.values()) {
+			for (Resource r : Resource.values()) {
 				alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
 			}
-	
+
 			if (dying) {
 				updateDying(delta);
 			}
@@ -172,11 +170,12 @@ public class GameScreen extends BasicScreen {
 			addMessage(resource.name().replace("_", " ") + " acquired", Color.GREEN, 3.0f, true, false);
 			gameStats.addResource(resource);
 			gameStats.difficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
-			
+
 			currDifficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
-			while (currDifficulty >= PuzzleDifficulty.gridSize.size)
+			while (currDifficulty >= PuzzleDifficulty.gridSize.size) {
 				currDifficulty -= PuzzleDifficulty.gridSize.size;
-				
+			}
+
 			if (badPipes) {
 				alterResource(resource, GameParameters.RESOURCE_GAIN_ALT.get(resource));
 			} else {
@@ -202,7 +201,7 @@ public class GameScreen extends BasicScreen {
 				} else if (dying && next > 0.0f) {
 					dying = false;
 					dyingTime = GameParameters.DEATH_TIME;
-					dyingState = (int)GameParameters.DEATH_TIME;
+					dyingState = (int) GameParameters.DEATH_TIME;
 				}
 				break;
 			case DEMISTER:
@@ -236,35 +235,35 @@ public class GameScreen extends BasicScreen {
 			if (pipeSystem != null) {
 				pipeSystem.setProcessing(false);
 			}
-			
+
 			// Start zooming into outer space for the next screen.
 			// TODO: the stencil location on screen for LED won't scale properly.
 			// TODO: might want to move stars too.
-			
+
 			float duration = 3.0f;
 			float helmetDelay = 0.5f;
-			
+
 			if (currentState == GameState.PIPING) {
 				PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(pipeSystemEntity);
 				TweenComponent pipeTweenComp = ComponentMappers.tween.get(pipeSystemEntity);
 				float currPipeY = ComponentMappers.transform.get(pipeSystemEntity).position.y;
 				pipeTweenComp.tweenSpecs.add(pipeGoneTween(duration));
 			}
-			
+
 			MapScreenComponent mapScreenComp = ComponentMappers.mapscreen.get(mapSystemEntity);
 			TweenComponent mapTweenComp = ComponentMappers.tween.get(mapSystemEntity);
 			float currMapY = ComponentMappers.transform.get(mapSystemEntity).position.y;
 			mapTweenComp.tweenSpecs.add(mapGoneTween(duration));
-			
+
 			float helmetTweenDuration = 3f;
 			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 			TweenComponent helmetTweenComp = new TweenComponent();
 			helmetTweenComp.tweenSpecs.add(helmetGoneTween(helmetDelay, helmetTweenDuration));
 			helmetTweenComp.tweenSpecs.add(fogGoneTween(helmetScreenComp.demisterSpread, duration));
 			helmetSystemEntity.add(helmetTweenComp);
-			
+
 			add(createEndEntity(helmetDelay + helmetTweenDuration));
-			
+
 			currentState = GameState.GAMEOVER;
 		}
 	}
@@ -282,7 +281,7 @@ public class GameScreen extends BasicScreen {
 	private TweenSpec mapOutTween() {
 		TweenSpec ts = new TweenSpec();
 		ts.start = MAP_Y_ON;
-		ts.end =  MAP_Y_OFF;
+		ts.end = MAP_Y_OFF;
 		ts.cycle = TweenSpec.Cycle.ONCE;
 		ts.interp = Interpolation.linear;
 		ts.period = 2.0f;
@@ -298,7 +297,7 @@ public class GameScreen extends BasicScreen {
 	private TweenSpec mapInTween() {
 		TweenSpec ts = new TweenSpec();
 		ts.start = MAP_Y_OFF;
-		ts.end =  MAP_Y_ON;
+		ts.end = MAP_Y_ON;
 		ts.cycle = TweenSpec.Cycle.ONCE;
 		ts.interp = Interpolation.linear;
 		ts.period = 2.0f;
@@ -342,7 +341,7 @@ public class GameScreen extends BasicScreen {
 	private TweenSpec pipeInTween() {
 		TweenSpec ts = new TweenSpec();
 		ts.start = PIPE_SCALE_SMALL;
-		ts.end =  PIPE_SCALE_LARGE;
+		ts.end = PIPE_SCALE_LARGE;
 		ts.cycle = TweenSpec.Cycle.ONCE;
 		ts.interp = Interpolation.linear;
 		ts.period = 2.0f;
@@ -361,13 +360,13 @@ public class GameScreen extends BasicScreen {
 		};
 		return ts;
 	}
-	
+
 	private TweenSpec mapGoneTween(float duration) {
 		float currMapY = ComponentMappers.transform.get(mapSystemEntity).position.y;
-		
+
 		TweenSpec ts = new TweenSpec();
 		ts.start = currMapY;
-		ts.end =  2f*MAP_Y_OFF;
+		ts.end = 2f * MAP_Y_OFF;
 		ts.cycle = TweenSpec.Cycle.ONCE;
 		ts.interp = Interpolation.linear;
 		ts.period = duration;
@@ -379,7 +378,7 @@ public class GameScreen extends BasicScreen {
 		};
 		return ts;
 	}
-	
+
 	private TweenSpec pipeGoneTween(float duration) {
 		TweenSpec ts = new TweenSpec();
 		ts.start = PIPE_X;
@@ -401,16 +400,16 @@ public class GameScreen extends BasicScreen {
 		};
 		return ts;
 	}
-	
+
 	private TweenSpec helmetGoneTween(float delay, float helmetGoneDuration) {
 		final float origStart = 1f;
 		float origEnd = 2f;
-		float speed = (origEnd - origStart)/helmetGoneDuration;
-		float start = origStart - speed*delay;
-		
+		float speed = (origEnd - origStart) / helmetGoneDuration;
+		float start = origStart - speed * delay;
+
 		TweenSpec ts = new TweenSpec();
 		ts.start = start;
-		ts.end =  origEnd;
+		ts.end = origEnd;
 		ts.cycle = TweenSpec.Cycle.ONCE;
 		ts.interp = Interpolation.linear;
 		ts.period = helmetGoneDuration + delay;
@@ -422,14 +421,14 @@ public class GameScreen extends BasicScreen {
 				tc.scale.y = Math.max(a, origStart);
 			}
 		};
-		
+
 		return ts;
 	}
-	
+
 	private TweenSpec fogGoneTween(float currDemisterSpread, float duration) {
 		TweenSpec ts = new TweenSpec();
 		ts.start = currDemisterSpread;
-		ts.end = 10*GameParameters.FOG_MAX;
+		ts.end = 10 * GameParameters.FOG_MAX;
 		ts.period = duration;
 		ts.tweenInterface = new TweenInterface() {
 			@Override
@@ -437,13 +436,13 @@ public class GameScreen extends BasicScreen {
 				ComponentMappers.helmetscreen.get(e).demisterSpread = a;
 			}
 		};
-		
+
 		return ts;
 	}
-	
+
 	private Entity createEndEntity(float delay) {
 		Entity entity = new Entity();
-		
+
 		TweenComponent tweenComp = new TweenComponent();
 		TweenSpec ts = new TweenSpec();
 		ts.period = delay;
@@ -461,7 +460,7 @@ public class GameScreen extends BasicScreen {
 		};
 		tweenComp.tweenSpecs.add(ts);
 		entity.add(tweenComp);
-		
+
 		return entity;
 	}
 
@@ -471,10 +470,10 @@ public class GameScreen extends BasicScreen {
 		float height = backgroundTexComp.region.getRegionHeight();
 		float x = msc.playerPosition.x * BACKGROUND_MOVEMENT_FACTOR * width / backgroundTexComp.size.x;
 		float y = msc.playerPosition.y * BACKGROUND_MOVEMENT_FACTOR * height / backgroundTexComp.size.y;
-		backgroundTexComp.region.setRegionX((int)(x));
-		backgroundTexComp.region.setRegionWidth((int)width);
-		backgroundTexComp.region.setRegionY(-1 * (int)(y));
-		backgroundTexComp.region.setRegionHeight((int)height);
+		backgroundTexComp.region.setRegionX((int) (x));
+		backgroundTexComp.region.setRegionWidth((int) width);
+		backgroundTexComp.region.setRegionY(-1 * (int) (y));
+		backgroundTexComp.region.setRegionHeight((int) height);
 	}
 
 	private void addMapSystem() {
@@ -500,16 +499,16 @@ public class GameScreen extends BasicScreen {
 		helmetSystemEntity = new Entity();
 
 		HelmetScreenComponent helmetScreenComponent = new HelmetScreenComponent();
-		for (Resource r: Resource.values()) {
+		for (Resource r : Resource.values()) {
 			helmetScreenComponent.maxCount.put(r, GameParameters.RESOURCE_MAX.get(r));
 			helmetScreenComponent.resourceCount.put(r, GameParameters.RESOURCE_MAX.get(r));
 		}
 		helmetScreenComponent.demisterSpread = 3.0f;
 		helmetSystemEntity.add(helmetScreenComponent);
-		
+
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH/2f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT/2f;
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
 		transComp.position.z = 20.0f;
 		transComp.scale.x = 1f;
 		transComp.scale.y = 1f;
@@ -550,8 +549,8 @@ public class GameScreen extends BasicScreen {
 				+ rng.nextInt(GameParameters.RESOURCE_SPREAD_PIPE_DIFFICULTY.get(resource));
 		diff = Math.min(diff, 25);
 		*/
-		
-		return Math.min((int)currDifficulty, PuzzleDifficulty.gridSize.size-1);
+
+		return Math.min((int) currDifficulty, PuzzleDifficulty.gridSize.size - 1);
 	}
 
 	private Entity createBackground() {
@@ -559,8 +558,8 @@ public class GameScreen extends BasicScreen {
 
 		backgroundTexComp = new TextureComponent();
 		Texture tex = MiscArt.mainBackgroundScrollable;
-		float texToCorner = (float)Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
-		backgroundTexComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
+		float texToCorner = (float) Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
+		backgroundTexComp.region = new TextureRegion(tex, 0, 0, (int) texToCorner, (int) texToCorner);
 
 		backgroundTexComp.size.x = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
 		backgroundTexComp.size.y = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
