@@ -11,6 +11,7 @@ import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
+import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -242,8 +243,10 @@ public class PipeSystem extends EntitySystem {
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
 			public void applyTween(Entity e, float a) {
-				SoundComponent sc = ComponentMappers.sound.get(e);
-				sc.sound.setVolume(sc.soundID, a);
+				if (GameSettings.isSoundOn()) {
+					SoundComponent sc = ComponentMappers.sound.get(e);
+					sc.sound.setVolume(sc.soundID, a);
+				}
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
