@@ -502,7 +502,7 @@ public class GameScreen extends BasicScreen {
 		HelmetScreenComponent helmetScreenComponent = new HelmetScreenComponent();
 		for (Resource r: Resource.values()) {
 			helmetScreenComponent.maxCount.put(r, GameParameters.RESOURCE_MAX.get(r));
-			helmetScreenComponent.resourceCount.put(r, GameParameters.RESOURCE_MAX.get(r));
+			helmetScreenComponent.resourceCount.put(r, GameParameters.RESOURCE_START.get(r));
 		}
 		helmetScreenComponent.demisterSpread = 3.0f;
 		helmetSystemEntity.add(helmetScreenComponent);

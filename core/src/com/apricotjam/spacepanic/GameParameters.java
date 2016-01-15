@@ -15,12 +15,20 @@ public class GameParameters {
 		RESOURCE_MAX.put(Resource.PIPE_CLEANER, 20.0f);
 		RESOURCE_MAX.put(Resource.PLUTONIUM, 10.0f);
 	}
+	
+	public static final ObjectMap<Resource, Float> RESOURCE_START = new ObjectMap<Resource, Float>();
+	static {
+		RESOURCE_START.put(Resource.OXYGEN, 20.0f);
+		RESOURCE_START.put(Resource.DEMISTER, 20.0f);
+		RESOURCE_START.put(Resource.PIPE_CLEANER, 20.0f);
+		RESOURCE_START.put(Resource.PLUTONIUM, 1.0f);
+	}
 
 	//Resource depletion per second
 	public static final ObjectMap<Resource, Float> RESOURCE_DEPLETION = new ObjectMap<Resource, Float>();
 	static {
-		RESOURCE_DEPLETION.put(Resource.OXYGEN, -0.1f);
-		RESOURCE_DEPLETION.put(Resource.DEMISTER, -0.1f);
+		RESOURCE_DEPLETION.put(Resource.OXYGEN, -0.05f);
+		RESOURCE_DEPLETION.put(Resource.DEMISTER, -0.05f);
 		RESOURCE_DEPLETION.put(Resource.PIPE_CLEANER, -0.1f);
 		RESOURCE_DEPLETION.put(Resource.PLUTONIUM, -0.1f);
 	}
