@@ -39,30 +39,39 @@ public class GameOverScreen extends BasicScreen {
 		
 		addMovementScroll(backgroundEntity);
 		add(backgroundEntity);
-		add(createGameOver());
+		add(createGameOver(2.0f, 0.0f));
 		
-		MenuButton button = new MenuButton(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/4f, 0, 4f, 1f, "Main Menu", new ClickInterface() {
+		MenuButton button = new MenuButton(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/4f, "MAIN MENU", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				startMenu();
 			}
 		});
-		button.getBorderEntity().add(createBorderTween());
-		button.getTextEntity().add(createMainMenuTween());
-		
-		ComponentMappers.ninepatch.get(button.getBorderEntity()).color.a = 0f;
+		button.getTextEntity().add(createTextFadeTween(2.0f, 1.5f));
+		button.getBorderEntity().add(createBorderFadeTween(2.0f, 1.5f));
 		ComponentMappers.bitmapfont.get(button.getTextEntity()).color.a = 0f;
-		
-		add(button.getBorderEntity());
-		add(button.getTextEntity());
+		ComponentMappers.ninepatch.get(button.getBorderEntity()).color.a = 0f;
+		button.addToEngine(engine);
+
+		MenuButton button2 = new MenuButton(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/4f - 1.0f, "NEW GAME", new ClickInterface() {
+			@Override
+			public void onClick(Entity entity) {
+				newGame();
+			}
+		});
+		button2.getTextEntity().add(createTextFadeTween(2.0f, 2.5f));
+		button2.getBorderEntity().add(createBorderFadeTween(2.0f, 2.5f));
+		ComponentMappers.bitmapfont.get(button2.getTextEntity()).color.a = 0f;
+		ComponentMappers.ninepatch.get(button2.getBorderEntity()).color.a = 0f;
+		button2.addToEngine(engine);
 	}
 	
-	private TweenComponent createMainMenuTween() {
+	private TweenComponent createTextFadeTween(float duration, float delay) {
 		TweenComponent tweenComp = new TweenComponent();
 		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = -1.0f;
 		tweenSpec.end = 1.0f;
-		tweenSpec.period = 4f;
+		tweenSpec.start = -1 * delay * tweenSpec.end / duration;
+		tweenSpec.period = duration + delay;
 		tweenSpec.interp = Interpolation.linear;
 		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
 		tweenSpec.tweenInterface = new TweenInterface() {
@@ -76,12 +85,36 @@ public class GameOverScreen extends BasicScreen {
 		
 		return tweenComp;
 	}
+
+	private TweenComponent createBorderFadeTween(float duration, float delay) {
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.end = 1.0f;
+		tweenSpec.start = -1 *  delay * tweenSpec.end / duration;
+		tweenSpec.period = duration + delay;
+		tweenSpec.interp = Interpolation.linear;
+		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				NinepatchComponent nc = ComponentMappers.ninepatch.get(e);
+				nc.color.a = Math.max(a, 0f);
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+
+		return tweenComp;
+	}
 	
 	private void startMenu() {
 		spacePanic.setScreen(new MenuScreen(spacePanic));
 	}
+
+	private void newGame() {
+		spacePanic.setScreen(new GameScreen(spacePanic));
+	}
 	
-	private Entity createGameOver() {
+	private Entity createGameOver(float duration, float delay) {
 		Entity entity = new Entity();
 		
 		BitmapFontComponent fontComp = new BitmapFontComponent();
@@ -97,7 +130,7 @@ public class GameOverScreen extends BasicScreen {
 		transComp.position.z = 1f;
 		entity.add(transComp);
 		
-		TweenComponent tweenComponent = new TweenComponent();
+		/*TweenComponent tweenComponent = new TweenComponent();
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 0f;
 		tweenSpec.end = 1.0f;
@@ -112,29 +145,10 @@ public class GameOverScreen extends BasicScreen {
 			}
 		};
 		tweenComponent.tweenSpecs.add(tweenSpec);
-		entity.add(tweenComponent);
+		entity.add(tweenComponent);*/
+		entity.add(createTextFadeTween(duration, delay));
 		
 		return entity;
-	}
-	
-	private TweenComponent createBorderTween() {
-		TweenComponent tweenComp = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = -1.0f;
-		tweenSpec.end = 1.0f;
-		tweenSpec.period = 4f;
-		tweenSpec.interp = Interpolation.linear;
-		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
-		tweenSpec.tweenInterface = new TweenInterface() {
-			@Override
-			public void applyTween(Entity e, float a) {
-				NinepatchComponent nc = ComponentMappers.ninepatch.get(e);
-				nc.color.a = Math.max(a, 0f);
-			}
-		};
-		tweenComp.tweenSpecs.add(tweenSpec);
-		
-		return tweenComp;
 	}
 	
 	private void addMovementScroll(Entity entity) {
