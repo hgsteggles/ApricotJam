@@ -14,6 +14,7 @@ import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -210,7 +211,7 @@ public class MapSystem extends EntitySystem {
 		FBO_Component fboc = Shaders.generateFBOComponent("map-screen-fb", texc);
 		fboc.camera.viewportWidth = mapScreenComponent.viewSize;
 		fboc.camera.viewportHeight = mapScreenComponent.viewSize / aspectRatio;
-		fboc.clearColor.set(0.7f, 0.85f, 0.7f, 1.0f);
+		fboc.clearColor.set(0.3f, 0.3f, 0.45f, 1.0f);
 		//fboc.clearColor.set(rng.nextFloat(), rng.nextFloat(), rng.nextFloat(), 1.0f);
 		screen.add(fboc);
 
