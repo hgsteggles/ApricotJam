@@ -14,6 +14,7 @@ import com.apricotjam.spacepanic.components.NinepatchComponent;
 import com.apricotjam.spacepanic.components.ShaderComponent;
 import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
 import com.apricotjam.spacepanic.components.ShaderLightingComponent;
+import com.apricotjam.spacepanic.components.ShaderMaskComponent;
 import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
 import com.apricotjam.spacepanic.components.ShaderTimeComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
@@ -185,6 +186,15 @@ public class RenderingSystem extends EntitySystem {
 			if (ComponentMappers.shaderspread.has(entity)) {
 				ShaderSpreadComponent shaderSpreadComp = ComponentMappers.shaderspread.get(entity);
 				shaderComp.shader.setUniformf("spread", shaderSpreadComp.spread);
+			}
+			if (ComponentMappers.shadermask.has(entity)) {
+				ShaderMaskComponent shaderMaskComp = ComponentMappers.shadermask.get(entity).getTotalTransformedMask();
+				float x = shaderMaskComp.position.x/BasicScreen.WORLD_WIDTH;
+				float y = shaderMaskComp.position.y/BasicScreen.WORLD_HEIGHT;
+				float w = shaderMaskComp.size.x/BasicScreen.WORLD_WIDTH;
+				float h = shaderMaskComp.size.y/BasicScreen.WORLD_HEIGHT;
+				
+				shaderComp.shader.setUniformf("maskRect", x, y, w, h);
 			}
 		}
 		
