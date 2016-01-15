@@ -479,12 +479,7 @@ public class HelmetWorld {
 		//entity.add(Shaders.generateFBOItemComponent("led-fb2"));
 
 		ShaderComponent shaderComp = new ShaderComponent();
-		shaderComp.shader = Shaders.manager.get("led-blur-mask");
-		Shaders.manager.begin("led-blur-mask");
-		float normX = 0.5f + (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
-		float normY = 0.5f + (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
-		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
-		Shaders.manager.end();
+		shaderComp.shader = Shaders.manager.get("led-blur");
 		entity.add(shaderComp);
 		
 		ShaderDirectionComponent shaderDirComp = new ShaderDirectionComponent();
@@ -492,8 +487,9 @@ public class HelmetWorld {
 		entity.add(shaderDirComp);
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.set(0f, 0f, 3f);
-		tranc.parent = ComponentMappers.transform.get(masterEntity);
+		float z = ComponentMappers.transform.get(masterEntity).position.z;
+		tranc.position.set(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/2f, 3f + z);
+		//tranc.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(tranc);
 		
 		return entity;
@@ -510,12 +506,7 @@ public class HelmetWorld {
 		entity.add(Shaders.generateFBOComponent("led-fb2", texc));
 
 		ShaderComponent shaderComp = new ShaderComponent();
-		shaderComp.shader = Shaders.manager.get("led-blur-mask");
-		Shaders.manager.begin("led-blur-mask");
-		float normX = 0.5f + (LEDBG_X - LEDBG_W/2f)/BasicScreen.WORLD_WIDTH;
-		float normY = 0.5f + (LEDBG_Y - LEDBG_H/2f)/BasicScreen.WORLD_HEIGHT;
-		Shaders.manager.setUniformf("maskRect", normX, normY, LEDBG_W/BasicScreen.WORLD_WIDTH, LEDBG_H/BasicScreen.WORLD_HEIGHT);
-		Shaders.manager.end();
+		shaderComp.shader = Shaders.manager.get("led-blur");
 		entity.add(shaderComp);
 		
 		ShaderDirectionComponent shaderDirComp = new ShaderDirectionComponent();
@@ -523,8 +514,9 @@ public class HelmetWorld {
 		entity.add(shaderDirComp);
 
 		TransformComponent tranc = new TransformComponent();
-		tranc.position.set(0f, 0f, 3f);
-		tranc.parent = ComponentMappers.transform.get(masterEntity);
+		float z = ComponentMappers.transform.get(masterEntity).position.z;
+		tranc.position.set(BasicScreen.WORLD_WIDTH/2f, BasicScreen.WORLD_HEIGHT/2f, 3f + z);
+		//tranc.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(tranc);
 		
 		return entity;
@@ -688,6 +680,18 @@ public class HelmetWorld {
 		entity.add(fontComp);
 		
 		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("mask");
+		entity.add(shaderComp);
+		
+		ShaderMaskComponent shaderMaskComp = new ShaderMaskComponent();
+		shaderMaskComp.position.x = (LEDBG_X - LEDBG_W/2f);
+		shaderMaskComp.position.y = (LEDBG_Y - LEDBG_H/2f);
+		shaderMaskComp.size.x = LEDBG_W;
+		shaderMaskComp.size.y = LEDBG_H;
+		shaderMaskComp.parent = ComponentMappers.transform.get(masterEntity);
+		entity.add(shaderMaskComp);
 		
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.set(LEDBG_X, LEDBG_Y, 100f);

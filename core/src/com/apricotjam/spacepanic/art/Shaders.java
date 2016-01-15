@@ -65,10 +65,16 @@ public class Shaders {
 		manager.setUniformf("zoom", 1.0f);
 		manager.end();
 		
-		manager.add("maskrect", Gdx.files.internal("default.vert"), Gdx.files.internal("mask.frag"));
-		manager.registerResolutionShader("maskrect");
-		manager.begin("maskrect");
+		manager.add("mask", Gdx.files.internal("default.vert"), Gdx.files.internal("mask.frag"));
+		manager.registerResolutionShader("mask");
+		manager.begin("mask");
 		manager.setUniformf("maskRect", 0.25f, 0.25f, 0.5f, 0.5f);
+		manager.end();
+		
+		manager.add("led-blur", Gdx.files.internal("default.vert"), Gdx.files.internal("blur.frag"));
+		manager.registerResolutionShader("led-blur");
+		manager.begin("led-blur");
+		manager.setUniformf("radius", 0.2f);
 		manager.end();
 		
 		manager.add("led-blur-mask", Gdx.files.internal("default.vert"), Gdx.files.internal("led.frag"));
