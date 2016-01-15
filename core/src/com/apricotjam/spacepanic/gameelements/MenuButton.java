@@ -43,7 +43,7 @@ public class MenuButton {
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
 		fontComp.string = text;
-		fontComp.color = Color.WHITE;
+		fontComp.color = new Color(Color.WHITE);
 		fontComp.centering = true;
 		entity.add(fontComp);
 
@@ -59,7 +59,7 @@ public class MenuButton {
 
 		TextButtonComponent textButtonComponent = new TextButtonComponent();
 		textButtonComponent.base = fontComp.color;
-		textButtonComponent.pressed = Color.DARK_GRAY;
+		textButtonComponent.pressed = new Color(Color.DARK_GRAY);
 		entity.add(textButtonComponent);
 
 		return entity;
