@@ -57,6 +57,7 @@ public class GameScreen extends BasicScreen {
 
 	private boolean badPipes = false;
 	private boolean dying = false;
+	private boolean dead = false;
 	private float dyingTime = GameParameters.DEATH_TIME;
 	private int dyingState = (int)GameParameters.DEATH_TIME;
 
@@ -105,7 +106,8 @@ public class GameScreen extends BasicScreen {
 	
 			if (dying) {
 				updateDying(delta);
-			} else {
+			}
+			if (!dead) {
 				gameStats.timeAlive += delta;
 			}
 		}
@@ -133,6 +135,7 @@ public class GameScreen extends BasicScreen {
 		dyingTime -= delta;
 		if (dyingTime < dyingState) {
 			if (dyingState == 0) {
+				dead = true;
 				gameOver();
 			} else {
 				if (dyingState <= 5) {
