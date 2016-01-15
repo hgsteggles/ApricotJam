@@ -11,6 +11,7 @@ import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.TweenSpec.Cycle;
+import com.apricotjam.spacepanic.gameelements.GameStats;
 import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
@@ -24,8 +25,12 @@ import com.badlogic.gdx.math.Interpolation;
 
 public class GameOverScreen extends BasicScreen {
 
-	public GameOverScreen(SpacePanic spacePanic, Entity backgroundEntity) {
+	private GameStats gameStats;
+
+	public GameOverScreen(SpacePanic spacePanic, Entity backgroundEntity, GameStats gameStats) {
 		super(spacePanic);
+
+		this.gameStats = gameStats;
 
 		add(new ClickSystem());
 		add(new TweenSystem());

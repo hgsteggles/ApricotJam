@@ -235,6 +235,7 @@ public class GameScreen extends BasicScreen {
 			// TODO: might want to move stars too.
 			
 			float duration = 2f;
+			float helmetDelay = 0.5f;
 			
 			if (currentState == GameState.PIPING) {
 				PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(pipeSystemEntity);
@@ -251,11 +252,11 @@ public class GameScreen extends BasicScreen {
 			float helmetTweenDuration = 3f;
 			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
 			TweenComponent helmetTweenComp = new TweenComponent();
-			helmetTweenComp.tweenSpecs.add(helmetGoneTween(duration, helmetTweenDuration));
+			helmetTweenComp.tweenSpecs.add(helmetGoneTween(helmetDelay, helmetTweenDuration));
 			helmetTweenComp.tweenSpecs.add(fogGoneTween(helmetScreenComp.demisterSpread, duration));
 			helmetSystemEntity.add(helmetTweenComp);
 			
-			add(createEndEntity(duration + helmetTweenDuration));
+			add(createEndEntity(helmetDelay + helmetTweenDuration));
 			
 			System.out.println("You survived for " + gameStats.timeAlive + " seconds");
 			
@@ -446,7 +447,7 @@ public class GameScreen extends BasicScreen {
 			public void endTween(Entity e) {
 				Entity nextBackgroundEntity = createBackground();
 				ComponentMappers.texture.get(nextBackgroundEntity).region = ComponentMappers.texture.get(backgroundEntity).region;
-				spacePanic.setScreen(new GameOverScreen(spacePanic, nextBackgroundEntity));
+				spacePanic.setScreen(new GameOverScreen(spacePanic, nextBackgroundEntity, gameStats));
 			}
 
 			@Override
