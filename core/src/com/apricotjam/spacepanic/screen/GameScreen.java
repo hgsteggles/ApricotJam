@@ -241,7 +241,7 @@ public class GameScreen extends BasicScreen {
 			// TODO: the stencil location on screen for LED won't scale properly.
 			// TODO: might want to move stars too.
 			
-			float duration = 2f;
+			float duration = 3.0f;
 			float helmetDelay = 0.5f;
 			
 			if (currentState == GameState.PIPING) {
