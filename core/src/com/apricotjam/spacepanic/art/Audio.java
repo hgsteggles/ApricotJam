@@ -11,6 +11,7 @@ public class Audio {
 	
 	static public void load() {
 		sounds.put("fluid-fill", Gdx.audio.newSound(Gdx.files.internal("sounds/fluid-fill.wav")));
+		sounds.put("breathing", Gdx.audio.newSound(Gdx.files.internal("sounds/breathing.wav")));
 		music.put("soundtrack", Gdx.audio.newMusic(Gdx.files.internal("sounds/soundtrack.wav")));
 	}
 	

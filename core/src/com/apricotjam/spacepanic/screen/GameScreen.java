@@ -75,6 +75,7 @@ public class GameScreen extends BasicScreen {
 		add(new AnimationSystem());
 		add(new AnimatedShaderSystem());
 		add(new ShaderLightingSystem());
+		add(new SoundSystem());
 
 		addHelmetSystem();
 		addMapSystem();

@@ -1,17 +1,18 @@
 package com.apricotjam.spacepanic.systems.helmet;
 
-import com.apricotjam.spacepanic.components.ComponentMappers;
-import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
-import com.apricotjam.spacepanic.components.TextureComponent;
+import com.apricotjam.spacepanic.art.Audio;
+import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.helmet.LED_Component;
 import com.apricotjam.spacepanic.components.helmet.ResourcePipeComponent;
+import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
 public class HelmetSystem extends EntitySystem {
@@ -19,17 +20,20 @@ public class HelmetSystem extends EntitySystem {
 	private HelmetWorld world;
 	
 	private Entity masterEntity;
+	private Entity breathingSound;
 	private ImmutableArray<Entity> leds;
 	private ImmutableArray<Entity> resourcePipes;
 	
 	public HelmetSystem(Entity masterEntity) {
 		this.masterEntity = masterEntity;
 		world = new HelmetWorld(masterEntity);
+		breathingSound = createBreathingSound();
 	}
 	
 	@Override
 	public void addedToEngine(Engine engine) {
 		world.build(engine);
+		engine.addEntity(breathingSound);
 		leds = engine.getEntitiesFor(Family.all(LED_Component.class).get());
 		resourcePipes = engine.getEntitiesFor(Family.all(ResourcePipeComponent.class).get());
 
@@ -82,6 +86,20 @@ public class HelmetSystem extends EntitySystem {
 		frac = MathUtils.clamp(frac, 0.0f, 1.0f);
 		TextureComponent texComp = ComponentMappers.texture.get(e);
 		texComp.size.x = frac * resourcePipeComp.maxSize;
+	}
+
+	public Entity createBreathingSound() {
+		Entity entity = new Entity();
+
+		SoundComponent soundComp = new SoundComponent();
+		soundComp.sound = Audio.sounds.get("breathing");
+		soundComp.volume = 0.1f;
+		soundComp.pan = -0.3f;
+		soundComp.duration = -1.0f;
+		soundComp.loop = true;
+		entity.add(soundComp);
+
+		return entity;
 	}
 	
 	public static class LED_Message {

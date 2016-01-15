@@ -9,6 +9,7 @@ public class SoundComponent implements Component {
 	public float volume = 1.0f;
 	public float pitch = 1.0f;
 	public float pan = 0.0f;
+	public boolean loop = false;
 
 	public float time = 0.0f;
 	public long soundID = -1;

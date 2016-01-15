@@ -384,7 +384,7 @@ public class HelmetWorld {
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 0.0f;
 		tweenSpec.end = 1.0f;
-		tweenSpec.period = 1.2f;
+		tweenSpec.period = 2.0f;
 		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
 		tweenSpec.reverse = true;
 		tweenSpec.interp = Interpolation.fade;
@@ -392,7 +392,7 @@ public class HelmetWorld {
 			@Override
 			public void applyTween(Entity e, float a) {
 				TextureComponent tc = ComponentMappers.texture.get(e);
-				tc.color.a = a;
+				tc.color.a = 1.0f - a;
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);

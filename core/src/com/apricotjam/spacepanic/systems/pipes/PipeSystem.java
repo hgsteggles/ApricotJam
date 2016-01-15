@@ -201,7 +201,7 @@ public class PipeSystem extends EntitySystem {
 		
 		startedSolutionAnimation = true;
 		
-		getEngine().addEntity(createFluidFillingSound(npipesLeft*GameParameters.FLUID_FILL_DURATION_SOLVED));
+		getEngine().addEntity(createFluidFillingSound(npipesLeft*GameParameters.FLUID_FILL_DURATION_SOLVED + 1.5f));
 	}
 	
 	public void failed() {
@@ -225,7 +225,8 @@ public class PipeSystem extends EntitySystem {
 		
 		SoundComponent soundComp = new SoundComponent();
 		soundComp.sound = Audio.sounds.get("fluid-fill");
-		soundComp.soundID = soundComp.sound.loop(0f, 1f, -0.3f);
+		soundComp.volume = 0.0f;
+		soundComp.pan = -0.3f;
 		soundComp.duration = duration;
 		entity.add(soundComp);
 		
