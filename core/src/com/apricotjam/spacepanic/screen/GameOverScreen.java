@@ -33,29 +33,29 @@ public class GameOverScreen extends BasicScreen {
 		add(createGameOver(2.0f, 0.0f));
 		add(createScoreMessage(2.0f, 0.5f));
 
-		MenuButton button = new MenuButton(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 4f, "MAIN MENU", new ClickInterface() {
-			@Override
-			public void onClick(Entity entity) {
-				startMenu();
-			}
-		});
-		button.getTextEntity().add(createTextFadeTween(2.0f, 1.5f));
-		button.getBorderEntity().add(createBorderFadeTween(2.0f, 1.5f));
-		ComponentMappers.bitmapfont.get(button.getTextEntity()).color.a = 0f;
-		ComponentMappers.ninepatch.get(button.getBorderEntity()).color.a = 0f;
-		button.addToEngine(engine);
-
-		MenuButton button2 = new MenuButton(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 4f - 1.0f, "NEW GAME", new ClickInterface() {
+		MenuButton button2 = new MenuButton(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 4f, "NEW GAME", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				newGame();
 			}
 		});
-		button2.getTextEntity().add(createTextFadeTween(2.0f, 2.5f));
-		button2.getBorderEntity().add(createBorderFadeTween(2.0f, 2.5f));
+		button2.getTextEntity().add(createTextFadeTween(2.0f, 1.5f));
+		button2.getBorderEntity().add(createBorderFadeTween(2.0f, 1.5f));
 		ComponentMappers.bitmapfont.get(button2.getTextEntity()).color.a = 0f;
 		ComponentMappers.ninepatch.get(button2.getBorderEntity()).color.a = 0f;
 		button2.addToEngine(engine);
+
+		MenuButton button = new MenuButton(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 4f - 1.0f, "MAIN MENU", new ClickInterface() {
+			@Override
+			public void onClick(Entity entity) {
+				startMenu();
+			}
+		});
+		button.getTextEntity().add(createTextFadeTween(2.0f, 2.5f));
+		button.getBorderEntity().add(createBorderFadeTween(2.0f, 2.5f));
+		ComponentMappers.bitmapfont.get(button.getTextEntity()).color.a = 0f;
+		ComponentMappers.ninepatch.get(button.getBorderEntity()).color.a = 0f;
+		button.addToEngine(engine);
 	}
 
 	private TweenComponent createTextFadeTween(float duration, float delay) {
