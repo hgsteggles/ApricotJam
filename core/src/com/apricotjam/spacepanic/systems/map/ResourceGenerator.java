@@ -27,6 +27,9 @@ public class ResourceGenerator {
 	}
 
 	public Resource[][] generateResources(int x, int y, int[][] maze) {
+		if (x == 0 && y == 0) {
+			return createHomeResources();
+		}
 		Resource[][] resources = new Resource[Patch.PATCH_WIDTH][Patch.PATCH_HEIGHT];
 		setRandomState(x, y);
 
@@ -34,11 +37,11 @@ public class ResourceGenerator {
 		for (int i = 0; i < Patch.PATCH_WIDTH; i++) {
 			for (int j = 0; j < Patch.PATCH_HEIGHT; j++) {
 				resources[i][j] = null;
-				if (x == 0 && y == 0) {
+				/*if (x == 0 && y == 0) {
 					if (Math.abs(i - Patch.PATCH_WIDTH / 2.0f) <= 1.0f && Math.abs(j - Patch.PATCH_HEIGHT / 2.0f) <= 1.0f) {
 						continue;
 					}
-				}
+				}*/
 				if (maze[i][j] == MazeGenerator.PATH) {
 					potentialLocations.add(new Point(i, j));
 				}
@@ -57,6 +60,33 @@ public class ResourceGenerator {
 				resources[p.x][p.y] = rollResource();
 				potentialLocations.remove(p);
 			}
+		}
+
+		return resources;
+	}
+
+	private Resource[][] createHomeResources() {
+		setRandomState(0, 0);
+
+		Resource[][] resources = new Resource[Patch.PATCH_WIDTH][Patch.PATCH_HEIGHT];
+		for (int i = 0; i < Patch.PATCH_WIDTH; i++) {
+			for (int j = 0; j < Patch.PATCH_HEIGHT; j++) {
+				resources[i][j] = null;
+			}
+		}
+
+		Point centre = new Point(Patch.PATCH_WIDTH / 2, Patch.PATCH_HEIGHT / 2);
+		ArrayList<Point> resourceLocations = new ArrayList<Point>();
+		resourceLocations.add(new Point(centre.x + 2, centre.y + 2));
+		resourceLocations.add(new Point(centre.x + 2, centre.y - 2));
+		resourceLocations.add(new Point(centre.x - 2, centre.y + 2));
+		resourceLocations.add(new Point(centre.x - 2, centre.y - 2));
+
+		for (Resource r: Resource.values()) {
+			int choice = rng.nextInt(resourceLocations.size());
+			Point p = resourceLocations.get(choice);
+			resources[p.x][p.y] = r;
+			resourceLocations.remove(p);
 		}
 
 		return resources;
