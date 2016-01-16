@@ -95,37 +95,30 @@ playerIconMove
   orig: 96, 104
   offset: 0, 0
   index: -1
-playerIconOld
+resource0Icon
   rotate: false
   xy: 552, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-resource0Icon
+resource1Icon
   rotate: false
   xy: 618, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-resource1Icon
+resource2Icon
   rotate: false
   xy: 684, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-resource2Icon
-  rotate: false
-  xy: 750, 38
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
 resource3Icon
   rotate: false
-  xy: 816, 62
+  xy: 750, 38
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
