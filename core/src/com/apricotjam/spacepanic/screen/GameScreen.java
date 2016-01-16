@@ -174,7 +174,7 @@ public class GameScreen extends BasicScreen {
 			gameStats.difficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
 			
 			currDifficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
-			while (currDifficulty >= PuzzleDifficulty.gridSize.size)
+			while (currDifficulty >= PuzzleDifficulty.ndifficulties)
 				currDifficulty -= PuzzleDifficulty.gridSize.size;
 				
 			if (badPipes) {
@@ -551,7 +551,7 @@ public class GameScreen extends BasicScreen {
 		diff = Math.min(diff, 25);
 		*/
 		
-		return Math.min((int)currDifficulty, PuzzleDifficulty.gridSize.size-1);
+		return Math.min((int)currDifficulty, PuzzleDifficulty.ndifficulties-1);
 	}
 
 	private Entity createBackground() {

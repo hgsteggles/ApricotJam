@@ -1,5 +1,7 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
+import shaders.DiffuseShader;
+
 import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.art.Audio;
 import com.apricotjam.spacepanic.components.ClickComponent;
