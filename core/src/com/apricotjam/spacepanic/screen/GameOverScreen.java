@@ -31,7 +31,8 @@ public class GameOverScreen extends BasicScreen {
 		addMovementScroll(backgroundEntity);
 		add(backgroundEntity);
 		add(createGameOver(2.0f, 0.0f));
-		add(createScoreMessage(2.0f, 0.5f));
+		add(createScoreMessage1(2.0f, 0.5f));
+		add(createScoreMessage2(2.0f, 0.5f));
 
 		MenuButton button2 = new MenuButton(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 4f, "NEW GAME", new ClickInterface() {
 			@Override
@@ -127,12 +128,12 @@ public class GameOverScreen extends BasicScreen {
 		return entity;
 	}
 
-	private Entity createScoreMessage(float duration, float delay) {
+	private Entity createScoreMessage1(float duration, float delay) {
 		Entity entity = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
-		fontComp.string = "You survived for " + Math.round(gameStats.timeAlive) + " seconds";
+		fontComp.string = "You survived for";
 		fontComp.color.set(1f, 1f, 1f, 0f);
 		fontComp.centering = true;
 		entity.add(fontComp);
@@ -146,6 +147,40 @@ public class GameOverScreen extends BasicScreen {
 		entity.add(createTextFadeTween(duration, delay));
 
 		return entity;
+	}
+
+	private Entity createScoreMessage2(float duration, float delay) {
+		Entity entity = new Entity();
+
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
+		fontComp.string = generateScoreString(gameStats);
+		fontComp.color.set(1f, 1f, 1f, 0f);
+		fontComp.centering = true;
+		entity.add(fontComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f - 0.25f;
+		transComp.position.z = 1f;
+		entity.add(transComp);
+
+		entity.add(createTextFadeTween(duration, delay));
+
+		return entity;
+	}
+
+
+	private String generateScoreString(GameStats gameStats) {
+		String score;
+		if (gameStats.timeAlive < 60) {
+			score = Math.round(gameStats.timeAlive) + " seconds";
+		} else {
+			int mins = (int)Math.floor(gameStats.timeAlive / 60.0f);
+			int seconds = Math.round(gameStats.timeAlive % 60);
+			score = mins + " minutes " + seconds + " seconds";
+		}
+		return score;
 	}
 
 	private void addMovementScroll(Entity entity) {
