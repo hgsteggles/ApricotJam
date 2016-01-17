@@ -184,7 +184,7 @@ public class PipeSystem extends EntitySystem {
 		// Set screen state.
 		pipeScreenComp.currentState = PipeScreenComponent.State.PLAYING;
 	}
-
+	
 	public void solved(float npipesLeft) {
 		// Prevent user from rotating tiles.
 		for (Entity pipeTile : pipeTiles) {

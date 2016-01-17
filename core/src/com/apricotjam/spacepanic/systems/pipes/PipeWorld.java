@@ -369,10 +369,7 @@ public class PipeWorld {
 		Entity entity = new Entity();
 
 		PipeTileComponent pipeTileComp = ComponentMappers.pipetile.get(pipe);
-		entity.add(pipeTileComp);
-
 		TransformComponent pipeTransComp = ComponentMappers.transform.get(pipe);
-		entity.add(pipeTransComp);
 
 		PipeFluidComponent pipeFluidComp = new PipeFluidComponent();
 		pipeFluidComp.filling = true;
