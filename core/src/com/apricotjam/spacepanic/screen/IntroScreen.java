@@ -399,7 +399,7 @@ public class IntroScreen extends BasicScreen {
 			
 			@Override
 			public void endTween(Entity e) {
-				spacePanic.setScreen(new GameScreen(spacePanic));
+				spacePanic.setScreen(new TitleScreen(spacePanic));
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
