@@ -166,7 +166,7 @@ public class GameOverScreen extends BasicScreen {
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
-		fontComp.string = generateScoreString(gameStats.timeAlive);
+		fontComp.string = GameSettings.generateScoreString(gameStats.timeAlive);
 		fontComp.color.set(1f, 1f, 1f, 0f);
 		fontComp.centering = true;
 		entity.add(fontComp);
@@ -187,7 +187,7 @@ public class GameOverScreen extends BasicScreen {
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
-		fontComp.string = "High Score: " + generateScoreString(GameSettings.getHighScore());
+		fontComp.string = "High Score: " + GameSettings.generateScoreString(GameSettings.getHighScore());
 		fontComp.color.set(1.0f, 0.2f, 0.2f, 0f);
 		fontComp.centering = true;
 		entity.add(fontComp);
@@ -228,19 +228,6 @@ public class GameOverScreen extends BasicScreen {
 		}
 
 		return entity;
-	}
-
-
-	private String generateScoreString(float timeAlive) {
-		String score;
-		if (timeAlive < 60) {
-			score = Math.round(timeAlive) + " seconds";
-		} else {
-			int mins = (int)Math.floor(timeAlive / 60.0f);
-			int seconds = Math.round(timeAlive % 60);
-			score = mins + " minutes " + seconds + " seconds";
-		}
-		return score;
 	}
 
 	private void addMovementScroll(Entity entity) {
