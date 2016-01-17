@@ -28,4 +28,13 @@ public class GameSettings {
 		options.putFloat("highscore", score);
 		options.flush();
 	}
+	
+	public static boolean getIntroSkippable() {
+		return options.getBoolean("introskip", false);
+	}
+	
+	public static void setIntroSkippable(boolean skippable) {
+		options.putBoolean("introskip", skippable);
+		options.flush();
+	}
 }
