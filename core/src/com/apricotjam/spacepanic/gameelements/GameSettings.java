@@ -19,4 +19,13 @@ public class GameSettings {
 		options.putBoolean("sound", value);
 		options.flush();
 	}
+	
+	public static float getHighScore() {
+		return options.getFloat("highscore", 0);
+	}
+	
+	public static void setHighScore(float score) {
+		options.putFloat("highscore", score);
+		options.flush();
+	}
 }
