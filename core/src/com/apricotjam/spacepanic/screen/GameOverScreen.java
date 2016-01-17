@@ -188,13 +188,13 @@ public class GameOverScreen extends BasicScreen {
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
 		fontComp.string = "High Score: " + generateScoreString(GameSettings.getHighScore());
-		fontComp.color.set(1.0f, 0.2f, 0.2f, 0f);
+		fontComp.color.set(1.0f, 1.0f, 1.0f, 0f);
 		fontComp.centering = true;
 		entity.add(fontComp);
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f - 0.75f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f - 1.00f;
 		transComp.position.z = 1f;
 		entity.add(transComp);
 
