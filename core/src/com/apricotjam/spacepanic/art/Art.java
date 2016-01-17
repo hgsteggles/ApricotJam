@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 
 public class Art {
 
-	private static TextureAtlas atlas;
+	public static TextureAtlas atlas;
 
 	public static void load() {
 		Art.atlas = new TextureAtlas(Gdx.files.internal("atlas/art.atlas"));

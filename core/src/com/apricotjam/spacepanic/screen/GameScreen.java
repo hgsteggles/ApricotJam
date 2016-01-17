@@ -172,7 +172,8 @@ public class GameScreen extends BasicScreen {
 			gameStats.difficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
 
 			currDifficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
-			while (currDifficulty >= PuzzleDifficulty.gridSize.size) {
+
+			while (currDifficulty >= PuzzleDifficulty.ndifficulties) {
 				currDifficulty -= PuzzleDifficulty.gridSize.size;
 			}
 
@@ -501,7 +502,7 @@ public class GameScreen extends BasicScreen {
 		HelmetScreenComponent helmetScreenComponent = new HelmetScreenComponent();
 		for (Resource r : Resource.values()) {
 			helmetScreenComponent.maxCount.put(r, GameParameters.RESOURCE_MAX.get(r));
-			helmetScreenComponent.resourceCount.put(r, GameParameters.RESOURCE_MAX.get(r));
+			helmetScreenComponent.resourceCount.put(r, GameParameters.RESOURCE_START.get(r));
 		}
 		helmetScreenComponent.demisterSpread = 3.0f;
 		helmetSystemEntity.add(helmetScreenComponent);
@@ -549,8 +550,7 @@ public class GameScreen extends BasicScreen {
 				+ rng.nextInt(GameParameters.RESOURCE_SPREAD_PIPE_DIFFICULTY.get(resource));
 		diff = Math.min(diff, 25);
 		*/
-
-		return Math.min((int) currDifficulty, PuzzleDifficulty.gridSize.size - 1);
+		return Math.min((int)currDifficulty, PuzzleDifficulty.ndifficulties - 1);
 	}
 
 	private Entity createBackground() {
