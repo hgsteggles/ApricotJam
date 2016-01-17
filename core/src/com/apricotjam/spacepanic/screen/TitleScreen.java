@@ -22,7 +22,7 @@ public class TitleScreen extends BasicScreen {
 
 	public TitleScreen(SpacePanic spacePanic) {
 		this(spacePanic, EntityUtil.createTitleEntity(TITLE_Y), EntityUtil.createAstronaut());
-		EntityUtil.addParent(astronaut, ComponentMappers.transform.get(title));
+		EntityUtil.addAstronautToTitle(astronaut, ComponentMappers.transform.get(title));
 	}
 
 	public TitleScreen(SpacePanic spacePanic, Entity title, Entity astronaut) {

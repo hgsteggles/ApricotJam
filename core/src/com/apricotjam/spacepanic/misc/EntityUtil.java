@@ -11,10 +11,6 @@ import com.badlogic.gdx.math.Interpolation;
 public class EntityUtil {
 	private EntityUtil() {}
 
-	public static void addParent(Entity e, TransformComponent transform){
-		ComponentMappers.transform.get(e).parent = transform;
-	}
-
 	public static Entity clone(Entity entity) {
 		Entity clone = new Entity();
 		for (Component c: entity.getComponents()) {
@@ -54,9 +50,35 @@ public class EntityUtil {
 		TransformComponent offset = new TransformComponent();
 		offset.position.x = -3.0f;
 		offset.position.y = -1.0f;
-		astronaut.add(offset);
+
+		TransformComponent floating = new TransformComponent();
+		floating.position.x = 0.0f;
+		floating.position.y = 0.0f;
+		floating.parent = offset;
+		astronaut.add(floating);
+
+		TweenComponent tweenComponent = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 0.0f;
+		tweenSpec.end = 0.5f;
+		tweenSpec.period = 2.0f;
+		tweenSpec.interp = Interpolation.sine;
+		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
+		tweenSpec.reverse = true;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.transform.get(e).position.y = a;
+			}
+		};
+		tweenComponent.tweenSpecs.add(tweenSpec);
+		astronaut.add(tweenComponent);
 
 		return astronaut;
+	}
+
+	public static void addAstronautToTitle(Entity e, TransformComponent transform){
+		ComponentMappers.transform.get(e).parent.parent = transform;
 	}
 
 	public static void addTitleTween(Entity entity, float target, float time) {

@@ -25,7 +25,7 @@ public class MenuScreen extends BasicScreen {
 
 	public MenuScreen(SpacePanic spacePanic) {
 		this(spacePanic, EntityUtil.createTitleEntity(TITLE_Y), EntityUtil.createAstronaut());
-		EntityUtil.addParent(astronaut, ComponentMappers.transform.get(title));
+		EntityUtil.addAstronautToTitle(astronaut, ComponentMappers.transform.get(title));
 	}
 
 	public MenuScreen(SpacePanic spacePanic, Entity title, Entity astronaut) {
