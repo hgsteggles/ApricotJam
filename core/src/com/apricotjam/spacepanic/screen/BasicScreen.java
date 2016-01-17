@@ -94,10 +94,18 @@ public abstract class BasicScreen implements Screen {
 	public abstract void backPressed();
 
 	public Entity createText(float x, float y, String text) {
+		return createText(x, y, text, false);
+	}
+
+	public Entity createText(float x, float y, String text, boolean small) {
 		Entity entity = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "retro";
+		if (small) {
+			fontComp.font = "retroSmall";
+		} else {
+			fontComp.font = "retro";
+		}
 		fontComp.string = text;
 		fontComp.color = Color.WHITE;
 		fontComp.centering = true;

@@ -311,7 +311,6 @@ public class MapSystem extends EntitySystem {
 		resourceIcon.add(resourceComponent);
 
 		TextureComponent texc = new TextureComponent();
-		texc.region = MapArt.asteroids.get(rng.nextInt(MapArt.asteroids.size()));
 		switch (resource) {
 			case OXYGEN:
 				texc.region = MapArt.resourceIcons.get(0);

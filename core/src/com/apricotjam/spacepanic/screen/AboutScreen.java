@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class AboutScreen extends BasicScreen {
 
-	public static class Credit {
+	private static class Credit {
 		public String name = "";
 		public String credit = "";
 		public String linkText = "";
@@ -49,7 +49,6 @@ public class AboutScreen extends BasicScreen {
 	private static final String TEXTMADEBY = "Made by:";
 
 	private static final ArrayList<Credit> CREDITS = new ArrayList<Credit>();
-
 	static {
 		CREDITS.add(new Credit("Russ MacCharles (PCGS)", "Art", "FACEBOOK", "https://facebook.com/pcgamestudio"));
 		CREDITS.add(new Credit("Jacob Close", "Code", "GITHUB", "https://github.com/drumber-1"));

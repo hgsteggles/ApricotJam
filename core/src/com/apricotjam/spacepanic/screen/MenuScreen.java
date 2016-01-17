@@ -70,12 +70,19 @@ public class MenuScreen extends BasicScreen {
 			}
 		}, 1);
 
-		addMenuItem(BUTTONS_X, BUTTONS_Y - 2 * BUTTONS_SPACING, "ABOUT", new ClickInterface() {
+		addMenuItem(BUTTONS_X, BUTTONS_Y - 2 * BUTTONS_SPACING, "HELP", new ClickInterface() {
+			@Override
+			public void onClick(Entity entity) {
+				helpScreen();
+			}
+		}, 2);
+
+		addMenuItem(BUTTONS_X, BUTTONS_Y - 3 * BUTTONS_SPACING, "ABOUT", new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
 				aboutScreen();
 			}
-		}, 2);
+		}, 3);
 	}
 
 	private void startGame() {
@@ -85,6 +92,10 @@ public class MenuScreen extends BasicScreen {
 
 	private void aboutScreen() {
 		spacePanic.setScreen(new AboutScreen(spacePanic, title, astronaut, background));
+	}
+
+	private void helpScreen() {
+		spacePanic.setScreen(new HelpScreen(spacePanic, title, astronaut, background));
 	}
 
 	private void addMenuItem(float x, float y, String text, ClickInterface clickInterface, int n) {

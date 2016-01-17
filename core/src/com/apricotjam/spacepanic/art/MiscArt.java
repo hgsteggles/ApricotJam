@@ -38,9 +38,10 @@ public class MiscArt {
 		mainBackgroundScrollable.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		fonts.put("retro", new BitmapFont(Gdx.files.internal("fonts/retro3.fnt"), Gdx.files.internal("fonts/retro3.png"), false));
+		BitmapFont retroSmall = new BitmapFont(Gdx.files.internal("fonts/retro3.fnt"), Gdx.files.internal("fonts/retro3.png"), false);
+		retroSmall.getData().setScale(0.5f, 0.5f);
+		fonts.put("retroSmall", retroSmall);
 		fonts.put("led", new BitmapFont(Gdx.files.internal("fonts/led1.fnt"), Gdx.files.internal("fonts/led1.png"), false));
-
-		marioRegion = atlas.findRegion("mario");
 		
 		shipRegion = atlas.findRegion("ship");
 		podScreenRegion = atlas.findRegion("pod-screen");
