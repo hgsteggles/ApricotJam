@@ -132,6 +132,40 @@ resource3Icon
   index: -1
 
 art3.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+player
+  rotate: false
+  xy: 726, 384
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+playerMove
+  rotate: false
+  xy: 726, 278
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+pod-screen
+  rotate: false
+  xy: 824, 440
+  size: 120, 48
+  orig: 120, 48
+  offset: 0, 0
+  index: -1
+ship
+  rotate: false
+  xy: 2, 2
+  size: 722, 486
+  orig: 722, 486
+  offset: 0, 0
+  index: -1
+
+art4.png
 size: 2048,2048
 format: RGBA8888
 filter: Nearest,Nearest
@@ -186,7 +220,7 @@ sidepanel
   offset: 0, 0
   index: -1
 
-art4.png
+art5.png
 size: 2048,1024
 format: RGBA8888
 filter: Nearest,Nearest
@@ -199,7 +233,7 @@ helmetBase
   offset: 0, 0
   index: -1
 
-art5.png
+art6.png
 size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
@@ -947,7 +981,7 @@ white_pixel
   offset: 0, 0
   index: -1
 
-art6.png
+art7.png
 size: 512,1024
 format: RGBA8888
 filter: Nearest,Nearest
@@ -971,5 +1005,25 @@ pipe15-old
   xy: 264, 640
   size: 128, 128
   orig: 128, 128
+  offset: 0, 0
+  index: -1
+
+art8.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+burn
+  rotate: false
+  xy: 2, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+explosion
+  rotate: false
+  xy: 104, 2
+  size: 100, 100
+  orig: 100, 100
   offset: 0, 0
   index: -1
