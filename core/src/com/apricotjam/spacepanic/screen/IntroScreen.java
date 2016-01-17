@@ -38,7 +38,7 @@ public class IntroScreen extends BasicScreen {
 	
 	private final float TIME_UNTIL_SHIP = 1f;
 	private final float SHIP_DURATION = 6f;
-	private final float TRAIL_TIME = 3f;
+	private final float TRAIL_TIME = 3.1f;
 	private final float BACKGROUND_SPIN_DURATION = 4f;
 	
 	private final float WINDOW_OPEN_DURATION = 3f;
@@ -352,7 +352,6 @@ public class IntroScreen extends BasicScreen {
 					
 					@Override
 					public void endTween(Entity e) {
-						System.out.println("HERE");
 					}
 				};
 				twc.tweenSpecs.add(ts);
