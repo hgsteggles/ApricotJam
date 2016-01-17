@@ -7,6 +7,7 @@ import com.apricotjam.spacepanic.gameelements.GameStats;
 import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.apricotjam.spacepanic.systems.MovementSystem;
 import com.apricotjam.spacepanic.systems.ScrollSystem;
@@ -17,8 +18,9 @@ import com.badlogic.gdx.math.Interpolation;
 public class GameOverScreen extends BasicScreen {
 
 	private GameStats gameStats;
+	private Entity background;
 
-	public GameOverScreen(SpacePanic spacePanic, Entity backgroundEntity, GameStats gameStats) {
+	public GameOverScreen(SpacePanic spacePanic, GameStats gameStats, Entity background) {
 		super(spacePanic);
 
 		this.gameStats = gameStats;
@@ -28,8 +30,9 @@ public class GameOverScreen extends BasicScreen {
 		add(new MovementSystem());
 		add(new ScrollSystem());
 
-		addMovementScroll(backgroundEntity);
-		add(backgroundEntity);
+		this.background = EntityUtil.clone(background);
+		add(this.background);
+
 		add(createGameOver(2.0f, 0.0f));
 		add(createScoreMessage1(2.0f, 0.5f));
 		add(createScoreMessage2(2.0f, 0.5f));
@@ -100,11 +103,11 @@ public class GameOverScreen extends BasicScreen {
 	}
 
 	private void startMenu() {
-		spacePanic.setScreen(new MenuScreen(spacePanic));
+		spacePanic.setScreen(new MenuScreen(spacePanic, background));
 	}
 
 	private void newGame() {
-		spacePanic.setScreen(new GameScreen(spacePanic));
+		spacePanic.setScreen(new GameScreen(spacePanic, background));
 	}
 
 	private Entity createGameOver(float duration, float delay) {

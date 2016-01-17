@@ -20,15 +20,16 @@ public class MenuScreen extends BasicScreen {
 	private static final float BUTTONS_Y = WORLD_HEIGHT / 4.0f + 1.0f;
 	private static final float BUTTONS_SPACING = 0.7f;
 
-	Entity title;
-	Entity astronaut;
+	private Entity title;
+	private Entity astronaut;
+	private Entity background;
 
-	public MenuScreen(SpacePanic spacePanic) {
-		this(spacePanic, EntityUtil.createTitleEntity(TITLE_Y), EntityUtil.createAstronaut());
+	public MenuScreen(SpacePanic spacePanic, Entity background) {
+		this(spacePanic, EntityUtil.createTitleEntity(TITLE_Y), EntityUtil.createAstronaut(), background);
 		EntityUtil.addAstronautToTitle(astronaut, ComponentMappers.transform.get(title));
 	}
 
-	public MenuScreen(SpacePanic spacePanic, Entity title, Entity astronaut) {
+	public MenuScreen(SpacePanic spacePanic, Entity title, Entity astronaut, Entity background) {
 		super(spacePanic);
 		add(new ClickSystem());
 		add(new TweenSystem());
@@ -40,7 +41,8 @@ public class MenuScreen extends BasicScreen {
 		this.astronaut = EntityUtil.clone(astronaut);
 		add(this.astronaut);
 
-		add(createBackground());
+		this.background = EntityUtil.clone(background);
+		add(this.background);
 
 		addMenuItem(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
 			@Override
@@ -78,30 +80,11 @@ public class MenuScreen extends BasicScreen {
 
 	private void startGame() {
 		System.out.println("Starting game!");
-		spacePanic.setScreen(new IntroScreen(spacePanic));
+		spacePanic.setScreen(new IntroScreen(spacePanic, background));
 	}
 
 	private void aboutScreen() {
-		spacePanic.setScreen(new AboutScreen(spacePanic, title, astronaut));
-	}
-
-	private Entity createBackground() {
-		Entity e = new Entity();
-
-		TextureComponent texComp = new TextureComponent();
-		texComp.region = MiscArt.mainBackground;
-		texComp.size.x = BasicScreen.WORLD_WIDTH;
-		texComp.size.y = BasicScreen.WORLD_HEIGHT;
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = -1.0f;
-
-		e.add(texComp);
-		e.add(transComp);
-
-		return e;
+		spacePanic.setScreen(new AboutScreen(spacePanic, title, astronaut, background));
 	}
 
 	private void addMenuItem(float x, float y, String text, ClickInterface clickInterface, int n) {
@@ -111,6 +94,6 @@ public class MenuScreen extends BasicScreen {
 
 	@Override
 	public void backPressed() {
-		spacePanic.setScreen(new TitleScreen(spacePanic, title, astronaut));
+		spacePanic.setScreen(new TitleScreen(spacePanic, title, astronaut, background));
 	}
 }

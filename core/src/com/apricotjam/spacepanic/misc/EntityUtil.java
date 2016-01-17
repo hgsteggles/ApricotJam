@@ -4,8 +4,11 @@ import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.screen.BasicScreen;
+import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 
 public class EntityUtil {
@@ -75,6 +78,31 @@ public class EntityUtil {
 		astronaut.add(tweenComponent);
 
 		return astronaut;
+	}
+
+	public static Entity createBackground() {
+		Entity entity = new Entity();
+
+		TextureComponent texComp = new TextureComponent();
+		Texture tex = MiscArt.mainBackgroundScrollable;
+		float texToCorner = (float)Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
+		texComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
+		tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+		texComp.size.x = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
+		texComp.size.y = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
+		entity.add(texComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
+		transComp.position.z = -100.0f;
+		entity.add(transComp);
+
+		entity.add(new MovementComponent());
+		entity.add(new ScrollComponent());
+		entity.add(new TweenComponent());
+
+		return entity;
 	}
 
 	public static void addAstronautToTitle(Entity e, TransformComponent transform){
