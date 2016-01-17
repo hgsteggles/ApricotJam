@@ -5,6 +5,7 @@ import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
@@ -13,37 +14,36 @@ import com.badlogic.gdx.math.Interpolation;
 
 public class TitleScreen extends BasicScreen {
 
+	private static float TITLE_Y = BasicScreen.WORLD_HEIGHT / 2f;
+	private static float TITLE_TIME = 2.0f;
+
+	Entity title;
+	Entity astronaut;
+
 	public TitleScreen(SpacePanic spacePanic) {
+		this(spacePanic, EntityUtil.createTitleEntity(TITLE_Y), EntityUtil.createAstronaut());
+		EntityUtil.addParent(astronaut, ComponentMappers.transform.get(title));
+	}
+
+	public TitleScreen(SpacePanic spacePanic, Entity title, Entity astronaut) {
 		super(spacePanic);
 
 		add(new ClickSystem());
 		add(new TweenSystem());
 
-		add(createTitleEntity());
+		this.title = EntityUtil.clone(title);
+		EntityUtil.addTitleTween(this.title, TITLE_Y, TITLE_TIME);
+		add(this.title);
+
+		this.astronaut = EntityUtil.clone(astronaut);
+		add(this.astronaut);
+
 		add(createClickEntity());
 		add(createBackground());
 	}
 
 	@Override
 	public void backPressed() {
-	}
-
-	public Entity createTitleEntity() {
-		Entity titleEntity = new Entity();
-
-		TextureComponent textComp = new TextureComponent();
-		textComp.region = MiscArt.title;
-		textComp.size.x = 5.0f;
-		textComp.size.y = textComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
-
-		titleEntity.add(textComp);
-		titleEntity.add(transComp);
-
-		return titleEntity;
 	}
 
 	public Entity createClickEntity() {
@@ -63,9 +63,9 @@ public class TitleScreen extends BasicScreen {
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = 1.0f;
 		tweenSpec.end = 0.0f;
-		tweenSpec.period = 0.8f;
+		tweenSpec.period = 1.2f;
 		tweenSpec.interp = Interpolation.linear;
-		tweenSpec.cycle = TweenSpec.Cycle.LOOP;
+		tweenSpec.cycle = TweenSpec.Cycle.INFLOOP;
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
 			public void applyTween(Entity e, float a) {
@@ -83,7 +83,7 @@ public class TitleScreen extends BasicScreen {
 		clickComp.clicker = new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
-				spacePanic.setScreen(new MenuScreen(spacePanic, BasicScreen.WORLD_HEIGHT / 2.0f));
+				spacePanic.setScreen(new MenuScreen(spacePanic, title, astronaut));
 			}
 		};
 

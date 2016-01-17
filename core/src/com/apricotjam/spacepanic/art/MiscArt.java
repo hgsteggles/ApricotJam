@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class MiscArt {
 
 	public static AtlasRegion title;
+	public static AtlasRegion astronautTitle;
 	public static AtlasRegion mainBackground;
 	public static Texture mainBackgroundScrollable;
 
@@ -27,6 +28,7 @@ public class MiscArt {
 
 	public static void load(TextureAtlas atlas) {
 		title = atlas.findRegion("title");
+		astronautTitle = atlas.findRegion("astronautTitle");
 		mainBackground = atlas.findRegion("mainBackground");
 		mainBackgroundScrollable = Art.loadTexture("mainBackground.png");
 		mainBackgroundScrollable.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);

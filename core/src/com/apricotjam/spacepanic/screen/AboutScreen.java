@@ -6,6 +6,7 @@ import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
@@ -30,8 +31,8 @@ public class AboutScreen extends BasicScreen {
 		}
 	}
 
-	private static final float TITLETIME = 1.0f;
-	private static final float TITLEENDPOSITION = WORLD_HEIGHT * 5.0f / 6.0f;
+	private static final float TITLE_Y = WORLD_HEIGHT * 5.0f / 6.0f;
+	private static final float TITLE_TIME = 1.0f;
 
 	private static final float CREDITS_X = WORLD_WIDTH / 2.0f + 1.0f;
 	private static final float CREDITS_Y = WORLD_HEIGHT / 2.0f - 1.75f;
@@ -58,15 +59,21 @@ public class AboutScreen extends BasicScreen {
 	}
 
 	Entity title;
+	Entity astronaut;
 
-	public AboutScreen(SpacePanic spacePanic, float titleHeight) {
+	public AboutScreen(SpacePanic spacePanic, Entity title, Entity astronaut) {
 		super(spacePanic);
 
 		add(new ClickSystem());
 		add(new TweenSystem());
 
-		title = createTitleEntity(titleHeight);
-		add(title);
+		this.title = EntityUtil.clone(title);
+		EntityUtil.addTitleTween(this.title, TITLE_Y, TITLE_TIME);
+		add(this.title);
+
+		this.astronaut = EntityUtil.clone(astronaut);
+		add(this.astronaut);
+
 		add(createBackground());
 
 		add(createText(WORLD_WIDTH / 2.0f, WORLD_HEIGHT * 2.0f / 3.0f, TEXTMADEFOR, 0));
@@ -98,42 +105,7 @@ public class AboutScreen extends BasicScreen {
 
 	@Override
 	public void backPressed() {
-		spacePanic.setScreen(new MenuScreen(spacePanic, ComponentMappers.transform.get(title).position.y));
-	}
-
-	public Entity createTitleEntity(float startPosition) {
-		Entity titleEntity = new Entity();
-
-		TextureComponent textComp = new TextureComponent();
-		textComp.region = MiscArt.title;
-		textComp.size.x = 5.0f;
-		textComp.size.y = textComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		transComp.position.y = startPosition;
-
-		TweenComponent tweenComp = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = transComp.position.y;
-		tweenSpec.end = TITLEENDPOSITION;
-		tweenSpec.period = TITLETIME;
-		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
-		tweenSpec.interp = Interpolation.linear;
-		tweenSpec.tweenInterface = new TweenInterface() {
-			@Override
-			public void applyTween(Entity e, float a) {
-				TransformComponent tc = ComponentMappers.transform.get(e);
-				tc.position.y = a;
-			}
-		};
-		tweenComp.tweenSpecs.add(tweenSpec);
-
-		titleEntity.add(textComp);
-		titleEntity.add(transComp);
-		titleEntity.add(tweenComp);
-
-		return titleEntity;
+		spacePanic.setScreen(new MenuScreen(spacePanic, title, astronaut));
 	}
 
 	public void addCredit(final Credit credit, int n) {

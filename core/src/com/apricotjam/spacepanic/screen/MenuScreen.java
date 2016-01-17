@@ -6,35 +6,40 @@ import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
-import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.math.Interpolation;
 
 public class MenuScreen extends BasicScreen {
 
-	private static final float TITLETIME = 0.5f;
-	private static final float TITLEENDPOSITION = WORLD_HEIGHT * 3.0f / 4.0f;
+	private static final float TITLE_Y = WORLD_HEIGHT * 3.0f / 4.0f;
+	private static final float TITLE_TIME = 1.0f;
 
 	private static final float BUTTONS_X = WORLD_WIDTH / 2.0f;
 	private static final float BUTTONS_Y = WORLD_HEIGHT / 4.0f + 1.0f;
 	private static final float BUTTONS_SPACING = 0.7f;
 
 	Entity title;
+	Entity astronaut;
 
 	public MenuScreen(SpacePanic spacePanic) {
-		this(spacePanic, TITLEENDPOSITION);
+		this(spacePanic, EntityUtil.createTitleEntity(TITLE_Y), EntityUtil.createAstronaut());
+		EntityUtil.addParent(astronaut, ComponentMappers.transform.get(title));
 	}
 
-
-	public MenuScreen(SpacePanic spacePanic, float titleStartPosition) {
+	public MenuScreen(SpacePanic spacePanic, Entity title, Entity astronaut) {
 		super(spacePanic);
 		add(new ClickSystem());
 		add(new TweenSystem());
 
-		title = createTitleEntity(titleStartPosition);
-		add(title);
+		this.title = EntityUtil.clone(title);
+		add(this.title);
+		EntityUtil.addTitleTween(this.title, TITLE_Y, TITLE_TIME);
+
+		this.astronaut = EntityUtil.clone(astronaut);
+		add(this.astronaut);
+
 		add(createBackground());
 
 		addMenuItem(BUTTONS_X, BUTTONS_Y, "START", new ClickInterface() {
@@ -77,42 +82,7 @@ public class MenuScreen extends BasicScreen {
 	}
 
 	private void aboutScreen() {
-		spacePanic.setScreen(new AboutScreen(spacePanic, ComponentMappers.transform.get(title).position.y));
-	}
-
-	public Entity createTitleEntity(float startPosition) {
-		Entity titleEntity = new Entity();
-
-		TextureComponent textComp = new TextureComponent();
-		textComp.region = MiscArt.title;
-		textComp.size.x = 5.0f;
-		textComp.size.y = textComp.size.x * textComp.region.getRegionHeight() / textComp.region.getRegionWidth();
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
-		transComp.position.y = startPosition;
-
-		TweenComponent tweenComp = new TweenComponent();
-		TweenSpec tweenSpec = new TweenSpec();
-		tweenSpec.start = transComp.position.y;
-		tweenSpec.end = TITLEENDPOSITION;
-		tweenSpec.period = TITLETIME;
-		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
-		tweenSpec.interp = Interpolation.linear;
-		tweenSpec.tweenInterface = new TweenInterface() {
-			@Override
-			public void applyTween(Entity e, float a) {
-				TransformComponent tc = ComponentMappers.transform.get(e);
-				tc.position.y = a;
-			}
-		};
-		tweenComp.tweenSpecs.add(tweenSpec);
-
-		titleEntity.add(textComp);
-		titleEntity.add(transComp);
-		titleEntity.add(tweenComp);
-
-		return titleEntity;
+		spacePanic.setScreen(new AboutScreen(spacePanic, title, astronaut));
 	}
 
 	private Entity createBackground() {
@@ -141,6 +111,6 @@ public class MenuScreen extends BasicScreen {
 
 	@Override
 	public void backPressed() {
-		spacePanic.setScreen(new TitleScreen(spacePanic));
+		spacePanic.setScreen(new TitleScreen(spacePanic, title, astronaut));
 	}
 }
