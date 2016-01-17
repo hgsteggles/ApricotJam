@@ -22,9 +22,13 @@ public class MiscArt {
 	public static TextureRegion marioRegion;
 
 	public static NinePatchDrawable buttonBorder;
-
-	private static Skin skin = new Skin();
-	;
+	
+	public static TextureRegion shipRegion;
+	public static TextureRegion podScreenRegion;	
+	public static TextureRegion playerRegion;
+	public static TextureRegion playerMoveRegion;
+	
+	private static Skin skin = new Skin();;
 
 	public static void load(TextureAtlas atlas) {
 		title = atlas.findRegion("title");
@@ -37,7 +41,15 @@ public class MiscArt {
 		fonts.put("led", new BitmapFont(Gdx.files.internal("fonts/led1.fnt"), Gdx.files.internal("fonts/led1.png"), false));
 
 		marioRegion = atlas.findRegion("mario");
-
+		
+		shipRegion = atlas.findRegion("ship");
+		podScreenRegion = atlas.findRegion("pod-screen");
+		
+		playerRegion = atlas.findRegion("player");
+		playerRegion.flip(true, false);
+		playerMoveRegion = atlas.findRegion("playerMove");
+		playerMoveRegion.flip(true, false);
+		
 		skin.addRegions(atlas);
 		buttonBorder = (NinePatchDrawable) skin.getDrawable("button-border");
 	}

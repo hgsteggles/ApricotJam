@@ -12,12 +12,14 @@ public class PuzzleDifficulty {
 	static public Array<Integer> gridSize;
 	static public Array<Integer> turnOffs;
 	static public Array<Integer> npipes;
+	static public int ndifficulties;
 
 	static public void load() {
 		gridSize = new Array<Integer>();
 		turnOffs = new Array<Integer>();
 		npipes = new Array<Integer>();
-
+		ndifficulties = 0;
+		
 		FileHandle file = Gdx.files.internal("config/puzzle-difficulty.txt");
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(file.read()));
@@ -35,6 +37,7 @@ public class PuzzleDifficulty {
 					gridSize.add(gs);
 					turnOffs.add(to);
 					npipes.add(np);
+					ndifficulties += 1;
 				}
 			}
 			br.close();
