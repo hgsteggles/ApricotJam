@@ -51,11 +51,11 @@ public class AboutScreen extends BasicScreen {
 	private static final ArrayList<Credit> CREDITS = new ArrayList<Credit>();
 
 	static {
-		CREDITS.add(new Credit("Russ MacCharles (PCGS)", "Art", "FACEBOOK", "https://facebook.com/pcgamestudio"));
 		CREDITS.add(new Credit("Harry Steggles", "Code", "GITHUB", "https://github.com/ridoncules"));
-		CREDITS.add(new Credit("Rory Hebblethwaite", "Music", "", ""));
-		CREDITS.add(new Credit("Jordan Swales", "Music", "", ""));
 		CREDITS.add(new Credit("Jacob Close", "Code", "GITHUB", "https://github.com/drumber-1"));
+		CREDITS.add(new Credit("Russ MacCharles (PCGS)", "Art", "FACEBOOK", "https://facebook.com/pcgamestudio"));
+		CREDITS.add(new Credit("Rory Hebblethwaite", "Music", "SOUNDCLOUD", ""));
+		CREDITS.add(new Credit("Jordan Swales", "Music", "", ""));
 	}
 
 	Entity title;
@@ -113,13 +113,15 @@ public class AboutScreen extends BasicScreen {
 		float offset = (fullText.length() - (credit.name.length() * 2.0f)) / 5.0f;
 		Entity text = createText(CREDITS_X + offset, CREDITS_Y - (n * CREDITS_SPACING), fullText);
 		add(text);
-		MenuButton link = new MenuButton(LINK_X, CREDITS_Y - (n * CREDITS_SPACING), credit.linkText, new ClickInterface() {
-			@Override
-			public void onClick(Entity entity) {
-				Gdx.net.openURI(credit.linkUrl);
-			}
-		});
-		link.addToEngine(engine);
+		if (credit.linkUrl != "") {
+			MenuButton link = new MenuButton(LINK_X, CREDITS_Y - (n * CREDITS_SPACING), credit.linkText, new ClickInterface() {
+				@Override
+				public void onClick(Entity entity) {
+					Gdx.net.openURI(credit.linkUrl);
+				}
+			});
+			link.addToEngine(engine);
+		}
 	}
 
 	private Entity createText(float x, float y, String text, int n) {
