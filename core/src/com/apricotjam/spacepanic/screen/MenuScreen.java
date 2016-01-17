@@ -86,8 +86,9 @@ public class MenuScreen extends BasicScreen {
 			}
 		}, 3);
 		
-		if (GameSettings.getHighScore() > 0)
+		if (GameSettings.getHighScore() > 0) {
 			addHighScore();
+		}
 	}
 
 	private void startGame() {
@@ -112,7 +113,7 @@ public class MenuScreen extends BasicScreen {
 		Entity entity = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "retro";
+		fontComp.font = "retroSmall";
 		fontComp.string = "High Score: " + GameSettings.generateScoreString(GameSettings.getHighScore());
 		fontComp.color.set(0.2f, 1.0f, 0.2f, 1f);
 		fontComp.centering = false;
@@ -125,8 +126,6 @@ public class MenuScreen extends BasicScreen {
 		transComp.position.y = 0.99f*BasicScreen.WORLD_HEIGHT - layout.height*RenderingSystem.PIXELS_TO_WORLD;
 		transComp.position.z = 1f;
 		entity.add(transComp);
-		
-		System.out.println("HERE");
 		
 		add(entity);
 	}
