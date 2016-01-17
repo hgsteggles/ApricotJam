@@ -2,11 +2,13 @@ package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.art.Audio;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.map.MapScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
+import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.gameelements.GameStats;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
@@ -213,6 +215,7 @@ public class GameScreen extends BasicScreen {
 				if (!dying && next == 0.0f) {
 					dying = true;
 					addMessage("Oxygen depleted, you will die in...", Color.RED, 4.0f, true, false);
+					addAlarmSound();
 				} else if (dying && next > 0.0f) {
 					dying = false;
 					dyingTime = GameParameters.DEATH_TIME;
@@ -593,6 +596,18 @@ public class GameScreen extends BasicScreen {
 		add(helmetSystemEntity);
 		helmetSystem = new HelmetSystem(helmetSystemEntity);
 		add(helmetSystem);
+	}
+
+	private void addAlarmSound() {
+		Entity entity = new Entity();
+
+		SoundComponent soundComp = new SoundComponent();
+		soundComp.sound = Audio.sounds.get("alarm");
+		soundComp.volume = 0.5f;
+		soundComp.duration = 1.0f;
+		entity.add(soundComp);
+
+		engine.addEntity(entity);
 	}
 
 	private void addPipeSystem(Resource resource) {
