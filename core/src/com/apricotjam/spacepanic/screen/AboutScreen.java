@@ -51,10 +51,10 @@ public class AboutScreen extends BasicScreen {
 
 	static {
 		CREDITS.add(new Credit("Russ MacCharles (PCGS)", "Art", "FACEBOOK", "https://facebook.com/pcgamestudio"));
+		CREDITS.add(new Credit("Jacob Close", "Code", "GITHUB", "https://github.com/drumber-1"));
 		CREDITS.add(new Credit("Harry Steggles", "Code", "GITHUB", "https://github.com/ridoncules"));
 		CREDITS.add(new Credit("Rory Hebblethwaite", "Music", "", ""));
 		CREDITS.add(new Credit("Jordan Swales", "Music", "", ""));
-		CREDITS.add(new Credit("Jacob Close", "Code", "GITHUB", "https://github.com/drumber-1"));
 	}
 
 	Entity title;

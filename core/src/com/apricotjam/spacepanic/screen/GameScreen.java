@@ -27,7 +27,7 @@ import java.util.Random;
 public class GameScreen extends BasicScreen {
 
 	public enum GameState {
-		MAZING, PIPING, TRANSITIONING, GAMEOVER
+		INTRO, MAZING, PIPING, TRANSITIONING, GAMEOVER
 	}
 
 	public static float BACKGROUND_MOVEMENT_FACTOR = 0.1f;
@@ -38,6 +38,8 @@ public class GameScreen extends BasicScreen {
 	public static float PIPE_Y = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
 	public static float PIPE_SCALE_SMALL = 0.1f;
 	public static float PIPE_SCALE_LARGE = 1.0f;
+	private final float HELMET_TWEEN_DURATION = 3f;
+	private final float HELMET_MAX_SCALE = 2f;
 
 	private GameState currentState;
 
@@ -84,7 +86,12 @@ public class GameScreen extends BasicScreen {
 		setBackgroundPosition();
 		add(backgroundEntity);
 
-		currentState = GameState.MAZING;
+		alterResource(Resource.DEMISTER, 0);
+		alterResource(Resource.OXYGEN, 0);
+		alterResource(Resource.PIPE_CLEANER, 0);
+		alterResource(Resource.PLUTONIUM, 0);
+		
+		currentState = GameState.INTRO;
 	}
 
 	@Override
@@ -100,7 +107,7 @@ public class GameScreen extends BasicScreen {
 				break;
 		}
 
-		if (currentState != GameState.GAMEOVER) {
+		if (currentState != GameState.GAMEOVER && currentState != GameState.INTRO) {
 			for (Resource r : Resource.values()) {
 				alterResource(r, GameParameters.RESOURCE_DEPLETION.get(r) * delta);
 			}
@@ -256,14 +263,12 @@ public class GameScreen extends BasicScreen {
 			float currMapY = ComponentMappers.transform.get(mapSystemEntity).position.y;
 			mapTweenComp.tweenSpecs.add(mapGoneTween(duration));
 
-			float helmetTweenDuration = 3f;
 			HelmetScreenComponent helmetScreenComp = ComponentMappers.helmetscreen.get(helmetSystemEntity);
-			TweenComponent helmetTweenComp = new TweenComponent();
-			helmetTweenComp.tweenSpecs.add(helmetGoneTween(helmetDelay, helmetTweenDuration));
-			helmetTweenComp.tweenSpecs.add(fogGoneTween(helmetScreenComp.demisterSpread, duration));
-			helmetSystemEntity.add(helmetTweenComp);
+			TweenComponent helmetTweenComp = ComponentMappers.tween.get(helmetSystemEntity);
+			helmetTweenComp.tweenSpecs.add(helmetTween(helmetDelay, false));
+			helmetTweenComp.tweenSpecs.add(fogTween(helmetScreenComp.demisterSpread, duration, false));
 
-			add(createEndEntity(helmetDelay + helmetTweenDuration));
+			add(createEndEntity(helmetDelay + HELMET_TWEEN_DURATION));
 
 			currentState = GameState.GAMEOVER;
 		}
@@ -402,18 +407,24 @@ public class GameScreen extends BasicScreen {
 		return ts;
 	}
 
-	private TweenSpec helmetGoneTween(float delay, float helmetGoneDuration) {
+	private TweenSpec helmetTween(float delay, final boolean isIntro) {
 		final float origStart = 1f;
 		float origEnd = 2f;
-		float speed = (origEnd - origStart) / helmetGoneDuration;
+		float speed = (origEnd - origStart) / HELMET_TWEEN_DURATION;
 		float start = origStart - speed * delay;
 
 		TweenSpec ts = new TweenSpec();
-		ts.start = start;
-		ts.end = origEnd;
+		if (isIntro) {
+			ts.end = start;
+			ts.start = origEnd;
+		}
+		else {
+			ts.start = start;
+			ts.end = origEnd;
+		}
 		ts.cycle = TweenSpec.Cycle.ONCE;
 		ts.interp = Interpolation.linear;
-		ts.period = helmetGoneDuration + delay;
+		ts.period = HELMET_TWEEN_DURATION + delay;
 		ts.tweenInterface = new TweenInterface() {
 			@Override
 			public void applyTween(Entity e, float a) {
@@ -421,15 +432,27 @@ public class GameScreen extends BasicScreen {
 				tc.scale.x = Math.max(a, origStart);
 				tc.scale.y = Math.max(a, origStart);
 			}
+			
+			@Override
+			public void endTween(Entity e) {
+				if (isIntro) {
+					currentState = GameState.MAZING;
+				}
+			}
 		};
 
 		return ts;
 	}
 
-	private TweenSpec fogGoneTween(float currDemisterSpread, float duration) {
+	private TweenSpec fogTween(float currDemisterSpread, float duration, boolean isIntro) {
 		TweenSpec ts = new TweenSpec();
-		ts.start = currDemisterSpread;
-		ts.end = 10 * GameParameters.FOG_MAX;
+		if (isIntro) {
+			ts.end = currDemisterSpread;
+			ts.start = 10 * GameParameters.FOG_MAX;
+		} else {
+			ts.start = currDemisterSpread;
+			ts.end = 10 * GameParameters.FOG_MAX;
+		}
 		ts.period = duration;
 		ts.tweenInterface = new TweenInterface() {
 			@Override
@@ -486,14 +509,42 @@ public class GameScreen extends BasicScreen {
 
 		TransformComponent tranc = new TransformComponent();
 		tranc.position.x = MAP_X;
-		tranc.position.y = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
+		tranc.position.y = 2f * MAP_Y_OFF;
 		tranc.position.z = 10.0f;
 		mapSystemEntity.add(tranc);
 
-		mapSystemEntity.add(new TweenComponent());
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.period = HELMET_TWEEN_DURATION;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+			}
+			
+			@Override
+			public void endTween(Entity e) {
+				TweenSpec ts = new TweenSpec();
+				ts.start = 2f * MAP_Y_OFF;
+				ts.end = MAP_Y_ON;
+				ts.cycle = TweenSpec.Cycle.ONCE;
+				ts.interp = Interpolation.linear;
+				ts.period = 2f;
+				ts.tweenInterface = new TweenInterface() {
+					@Override
+					public void applyTween(Entity e, float a) {
+						ComponentMappers.transform.get(e).position.y = a;
+					}
+				};
+				ComponentMappers.tween.get(e).tweenSpecs.add(ts);
+			}
+		};
+
+		tweenComp.tweenSpecs.add(tweenSpec);
+		mapSystemEntity.add(tweenComp);
+
 
 		add(mapSystemEntity);
-		add(new MapSystem(mapSystemEntity, 8.25f, 4.75f));
+		add(new MapSystem(mapSystemEntity, 8.25f, 4.75f, 0));
 	}
 
 	private void addHelmetSystem() {
@@ -504,16 +555,21 @@ public class GameScreen extends BasicScreen {
 			helmetScreenComponent.maxCount.put(r, GameParameters.RESOURCE_MAX.get(r));
 			helmetScreenComponent.resourceCount.put(r, GameParameters.RESOURCE_START.get(r));
 		}
-		helmetScreenComponent.demisterSpread = 3.0f;
+		helmetScreenComponent.demisterSpread = GameParameters.FOG_MAX;
 		helmetSystemEntity.add(helmetScreenComponent);
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
 		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f;
 		transComp.position.z = 20.0f;
-		transComp.scale.x = 1f;
-		transComp.scale.y = 1f;
+		transComp.scale.x = HELMET_MAX_SCALE;
+		transComp.scale.y = HELMET_MAX_SCALE;
 		helmetSystemEntity.add(transComp);
+
+		TweenComponent helmetTweenComp = new TweenComponent();
+		helmetTweenComp.tweenSpecs.add(helmetTween(0, true));
+		helmetTweenComp.tweenSpecs.add(fogTween(helmetScreenComponent.demisterSpread, 6f, true));
+		helmetSystemEntity.add(helmetTweenComp);
 
 		add(helmetSystemEntity);
 		helmetSystem = new HelmetSystem(helmetSystemEntity);

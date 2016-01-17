@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
 
 public class PipePuzzleGenerator {
-	private RandomXS128 rng = new RandomXS128(0);
+	private static RandomXS128 rng = new RandomXS128(0);
 	private byte[][] maskGrid;
 	private byte[] randomMasks = createRandomMasks();
 
