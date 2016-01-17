@@ -31,9 +31,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 public class IntroScreen extends BasicScreen {
 	private RandomXS128 rng = new RandomXS128(0);
@@ -367,7 +364,7 @@ public class IntroScreen extends BasicScreen {
 				ts.tweenInterface = new TweenInterface() {
 					@Override
 					public void applyTween(Entity e, float a) {
-						ComponentMappers.movment.get(e).rotationalVelocity = 48.0f*a;
+						ComponentMappers.movement.get(e).rotationalVelocity = 48.0f*a;
 						ComponentMappers.scroll.get(e).speed.x = 8.0f*a;
 					}
 					

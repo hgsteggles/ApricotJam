@@ -202,7 +202,7 @@ public class GameOverScreen extends BasicScreen {
 		tweenSpec.tweenInterface = new TweenInterface() {
 			@Override
 			public void applyTween(Entity e, float a) {
-				ComponentMappers.movment.get(e).rotationalVelocity = 3.0f * a;
+				ComponentMappers.movement.get(e).rotationalVelocity = 3.0f * a;
 				ComponentMappers.scroll.get(e).speed.x = 0.5f * a;
 			}
 		};
