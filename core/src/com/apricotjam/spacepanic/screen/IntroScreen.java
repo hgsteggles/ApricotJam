@@ -14,6 +14,7 @@ import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.TweenSpec.Cycle;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.AnimatedShaderSystem;
 import com.apricotjam.spacepanic.systems.AnimationSystem;
 import com.apricotjam.spacepanic.systems.ClickSystem;
@@ -31,9 +32,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 public class IntroScreen extends BasicScreen {
 	private RandomXS128 rng = new RandomXS128(0);
@@ -54,14 +52,18 @@ public class IntroScreen extends BasicScreen {
 	private boolean explosion3 = false;
 	
 	private boolean shipHit = false;
+
+	private Entity background;
 	
-	public IntroScreen(SpacePanic spacePanic) {
+	public IntroScreen(SpacePanic spacePanic, Entity background) {
 		super(spacePanic);
 		
 		for (int ir = 0; ir < 10; ++ir)
 			rng.setSeed(rng.nextLong());
-		
-		add(createBackground());
+
+		this.background = EntityUtil.clone(background);
+		addBackgroundTween(this.background);
+		add(this.background);
 		
 		Entity asteroid = createAsteroid();
 		asteroidTransComp = ComponentMappers.transform.get(asteroid);
@@ -323,31 +325,8 @@ public class IntroScreen extends BasicScreen {
 		return entity;
 	}
 	
-	private Entity createBackground() {
-		Entity entity = new Entity();
-
-		TextureComponent texComp = new TextureComponent();
-		Texture tex = MiscArt.mainBackgroundScrollable;
-		float texToCorner = (float)Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
-		texComp.region = new TextureRegion(tex, 0, 0, (int)texToCorner, (int)texToCorner);
-		tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-		texComp.size.x = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
-		texComp.size.y = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
-		entity.add(texComp);
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = -100.0f;
-		entity.add(transComp);
-
-		MovementComponent movementComp = new MovementComponent();
-		entity.add(movementComp);
-
-		ScrollComponent scrollComp = new ScrollComponent();
-		entity.add(scrollComp);
-		
-		TweenComponent tweenComp = new TweenComponent();
+	private void addBackgroundTween(Entity background) {
+		TweenComponent tweenComp = ComponentMappers.tween.get(background);
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.period = TIME_UNTIL_SHIP + SHIP_DURATION + TRAIL_TIME;
 		tweenSpec.tweenInterface = new TweenInterface() {
@@ -367,7 +346,7 @@ public class IntroScreen extends BasicScreen {
 				ts.tweenInterface = new TweenInterface() {
 					@Override
 					public void applyTween(Entity e, float a) {
-						ComponentMappers.movment.get(e).rotationalVelocity = 48.0f*a;
+						ComponentMappers.movement.get(e).rotationalVelocity = 48.0f*a;
 						ComponentMappers.scroll.get(e).speed.x = 8.0f*a;
 					}
 					
@@ -381,9 +360,6 @@ public class IntroScreen extends BasicScreen {
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
-		entity.add(tweenComp);
-
-		return entity;
 	}
 	
 	private Entity createEndEntity() {
@@ -399,7 +375,7 @@ public class IntroScreen extends BasicScreen {
 			
 			@Override
 			public void endTween(Entity e) {
-				spacePanic.setScreen(new GameScreen(spacePanic));
+				spacePanic.setScreen(new GameScreen(spacePanic, background));
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);

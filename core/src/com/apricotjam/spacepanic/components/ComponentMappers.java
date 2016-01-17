@@ -23,7 +23,7 @@ public class ComponentMappers {
 	public static ComponentMapper<PipeTileComponent> pipetile = ComponentMapper.getFor(PipeTileComponent.class);
 	public static ComponentMapper<PipeFluidComponent> pipefluid = ComponentMapper.getFor(PipeFluidComponent.class);
 	public static ComponentMapper<TickerComponent> ticker = ComponentMapper.getFor(TickerComponent.class);
-	public static ComponentMapper<MovementComponent> movment = ComponentMapper.getFor(MovementComponent.class);
+	public static ComponentMapper<MovementComponent> movement = ComponentMapper.getFor(MovementComponent.class);
 	public static ComponentMapper<ScrollComponent> scroll = ComponentMapper.getFor(ScrollComponent.class);
 	public static ComponentMapper<HelmetPartComponent> helmetPart = ComponentMapper.getFor(HelmetPartComponent.class);
 	public static ComponentMapper<ShaderComponent> shader = ComponentMapper.getFor(ShaderComponent.class);

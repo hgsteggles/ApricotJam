@@ -10,6 +10,7 @@ import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.gameelements.GameStats;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.*;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
+import java.awt.*;
 import java.util.Random;
 
 public class GameScreen extends BasicScreen {
@@ -47,7 +49,8 @@ public class GameScreen extends BasicScreen {
 	private Entity helmetSystemEntity;
 	private Entity pipeSystemEntity;
 	private Entity backgroundEntity;
-	private TextureComponent backgroundTexComp;
+
+	private Point backgroundHome;
 
 	private HelmetSystem helmetSystem;
 
@@ -65,7 +68,7 @@ public class GameScreen extends BasicScreen {
 
 	private GameStats gameStats = new GameStats();
 
-	public GameScreen(SpacePanic spacePanic) {
+	public GameScreen(SpacePanic spacePanic, Entity background) {
 		super(spacePanic);
 
 		add(new ClickSystem());
@@ -82,9 +85,11 @@ public class GameScreen extends BasicScreen {
 		addHelmetSystem();
 		addMapSystem();
 
-		backgroundEntity = createBackground();
+		this.backgroundEntity = EntityUtil.clone(background);
+		add(this.backgroundEntity);
+		TextureRegion region = ComponentMappers.texture.get(this.backgroundEntity).region;
+		backgroundHome = new Point(region.getRegionX(), region.getRegionY());
 		setBackgroundPosition();
-		add(backgroundEntity);
 
 		alterResource(Resource.DEMISTER, 0);
 		alterResource(Resource.OXYGEN, 0);
@@ -475,9 +480,9 @@ public class GameScreen extends BasicScreen {
 		ts.tweenInterface = new TweenInterface() {
 			@Override
 			public void endTween(Entity e) {
-				Entity nextBackgroundEntity = createBackground();
-				ComponentMappers.texture.get(nextBackgroundEntity).region = ComponentMappers.texture.get(backgroundEntity).region;
-				spacePanic.setScreen(new GameOverScreen(spacePanic, nextBackgroundEntity, gameStats));
+				//Entity nextBackgroundEntity = createBackground();
+				//ComponentMappers.texture.get(nextBackgroundEntity).region = ComponentMappers.texture.get(backgroundEntity).region;
+				spacePanic.setScreen(new GameOverScreen(spacePanic, gameStats, backgroundEntity));
 			}
 
 			@Override
@@ -492,10 +497,22 @@ public class GameScreen extends BasicScreen {
 
 	private void setBackgroundPosition() {
 		MapScreenComponent msc = ComponentMappers.mapscreen.get(mapSystemEntity);
+		TextureComponent backgroundTexComp = ComponentMappers.texture.get(backgroundEntity);
+		TransformComponent tc = ComponentMappers.transform.get(backgroundEntity);
 		float width = backgroundTexComp.region.getRegionWidth();
 		float height = backgroundTexComp.region.getRegionHeight();
-		float x = msc.playerPosition.x * BACKGROUND_MOVEMENT_FACTOR * width / backgroundTexComp.size.x;
-		float y = msc.playerPosition.y * BACKGROUND_MOVEMENT_FACTOR * height / backgroundTexComp.size.y;
+
+		float dx = msc.playerPosition.x * BACKGROUND_MOVEMENT_FACTOR * width / backgroundTexComp.size.x;
+		float dy = msc.playerPosition.y * BACKGROUND_MOVEMENT_FACTOR * height / backgroundTexComp.size.y;
+		if (tc.rotation != 0) {
+			float dx_rot = dx * MathUtils.cosDeg(tc.rotation) + dy * MathUtils.sinDeg(tc.rotation);
+			float dy_rot = dy * MathUtils.cosDeg(tc.rotation) - dx * MathUtils.sinDeg(tc.rotation);
+			dx = dx_rot;
+			dy = dy_rot;
+		}
+
+		float x = backgroundHome.x + dx;
+		float y = backgroundHome.y + dy;
 		backgroundTexComp.region.setRegionX((int) (x));
 		backgroundTexComp.region.setRegionWidth((int) width);
 		backgroundTexComp.region.setRegionY(-1 * (int) (y));
@@ -611,30 +628,8 @@ public class GameScreen extends BasicScreen {
 		return Math.min((int)currDifficulty, PuzzleDifficulty.ndifficulties - 1);
 	}
 
-	private Entity createBackground() {
-		Entity e = new Entity();
-
-		backgroundTexComp = new TextureComponent();
-		Texture tex = MiscArt.mainBackgroundScrollable;
-		float texToCorner = (float) Math.sqrt((tex.getWidth() * tex.getWidth()) + (tex.getHeight() * tex.getHeight()));
-		backgroundTexComp.region = new TextureRegion(tex, 0, 0, (int) texToCorner, (int) texToCorner);
-
-		backgroundTexComp.size.x = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
-		backgroundTexComp.size.y = texToCorner * RenderingSystem.PIXELS_TO_WORLD;
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = -1000.0f;
-
-		e.add(backgroundTexComp);
-		e.add(transComp);
-
-		return e;
-	}
-
 	@Override
 	public void backPressed() {
-		spacePanic.setScreen(new MenuScreen(spacePanic));
+		spacePanic.setScreen(new MenuScreen(spacePanic, backgroundEntity));
 	}
 }

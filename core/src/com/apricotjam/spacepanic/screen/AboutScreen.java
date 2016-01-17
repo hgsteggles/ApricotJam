@@ -58,10 +58,11 @@ public class AboutScreen extends BasicScreen {
 		CREDITS.add(new Credit("Jordan Swales", "Music", "", ""));
 	}
 
-	Entity title;
-	Entity astronaut;
+	private Entity title;
+	private Entity astronaut;
+	private Entity background;
 
-	public AboutScreen(SpacePanic spacePanic, Entity title, Entity astronaut) {
+	public AboutScreen(SpacePanic spacePanic, Entity title, Entity astronaut, Entity background) {
 		super(spacePanic);
 
 		add(new ClickSystem());
@@ -74,7 +75,8 @@ public class AboutScreen extends BasicScreen {
 		this.astronaut = EntityUtil.clone(astronaut);
 		add(this.astronaut);
 
-		add(createBackground());
+		this.background = EntityUtil.clone(background);
+		add(this.background);
 
 		add(createText(WORLD_WIDTH / 2.0f, WORLD_HEIGHT * 2.0f / 3.0f, TEXTMADEFOR, 0));
 		add(createText(WORLD_WIDTH / 2.0f, WORLD_HEIGHT * 2.0f / 3.0f - 0.5f, TEXTTHEME, 1));
@@ -105,7 +107,7 @@ public class AboutScreen extends BasicScreen {
 
 	@Override
 	public void backPressed() {
-		spacePanic.setScreen(new MenuScreen(spacePanic, title, astronaut));
+		spacePanic.setScreen(new MenuScreen(spacePanic, title, astronaut, background));
 	}
 
 	public void addCredit(final Credit credit, int n) {
@@ -128,24 +130,5 @@ public class AboutScreen extends BasicScreen {
 		Entity entity = createText(x, y, text);
 
 		return entity;
-	}
-
-	private Entity createBackground() {
-		Entity e = new Entity();
-
-		TextureComponent texComp = new TextureComponent();
-		texComp.region = MiscArt.mainBackground;
-		texComp.size.x = BasicScreen.WORLD_WIDTH;
-		texComp.size.y = BasicScreen.WORLD_HEIGHT;
-
-		TransformComponent transComp = new TransformComponent();
-		transComp.position.x = BasicScreen.WORLD_WIDTH / 2.0f;
-		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2.0f;
-		transComp.position.z = -1.0f;
-
-		e.add(texComp);
-		e.add(transComp);
-
-		return e;
 	}
 }
