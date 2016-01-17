@@ -78,7 +78,7 @@ public class MenuScreen extends BasicScreen {
 
 	private void startGame() {
 		System.out.println("Starting game!");
-		spacePanic.setScreen(new GameScreen(spacePanic));
+		spacePanic.setScreen(new IntroScreen(spacePanic));
 	}
 
 	private void aboutScreen() {
