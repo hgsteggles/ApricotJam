@@ -185,8 +185,6 @@ public class PipeSystem extends EntitySystem {
 		pipeScreenComp.currentState = PipeScreenComponent.State.PLAYING;
 	}
 	
-	private static int count = 0;
-
 	public void solved(float npipesLeft) {
 		// Prevent user from rotating tiles.
 		for (Entity pipeTile : pipeTiles) {
@@ -205,8 +203,6 @@ public class PipeSystem extends EntitySystem {
 		//timerTickerComp.tickerActive = false;
 		//timerTickerComp.finishActive = false;
 
-		System.out.println("solved " + count++);
-		
 		startedSolutionAnimation = true;
 
 		getEngine().addEntity(createFluidFillingSound(npipesLeft * GameParameters.FLUID_FILL_DURATION_SOLVED + 1.5f));
