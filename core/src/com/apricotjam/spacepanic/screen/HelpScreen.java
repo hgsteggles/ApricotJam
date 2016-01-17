@@ -2,7 +2,6 @@ package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MapArt;
-import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.map.ResourceComponent;
@@ -13,8 +12,6 @@ import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.Map;
 
 import java.util.ArrayList;
 
@@ -42,7 +39,7 @@ public class HelpScreen extends BasicScreen {
 	private static final float BACK_X = 1.5f;
 	private static final float BACK_Y = WORLD_HEIGHT - 0.5f;
 
-	private static String GENERAL_TEXT = "Don't die!";
+	private static String GENERAL_TEXT = "Gather these resources to survive!";
 	private static final float GENERAL_X = WORLD_WIDTH / 2.0f;
 	private static final float GENERAL_Y = WORLD_HEIGHT * 2.0f / 3.0f + 0.5f;
 
