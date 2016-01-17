@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.art.Particles;
+import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.MovementComponent;
 import com.apricotjam.spacepanic.components.ParticleEffectComponent;
@@ -13,6 +14,8 @@ import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
 import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.TweenSpec.Cycle;
+import com.apricotjam.spacepanic.gameelements.GameSettings;
+import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.AnimatedShaderSystem;
@@ -32,6 +35,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.math.Rectangle;
 
 public class IntroScreen extends BasicScreen {
 	private RandomXS128 rng = new RandomXS128(0);
@@ -70,6 +74,11 @@ public class IntroScreen extends BasicScreen {
 		add(asteroid);
 		
 		add(createEndEntity());
+		
+		if (GameSettings.getIntroSkippable())
+			add(createSkipEntity());
+		else
+			GameSettings.setIntroSkippable(true);
 
 		add(new MovementSystem());
 		add(new ScrollSystem());
@@ -124,6 +133,22 @@ public class IntroScreen extends BasicScreen {
 				}
 			}
 		}
+	}
+	
+	private Entity createSkipEntity() {
+		Entity entity = new Entity();
+		
+		ClickComponent clickComp = new ClickComponent();
+		clickComp.shape = new Rectangle(0, 0, BasicScreen.WORLD_WIDTH, BasicScreen.WORLD_HEIGHT);
+		clickComp.clicker = new ClickInterface() {
+			@Override
+			public void onClick(Entity entity) {
+				spacePanic.setScreen(new GameScreen(spacePanic, background));
+			}
+		};
+		entity.add(clickComp);
+		
+		return entity;
 	}
 	
 	private Entity createWindow(TransformComponent parentTrans) {
