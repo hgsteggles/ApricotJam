@@ -3,10 +3,12 @@ package com.apricotjam.spacepanic.screen;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.components.*;
 import com.apricotjam.spacepanic.components.TweenSpec.Cycle;
+import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.gameelements.GameStats;
 import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
+import com.apricotjam.spacepanic.misc.Colors;
 import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.ClickSystem;
 import com.apricotjam.spacepanic.systems.MovementSystem;
@@ -36,6 +38,13 @@ public class GameOverScreen extends BasicScreen {
 		add(createGameOver(2.0f, 0.0f));
 		add(createScoreMessage1(2.0f, 0.5f));
 		add(createScoreMessage2(2.0f, 0.5f));
+		if (gameStats.timeAlive > GameSettings.getHighScore()) {
+			GameSettings.setHighScore(gameStats.timeAlive);
+			add(createHighScoreMessage(2.0f, 0.5f, true));
+		}
+		else {
+			add(createHighScoreMessage(2.0f, 0.5f, false));
+		}
 
 		MenuButton button2 = new MenuButton(BasicScreen.WORLD_WIDTH / 2f, BasicScreen.WORLD_HEIGHT / 4f, "NEW GAME", new ClickInterface() {
 			@Override
@@ -157,7 +166,7 @@ public class GameOverScreen extends BasicScreen {
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
 		fontComp.font = "retro";
-		fontComp.string = generateScoreString(gameStats);
+		fontComp.string = generateScoreString(gameStats.timeAlive);
 		fontComp.color.set(1f, 1f, 1f, 0f);
 		fontComp.centering = true;
 		entity.add(fontComp);
@@ -172,15 +181,63 @@ public class GameOverScreen extends BasicScreen {
 
 		return entity;
 	}
+	
+	private Entity createHighScoreMessage(float duration, float delay, boolean newHighScore) {
+		Entity entity = new Entity();
+
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
+		fontComp.string = "High Score: " + generateScoreString(GameSettings.getHighScore());
+		fontComp.color.set(1.0f, 0.2f, 0.2f, 0f);
+		fontComp.centering = true;
+		entity.add(fontComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH / 2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT / 2f - 0.75f;
+		transComp.position.z = 1f;
+		entity.add(transComp);
+
+		entity.add(createTextFadeTween(duration, delay));
+		
+		if (newHighScore) {
+			ColorInterpolationComponent colorInterpComp = new ColorInterpolationComponent();
+			colorInterpComp.start.set(1.0f, 0.2f, 0.2f, 1f);
+			colorInterpComp.finish.set(1.0f, 1.0f, 0.2f, 1f);
+			entity.add(colorInterpComp);
+			
+			TweenComponent tweenComp = ComponentMappers.tween.get(entity);
+			TweenSpec tweenSpec = new TweenSpec();
+			tweenSpec.start = 0f;
+			tweenSpec.end = 1f;
+			tweenSpec.period = 0.4f;
+			tweenSpec.cycle = Cycle.INFLOOP;
+			tweenSpec.reverse = true;
+			tweenSpec.interp = Interpolation.sine;
+			tweenSpec.tweenInterface = new TweenInterface() {
+				@Override
+				public void applyTween(Entity e, float a) {
+					BitmapFontComponent fc = ComponentMappers.bitmapfont.get(e);
+					ColorInterpolationComponent cic = ComponentMappers.colorinterps.get(e);
+					float alpha = fc.color.a;
+					Colors.lerp(fc.color, cic.start, cic.finish, a);
+					fc.color.a = alpha;
+				}
+			};
+			tweenComp.tweenSpecs.add(tweenSpec);
+		}
+
+		return entity;
+	}
 
 
-	private String generateScoreString(GameStats gameStats) {
+	private String generateScoreString(float timeAlive) {
 		String score;
-		if (gameStats.timeAlive < 60) {
-			score = Math.round(gameStats.timeAlive) + " seconds";
+		if (timeAlive < 60) {
+			score = Math.round(timeAlive) + " seconds";
 		} else {
-			int mins = (int)Math.floor(gameStats.timeAlive / 60.0f);
-			int seconds = Math.round(gameStats.timeAlive % 60);
+			int mins = (int)Math.floor(timeAlive / 60.0f);
+			int seconds = Math.round(timeAlive % 60);
 			score = mins + " minutes " + seconds + " seconds";
 		}
 		return score;
