@@ -29,6 +29,18 @@ public class GameSettings {
 		options.flush();
 	}
 	
+	public static String generateScoreString(float timeAlive) {
+		String score;
+		if (timeAlive < 60) {
+			score = Math.round(timeAlive) + " seconds";
+		} else {
+			int mins = (int)Math.floor(timeAlive / 60.0f);
+			int seconds = Math.round(timeAlive % 60);
+			score = mins + " minutes " + seconds + " seconds";
+		}
+		return score;
+	}
+	
 	public static boolean getIntroSkippable() {
 		return options.getBoolean("introskip", false);
 	}

@@ -4,6 +4,7 @@ import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.art.Particles;
+import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.MovementComponent;
@@ -30,6 +31,7 @@ import com.apricotjam.spacepanic.systems.SoundSystem;
 import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -75,10 +77,13 @@ public class IntroScreen extends BasicScreen {
 		
 		add(createEndEntity());
 		
-		if (GameSettings.getIntroSkippable())
+		if (GameSettings.getIntroSkippable()) {
 			add(createSkipEntity());
-		else
+			add(createSkipText());
+		}
+		else {
 			GameSettings.setIntroSkippable(true);
+		}
 
 		add(new MovementSystem());
 		add(new ScrollSystem());
@@ -133,6 +138,64 @@ public class IntroScreen extends BasicScreen {
 				}
 			}
 		}
+	}
+	
+	private Entity createSkipText() {
+		Entity entity = new Entity();
+		
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
+		fontComp.string = "press to skip";
+		fontComp.color.set(1.0f, 1.0f, 1.0f, 0f);
+		fontComp.centering = false;
+		entity.add(fontComp);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.set(0.01f*BasicScreen.WORLD_WIDTH, 0.01f*BasicScreen.WORLD_HEIGHT, 10f);
+		entity.add(transComp);
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.start = 0f;
+		tweenSpec.end = 1f;
+		tweenSpec.period = (TIME_UNTIL_SHIP + SHIP_DURATION + TRAIL_TIME)/10f;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.bitmapfont.get(e).color.a = a;
+			}
+			
+			@Override
+			public void endTween(Entity e) {
+				TweenSpec ts = new TweenSpec();
+				ts.period = (TIME_UNTIL_SHIP + SHIP_DURATION + TRAIL_TIME)*8f/10f;
+				ts.tweenInterface = new TweenInterface() {
+					@Override
+					public void applyTween(Entity e, float a) {
+					}
+					
+					@Override
+					public void endTween(Entity ee) {
+						TweenSpec tss = new TweenSpec();
+						tss.start = 1f;
+						tss.end = 0f;
+						tss.period = (TIME_UNTIL_SHIP + SHIP_DURATION + TRAIL_TIME)/10f;
+						tss.tweenInterface = new TweenInterface() {
+							@Override
+							public void applyTween(Entity eee, float a) {
+								ComponentMappers.bitmapfont.get(eee).color.a = a;
+							}
+						};
+						ComponentMappers.tween.get(ee).tweenSpecs.add(tss);
+					}
+				};
+				ComponentMappers.tween.get(e).tweenSpecs.add(ts);;
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+		entity.add(tweenComp);
+		
+		return entity;
 	}
 	
 	private Entity createSkipEntity() {

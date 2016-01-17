@@ -264,6 +264,10 @@ public class MapSystem extends EntitySystem {
 		texc.size.x = texc.size.y * texc.region.getRegionWidth() / texc.region.getRegionHeight();
 		screenFrame.add(texc);
 
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("light");
+		screenFrame.add(shaderComp);
+		
 		return screenFrame;
 	}
 

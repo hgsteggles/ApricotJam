@@ -8,8 +8,10 @@ import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.misc.EntityUtil;
 import com.apricotjam.spacepanic.systems.ClickSystem;
+import com.apricotjam.spacepanic.systems.RenderingSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 public class MenuScreen extends BasicScreen {
 
@@ -83,6 +85,9 @@ public class MenuScreen extends BasicScreen {
 				aboutScreen();
 			}
 		}, 3);
+		
+		if (GameSettings.getHighScore() > 0)
+			addHighScore();
 	}
 
 	private void startGame() {
@@ -101,6 +106,29 @@ public class MenuScreen extends BasicScreen {
 	private void addMenuItem(float x, float y, String text, ClickInterface clickInterface, int n) {
 		MenuButton menuButton = new MenuButton(x, y, 3.7f, text, clickInterface);
 		menuButton.addToEngine(engine);
+	}
+	
+	private void addHighScore() {
+		Entity entity = new Entity();
+
+		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
+		fontComp.string = "High Score: " + GameSettings.generateScoreString(GameSettings.getHighScore());
+		fontComp.color.set(0.2f, 1.0f, 0.2f, 1f);
+		fontComp.centering = false;
+		entity.add(fontComp);
+		
+		GlyphLayout layout = new GlyphLayout(MiscArt.fonts.get(fontComp.font), fontComp.string);
+
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = 0.01f*BasicScreen.WORLD_WIDTH;
+		transComp.position.y = 0.99f*BasicScreen.WORLD_HEIGHT - layout.height*RenderingSystem.PIXELS_TO_WORLD;
+		transComp.position.z = 1f;
+		entity.add(transComp);
+		
+		System.out.println("HERE");
+		
+		add(entity);
 	}
 
 	@Override
