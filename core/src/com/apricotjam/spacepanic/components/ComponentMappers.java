@@ -44,4 +44,5 @@ public class ComponentMappers {
 	public static ComponentMapper<ColorInterpolationComponent> colorinterps = ComponentMapper.getFor(ColorInterpolationComponent.class);
 	public static ComponentMapper<SoundComponent> sound = ComponentMapper.getFor(SoundComponent.class);
 	public static ComponentMapper<NinepatchComponent> ninepatch = ComponentMapper.getFor(NinepatchComponent.class);
+	public static ComponentMapper<ParticleEffectComponent> particle = ComponentMapper.getFor(ParticleEffectComponent.class);
 }

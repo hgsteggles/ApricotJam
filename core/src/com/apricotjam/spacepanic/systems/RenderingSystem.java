@@ -3,6 +3,8 @@ package com.apricotjam.spacepanic.systems;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import sun.security.x509.DeltaCRLIndicatorExtension;
+
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.art.Shaders;
@@ -11,6 +13,7 @@ import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.FBO_Component;
 import com.apricotjam.spacepanic.components.FBO_ItemComponent;
 import com.apricotjam.spacepanic.components.NinepatchComponent;
+import com.apricotjam.spacepanic.components.ParticleEffectComponent;
 import com.apricotjam.spacepanic.components.ShaderComponent;
 import com.apricotjam.spacepanic.components.ShaderDirectionComponent;
 import com.apricotjam.spacepanic.components.ShaderLightingComponent;
@@ -30,6 +33,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -51,15 +55,15 @@ public class RenderingSystem extends EntitySystem {
 		
 		fboRenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class)
 				.exclude(FBO_Component.class)
-				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
+				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class, ParticleEffectComponent.class)
 				.get(), new DepthFBOComparator());
 		
 		fbo2RenderQueue = new SortedEntityList(Family.all(TransformComponent.class, FBO_ItemComponent.class, FBO_Component.class)
-				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
+				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class, ParticleEffectComponent.class)
 				.get(), new DepthFBOComparator());
 		
 		screenRenderQueue = new SortedEntityList(Family.all(TransformComponent.class)
-				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class)
+				.one(TextureComponent.class, BitmapFontComponent.class, NinepatchComponent.class, ParticleEffectComponent.class)
 				.exclude(FBO_ItemComponent.class)
 				.get(), new DepthComparator());
 
@@ -295,6 +299,11 @@ public class RenderingSystem extends EntitySystem {
 			
 			spriteBatch.setColor(Color.WHITE);
 			spriteBatch.setProjectionMatrix(worldCamera.combined);
+		}
+		else if (ComponentMappers.particle.has(entity)) {
+			ParticleEffectComponent particleComp = ComponentMappers.particle.get(entity);
+			
+			particleComp.effect.draw(spriteBatch);
 		}
 		
 		spriteBatch.setShader(null);

@@ -2,12 +2,13 @@ package com.apricotjam.spacepanic;
 
 import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.Audio;
+import com.apricotjam.spacepanic.art.Particles;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.screen.TitleScreen;
+import com.apricotjam.spacepanic.screen.IntroScreen;
 import com.apricotjam.spacepanic.systems.pipes.PuzzleDifficulty;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -23,7 +24,7 @@ public class SpacePanic extends ApplicationAdapter {
 	private boolean video = false;
 	private float accum = 0;
 	private float frame_time = 1.0f/30f;
-	private int nprints = (int)(1f/frame_time);
+	private int nprints = (int)(6f/frame_time);
 
 	private BasicScreen screen;
 
@@ -35,8 +36,9 @@ public class SpacePanic extends ApplicationAdapter {
 		Art.load();
 		Audio.load();
 		Shaders.load();
+		Particles.load(Art.atlas);
 		InputManager.create();
-		setScreen(new TitleScreen(this));
+		setScreen(new IntroScreen(this));
 
 		soundtrack = Audio.music.get("soundtrack");
 		soundtrack.setLooping(true);
