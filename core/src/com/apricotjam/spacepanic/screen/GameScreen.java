@@ -133,16 +133,18 @@ public class GameScreen extends BasicScreen {
 	}
 
 	private void updateDying(float delta) {
-		dyingTime -= delta;
-		if (dyingTime < dyingState) {
-			if (dyingState == 0) {
-				dead = true;
-				gameOver();
-			} else {
-				if (dyingState <= 5) {
-					addMessage(Integer.toString(dyingState), Color.RED, 1.0f, false, true);
+		if (currentState == GameState.MAZING) {
+			dyingTime -= delta;
+			if (dyingTime < dyingState) {
+				if (dyingState == 0) {
+					dead = true;
+					gameOver();
+				} else {
+					if (dyingState <= 5) {
+						addMessage(Integer.toString(dyingState), Color.RED, 1.0f, false, true);
+					}
+					dyingState--;
 				}
-				dyingState--;
 			}
 		}
 	}
