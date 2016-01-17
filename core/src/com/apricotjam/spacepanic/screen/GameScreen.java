@@ -563,7 +563,7 @@ public class GameScreen extends BasicScreen {
 
 
 		add(mapSystemEntity);
-		add(new MapSystem(mapSystemEntity, 8.25f, 4.75f, 0));
+		add(new MapSystem(mapSystemEntity, 8.25f, 4.75f));
 	}
 
 	private void addHelmetSystem() {
