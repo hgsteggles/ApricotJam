@@ -1,46 +1,12 @@
 
 art.png
-size: 1024,512
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-player
-  rotate: false
-  xy: 726, 384
-  size: 96, 104
-  orig: 96, 104
-  offset: 0, 0
-  index: -1
-playerMove
-  rotate: false
-  xy: 726, 278
-  size: 96, 104
-  orig: 96, 104
-  offset: 0, 0
-  index: -1
-pod-screen
-  rotate: false
-  xy: 824, 440
-  size: 120, 48
-  orig: 120, 48
-  offset: 0, 0
-  index: -1
-ship
-  rotate: false
-  xy: 2, 2
-  size: 722, 486
-  orig: 722, 486
-  offset: 0, 0
-  index: -1
-
-art2.png
 size: 2048,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 astronautTitle
   rotate: false
-  xy: 1284, 771
+  xy: 1284, 903
   size: 68, 52
   orig: 68, 52
   offset: 0, 0
@@ -55,7 +21,7 @@ button-border
   index: -1
 mainBackground
   rotate: false
-  xy: 2, 103
+  xy: 2, 235
   size: 1280, 720
   orig: 1280, 720
   offset: 0, 0
@@ -63,80 +29,12 @@ mainBackground
 title
   rotate: false
   xy: 2, 11
-  size: 313, 90
-  orig: 313, 90
+  size: 700, 222
+  orig: 700, 222
   offset: 0, 0
   index: -1
 
-art3.png
-size: 2048,2048
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-comsSpeaker
-  rotate: false
-  xy: 1688, 1495
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-fog
-  rotate: false
-  xy: 2, 903
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-fog2
-  rotate: false
-  xy: 2, 181
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-ledFrame
-  rotate: false
-  xy: 1284, 1344
-  size: 288, 96
-  orig: 288, 96
-  offset: 0, 0
-  index: -1
-resource-panel
-  rotate: false
-  xy: 2, 36
-  size: 304, 143
-  orig: 304, 143
-  offset: 0, 0
-  index: -1
-screw
-  rotate: false
-  xy: 2, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-sidepanel
-  rotate: false
-  xy: 1284, 1442
-  size: 402, 181
-  orig: 402, 181
-  offset: 0, 0
-  index: -1
-
-art4.png
-size: 2048,1024
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-helmetBase
-  rotate: false
-  xy: 2, 2
-  size: 1280, 720
-  orig: 1280, 720
-  offset: 0, 0
-  index: -1
-
-art5.png
+art2.png
 size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
@@ -230,6 +128,108 @@ resource3Icon
   xy: 750, 38
   size: 64, 64
   orig: 64, 64
+  offset: 0, 0
+  index: -1
+
+art3.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+player
+  rotate: false
+  xy: 726, 384
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+playerMove
+  rotate: false
+  xy: 726, 278
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+pod-screen
+  rotate: false
+  xy: 824, 440
+  size: 120, 48
+  orig: 120, 48
+  offset: 0, 0
+  index: -1
+ship
+  rotate: false
+  xy: 2, 2
+  size: 722, 486
+  orig: 722, 486
+  offset: 0, 0
+  index: -1
+
+art4.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+comsSpeaker
+  rotate: false
+  xy: 1688, 1495
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+fog
+  rotate: false
+  xy: 2, 903
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+fog2
+  rotate: false
+  xy: 2, 181
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+ledFrame
+  rotate: false
+  xy: 1284, 1344
+  size: 288, 96
+  orig: 288, 96
+  offset: 0, 0
+  index: -1
+resource-panel
+  rotate: false
+  xy: 2, 36
+  size: 304, 143
+  orig: 304, 143
+  offset: 0, 0
+  index: -1
+screw
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+sidepanel
+  rotate: false
+  xy: 1284, 1442
+  size: 402, 181
+  orig: 402, 181
+  offset: 0, 0
+  index: -1
+
+art5.png
+size: 2048,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+helmetBase
+  rotate: false
+  xy: 2, 2
+  size: 1280, 720
+  orig: 1280, 720
   offset: 0, 0
   index: -1
 
