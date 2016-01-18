@@ -19,7 +19,7 @@ public class GameParameters {
 	
 	public static final ObjectMap<Resource, Float> RESOURCE_START = new ObjectMap<Resource, Float>();
 	static {
-		RESOURCE_START.put(Resource.OXYGEN, 1.0f);
+		RESOURCE_START.put(Resource.OXYGEN, 20.0f);
 		RESOURCE_START.put(Resource.DEMISTER, 20.0f);
 		RESOURCE_START.put(Resource.PIPE_CLEANER, 20.0f);
 		RESOURCE_START.put(Resource.PLUTONIUM, 1.0f);
