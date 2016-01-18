@@ -9,6 +9,7 @@ public class DesktopLauncher {
 		//TexturePacker.process("../../images", "atlas", "art");
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = "Untethered";
 		config.width = SpacePanic.WIDTH;
 		config.height = SpacePanic.HEIGHT;
 		new LwjglApplication(new SpacePanic(), config);
