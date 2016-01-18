@@ -23,6 +23,7 @@ public class SplashScreen extends BasicScreen {
 	private static final float JAM_Y = BasicScreen.WORLD_HEIGHT / 2.0f;
 
 	private static final float TIME = 1.5f;
+	private static final float LOGO_TIME = 1.0f;
 
 	public SplashScreen(SpacePanic spacePanic) {
 		super(spacePanic);
@@ -57,7 +58,7 @@ public class SplashScreen extends BasicScreen {
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = -textComp.size.y;
 		tweenSpec.end = TOAST_Y;
-		tweenSpec.period = 0.6f;
+		tweenSpec.period = LOGO_TIME;
 		tweenSpec.interp = new Interpolation.SwingOut(1.0f);
 		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
 		tweenSpec.tweenInterface = new TweenInterface() {
@@ -90,7 +91,7 @@ public class SplashScreen extends BasicScreen {
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = -textComp.size.x;
 		tweenSpec.end = APRICOT_X;
-		tweenSpec.period = 0.6f;
+		tweenSpec.period = LOGO_TIME;
 		tweenSpec.interp = new Interpolation.SwingOut(1.0f);
 		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
 		tweenSpec.tweenInterface = new TweenInterface() {
@@ -123,7 +124,7 @@ public class SplashScreen extends BasicScreen {
 		TweenSpec tweenSpec = new TweenSpec();
 		tweenSpec.start = WORLD_WIDTH + textComp.size.x;
 		tweenSpec.end = JAM_X;
-		tweenSpec.period = 0.6f;
+		tweenSpec.period = LOGO_TIME;
 		tweenSpec.interp = new Interpolation.SwingOut(1.0f);
 		tweenSpec.cycle = TweenSpec.Cycle.ONCE;
 		tweenSpec.tweenInterface = new TweenInterface() {

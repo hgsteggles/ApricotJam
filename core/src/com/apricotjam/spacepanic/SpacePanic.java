@@ -8,8 +8,7 @@ import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
 import com.apricotjam.spacepanic.screen.BasicScreen;
-import com.apricotjam.spacepanic.screen.SplashScreen;
-import com.apricotjam.spacepanic.screen.TitleScreen;
+import com.apricotjam.spacepanic.screen.BufferScreen;
 import com.apricotjam.spacepanic.systems.pipes.PuzzleDifficulty;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -41,7 +40,7 @@ public class SpacePanic extends ApplicationAdapter {
 		Shaders.load();
 		Particles.load(Art.atlas);
 		InputManager.create();
-		setScreen(new SplashScreen(this));
+		setScreen(new BufferScreen(this));
 
 		soundtrack = Audio.music.get("soundtrack");
 		soundtrack.setLooping(true);
