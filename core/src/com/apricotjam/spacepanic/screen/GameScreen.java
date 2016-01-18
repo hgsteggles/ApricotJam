@@ -590,7 +590,6 @@ public class GameScreen extends BasicScreen {
 
 		TweenComponent helmetTweenComp = new TweenComponent();
 		helmetTweenComp.tweenSpecs.add(helmetTween(0, true));
-		helmetTweenComp.tweenSpecs.add(fogTween(helmetScreenComponent.demisterSpread, 6f, true));
 		helmetSystemEntity.add(helmetTweenComp);
 
 		add(helmetSystemEntity);
