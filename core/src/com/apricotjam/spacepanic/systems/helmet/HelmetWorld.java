@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.systems.helmet;
 
+import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.*;
 import com.apricotjam.spacepanic.art.PipeGameArt.RotatedAnimationData;
@@ -404,6 +405,7 @@ public class HelmetWorld {
 		texComp.region = HelmetUI.fog2;
 		texComp.size.x = BasicScreen.WORLD_WIDTH;
 		texComp.size.y = BasicScreen.WORLD_HEIGHT;
+		texComp.color.a = 0f;
 		entity.add(texComp);
 
 		TransformComponent transComp = new TransformComponent();
@@ -418,8 +420,20 @@ public class HelmetWorld {
 		entity.add(shaderComp);
 
 		ShaderSpreadComponent shaderSpreadComp = new ShaderSpreadComponent();
-		shaderSpreadComp.spread = 100f;
+		shaderSpreadComp.spread = GameParameters.FOG_MAX;
 		entity.add(shaderSpreadComp);
+		
+		TweenComponent tweenComp = new TweenComponent();
+		TweenSpec tweenSpec = new TweenSpec();
+		tweenSpec.period = 10f;
+		tweenSpec.tweenInterface = new TweenInterface() {
+			@Override
+			public void applyTween(Entity e, float a) {
+				ComponentMappers.texture.get(e).color.a = a;
+			}
+		};
+		tweenComp.tweenSpecs.add(tweenSpec);
+		entity.add(tweenComp);
 
 		return entity;
 	}
