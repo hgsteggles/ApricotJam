@@ -37,7 +37,7 @@ public class AboutScreen extends BasicScreen {
 	private static final float CREDITS_X = WORLD_WIDTH / 2.0f - 1.0f;
 	private static final float CREDITS_Y = WORLD_HEIGHT / 2.0f - 1.65f;
 	private static final float CREDITS_SPACING = 0.3f;
-	private static final float LINK_X = WORLD_WIDTH / 2.0f + 3.8f;
+	private static final float LINK_X = WORLD_WIDTH / 2.0f + 1.8f;
 	private static final float BACK_X = 1.5f;
 	private static final float BACK_Y = WORLD_HEIGHT - 0.5f;
 
