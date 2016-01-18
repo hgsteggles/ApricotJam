@@ -18,6 +18,7 @@ public class PipeGameArt {
 	public static TextureRegion[] circuitSide = new TextureRegion[4];
 	public static TextureRegion pipeCapLeft, pipeCapRight;
 	public static TextureRegion capsuleLeft, capsuleRight, capsuleMaskLeft, capsuleMaskRight;
+	public static TextureRegion abortRegion;
 
 	public static TextureRegion whitePixel;
 
@@ -47,6 +48,9 @@ public class PipeGameArt {
 		capsuleRight = atlas.findRegion("capsule-right");
 		capsuleMaskLeft = atlas.findRegion("capsule-left-mask");
 		capsuleMaskRight = atlas.findRegion("capsule-right-mask");
+		
+		// Load abort.
+		abortRegion = atlas.findRegion("abort");
 
 		// Load all pipes and fluid animations.
 		for (int i = 0; i < 16; ++i) {

@@ -51,6 +51,10 @@ public class PipeSystem extends EntitySystem {
 		PipeScreenComponent pipeScreenComp = ComponentMappers.pipescreen.get(masterEntity);
 
 		if (pipeScreenComp.currentState == PipeScreenComponent.State.PLAYING) {
+			if (!startedSolutionAnimation && ComponentMappers.click.get(world.getAbortButton()).clickLast) {
+				failed();
+				return;
+			}
 			boolean finishedSolutionAnimation = true;
 
 			for (Entity pipeFluid : pipeFluids) {
@@ -96,11 +100,13 @@ public class PipeSystem extends EntitySystem {
 						} else {
 							if (!startedSolutionAnimation) {
 								failed();
+								break;
 							}
 						}
 					} else {
 						if (!startedSolutionAnimation) {
 							failed();
+							break;
 						}
 					}
 				}
@@ -176,10 +182,6 @@ public class PipeSystem extends EntitySystem {
 				clickComp.active = true;
 			}
 		}
-
-		// Start timer.
-		//TickerComponent timerTickerComp = ComponentMappers.ticker.get(world.getTimer());
-		//timerTickerComp.start();
 
 		// Set screen state.
 		pipeScreenComp.currentState = PipeScreenComponent.State.PLAYING;

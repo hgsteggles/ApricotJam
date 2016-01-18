@@ -458,16 +458,16 @@ public class GameScreen extends BasicScreen {
 		TweenSpec ts = new TweenSpec();
 		if (isIntro) {
 			ts.end = currDemisterSpread;
-			ts.start = 10 * GameParameters.FOG_MAX;
+			ts.start = GameParameters.FOG_MAX;
 		} else {
 			ts.start = currDemisterSpread;
-			ts.end = 10 * GameParameters.FOG_MAX;
+			ts.end = GameParameters.FOG_MAX;
 		}
 		ts.period = duration;
 		ts.tweenInterface = new TweenInterface() {
 			@Override
 			public void applyTween(Entity e, float a) {
-				ComponentMappers.helmetscreen.get(e).demisterSpread = a;
+				ComponentMappers.helmetscreen.get(e).demisterSpread = a*a;
 			}
 		};
 
