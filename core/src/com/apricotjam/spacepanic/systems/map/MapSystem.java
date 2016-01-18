@@ -1,10 +1,22 @@
 package com.apricotjam.spacepanic.systems.map;
 
+import java.util.HashSet;
+import java.util.Random;
+
 import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.art.Art;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.Shaders;
-import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.components.ClickComponent;
+import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.FBO_Component;
+import com.apricotjam.spacepanic.components.LineComponent;
+import com.apricotjam.spacepanic.components.ShaderComponent;
+import com.apricotjam.spacepanic.components.ShaderTimeComponent;
+import com.apricotjam.spacepanic.components.TextureComponent;
+import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.map.MapScreenComponent;
 import com.apricotjam.spacepanic.components.map.ResourceComponent;
 import com.apricotjam.spacepanic.gameelements.Resource;
@@ -15,13 +27,10 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-
-import java.awt.*;
-import java.util.HashSet;
-import java.util.Random;
 
 public class MapSystem extends EntitySystem {
 	private float width;
@@ -48,7 +57,7 @@ public class MapSystem extends EntitySystem {
 	private PatchConveyor patchConveyor;
 	private Path path;
 
-	private HashSet<Point> usedResources = new HashSet<Point>();
+	private HashSet<GridPoint2> usedResources = new HashSet<GridPoint2>();
 
 	private Random rng = new Random();
 
@@ -141,19 +150,19 @@ public class MapSystem extends EntitySystem {
 		moving = false;
 	}
 
-	private Point getPlayerPoint(Vector2 pos) {
-		return new Point(Math.round(pos.x), Math.round(pos.y));
+	private GridPoint2 getPlayerPoint(Vector2 pos) {
+		return new GridPoint2(Math.round(pos.x), Math.round(pos.y));
 	}
 
 	private void click(int x, int y) {
 		if (mapScreenComponent.currentState == MapScreenComponent.State.EXPLORING) {
-			Point playerPoint = getPlayerPoint(mapScreenComponent.playerPosition);
+			GridPoint2 playerPoint = getPlayerPoint(mapScreenComponent.playerPosition);
 			if (playerPoint.x == x && playerPoint.y == y) {
 				clickPlayer();
 				return;
 			}
 
-			boolean success = path.calculateNew(engine, getPlayerPoint(mapScreenComponent.playerPosition), new Point(x, y));
+			boolean success = path.calculateNew(engine, getPlayerPoint(mapScreenComponent.playerPosition), new GridPoint2(x, y));
 			if (success) {
 				moving = true;
 			} else {
@@ -171,17 +180,17 @@ public class MapSystem extends EntitySystem {
 	}
 
 	private void checkForEncounter() {
-		Point playerPoint = getPlayerPoint(mapScreenComponent.playerPosition);
+		GridPoint2 playerPoint = getPlayerPoint(mapScreenComponent.playerPosition);
 		Resource r = patchConveyor.popResourceAtLocation(playerPoint, engine);
 		if (r != null) {
-			usedResources.add(new Point(playerPoint));
+			usedResources.add(new GridPoint2(playerPoint));
 			mapScreenComponent.encounterResource = r;
 			mapScreenComponent.currentState = MapScreenComponent.State.ENCOUNTER;
 			softStop();
 		}
 	}
 
-	public boolean isResourceUsed(Point pos) {
+	public boolean isResourceUsed(GridPoint2 pos) {
 		return usedResources.contains(pos);
 	}
 

@@ -4,9 +4,8 @@ import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-
-import java.awt.*;
 
 public class PatchConveyor {
 
@@ -69,10 +68,10 @@ public class PatchConveyor {
 		offsetFromCentre.y += dy;
 	}
 
-	public Point getOffset() {
+	public GridPoint2 getOffset() {
 		int xoff = patches[0][0].x * Patch.PATCH_WIDTH - (int) (Patch.PATCH_WIDTH / 2.0f);
 		int yoff = patches[0][0].y * Patch.PATCH_HEIGHT - (int) (Patch.PATCH_HEIGHT / 2.0f);
-		return new Point(xoff, yoff);
+		return new GridPoint2(xoff, yoff);
 	}
 
 	public int[][] getFullMaze() {
@@ -90,8 +89,8 @@ public class PatchConveyor {
 	}
 
 	public int getMazeAtLocation(int x, int y) {
-		Point offset = getOffset();
-		Point pos = new Point(x - offset.x, y - offset.y);
+		GridPoint2 offset = getOffset();
+		GridPoint2 pos = new GridPoint2(x - offset.x, y - offset.y);
 		int ipatch = pos.x / Patch.PATCH_WIDTH;
 		int jpatch = pos.y / Patch.PATCH_WIDTH;
 
@@ -101,16 +100,16 @@ public class PatchConveyor {
 		return patches[ipatch][jpatch].maze[icell][jcell];
 	}
 
-	public Resource getResourceAtLocation(Point position) {
-		Point offset = getOffset();
-		Point pos = new Point(position.x - offset.x, position.y - offset.y);
+	public Resource getResourceAtLocation(GridPoint2 position) {
+		GridPoint2 offset = getOffset();
+		GridPoint2 pos = new GridPoint2(position.x - offset.x, position.y - offset.y);
 		int ipatch = pos.x / Patch.PATCH_WIDTH;
 		int jpatch = pos.y / Patch.PATCH_HEIGHT;
 
 		int icell = pos.x - (ipatch * Patch.PATCH_WIDTH);
 		int jcell = pos.y - (jpatch * Patch.PATCH_WIDTH);
 
-		Point test = new Point(icell, jcell);
+		GridPoint2 test = new GridPoint2(icell, jcell);
 		if (patches[ipatch][jpatch].resources.containsKey(test)) {
 			Entity e = patches[ipatch][jpatch].resources.get(test);
 			return ComponentMappers.resource.get(e).resource;
@@ -118,16 +117,16 @@ public class PatchConveyor {
 		return null;
 	}
 
-	public Resource popResourceAtLocation(Point position, Engine engine) {
-		Point offset = getOffset();
-		Point pos = new Point(position.x - offset.x, position.y - offset.y);
+	public Resource popResourceAtLocation(GridPoint2 position, Engine engine) {
+		GridPoint2 offset = getOffset();
+		GridPoint2 pos = new GridPoint2(position.x - offset.x, position.y - offset.y);
 		int ipatch = pos.x / Patch.PATCH_WIDTH;
 		int jpatch = pos.y / Patch.PATCH_HEIGHT;
 
 		int icell = pos.x - (ipatch * Patch.PATCH_WIDTH);
 		int jcell = pos.y - (jpatch * Patch.PATCH_WIDTH);
 
-		Point test = new Point(icell, jcell);
+		GridPoint2 test = new GridPoint2(icell, jcell);
 		if (patches[ipatch][jpatch].resources.containsKey(test)) {
 			Entity e = patches[ipatch][jpatch].resources.get(test);
 			patches[ipatch][jpatch].resources.remove(test);

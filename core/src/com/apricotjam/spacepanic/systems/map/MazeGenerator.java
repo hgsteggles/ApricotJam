@@ -1,10 +1,10 @@
 package com.apricotjam.spacepanic.systems.map;
 
-import com.badlogic.gdx.math.RandomXS128;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.RandomXS128;
 
 public class MazeGenerator {
 
@@ -46,7 +46,7 @@ public class MazeGenerator {
 
 		//Create centre
 		int[][] centrePatch = new int[Patch.PATCH_WIDTH - 1][Patch.PATCH_HEIGHT - 1];
-		ArrayList<Point> exposed = new ArrayList<Point>();
+		ArrayList<GridPoint2> exposed = new ArrayList<GridPoint2>();
 		for (int i = 0; i < Patch.PATCH_WIDTH - 1; i++) {
 			for (int j = 0; j < Patch.PATCH_HEIGHT - 1; j++) {
 				centrePatch[i][j] = UNEXPOSED;
@@ -57,7 +57,7 @@ public class MazeGenerator {
 		createPath(istart, jstart, centrePatch, exposed, Patch.PATCH_WIDTH - 1, Patch.PATCH_HEIGHT - 1);
 		while (exposed.size() > 0) {
 			int index = rng.nextInt(exposed.size());
-			Point choice = exposed.get(index);
+			GridPoint2 choice = exposed.get(index);
 			if (validPath(choice.x, choice.y, centrePatch, Patch.PATCH_WIDTH - 1, Patch.PATCH_HEIGHT - 1)) {
 				createPath(choice.x, choice.y, centrePatch, exposed, Patch.PATCH_WIDTH - 1, Patch.PATCH_HEIGHT - 1);
 			} else {
@@ -131,7 +131,7 @@ public class MazeGenerator {
 		}
 		int[] thisBounds = createPatchBoundary(0, 0);
 
-		ArrayList<Point> exposed = new ArrayList<Point>();
+		ArrayList<GridPoint2> exposed = new ArrayList<GridPoint2>();
 
 		for (int i = 0; i < Patch.PATCH_HEIGHT; i++) {
 			patch[0][i] = thisBounds[Patch.PATCH_HEIGHT - 1 - i];
@@ -144,7 +144,7 @@ public class MazeGenerator {
 
 	private void blockConnections(int[][] patch, int[][] connectivity) {
 		//Find connection points
-		HashMap<Integer, ArrayList<Point>> connections = new HashMap<Integer, ArrayList<Point>>();
+		HashMap<Integer, ArrayList<GridPoint2>> connections = new HashMap<Integer, ArrayList<GridPoint2>>();
 		for (int i = 1; i < Patch.PATCH_WIDTH; i++) {
 			for (int j = 1; j < Patch.PATCH_HEIGHT; j++) {
 				if (connectivity[i][j] != 5) {
@@ -165,9 +165,9 @@ public class MazeGenerator {
 
 				if (sideMask == 4 || sideMask == 16) {
 					if (!connections.containsKey(sideMask)) {
-						connections.put(sideMask, new ArrayList<Point>());
+						connections.put(sideMask, new ArrayList<GridPoint2>());
 					}
-					connections.get(sideMask).add(new Point(i, j));
+					connections.get(sideMask).add(new GridPoint2(i, j));
 				}
 
 			}
@@ -175,11 +175,11 @@ public class MazeGenerator {
 
 		//Block connections
 		for (int i : connections.keySet()) {
-			ArrayList<Point> connectionList = connections.get(i);
+			ArrayList<GridPoint2> connectionList = connections.get(i);
 			while (connectionList.size() > 1) {
 				if (rng.nextFloat() <= blockChance) {
 					int index = rng.nextInt(connectionList.size());
-					Point choice = connectionList.get(index);
+					GridPoint2 choice = connectionList.get(index);
 					patch[choice.x][choice.y] = WALL;
 					connectivity[choice.x][choice.y] = 6;
 					connectionList.remove(choice);
@@ -190,26 +190,26 @@ public class MazeGenerator {
 		}
 	}
 
-	private void createPath(int i, int j, int[][] maze, ArrayList<Point> exposed, int width, int height) {
+	private void createPath(int i, int j, int[][] maze, ArrayList<GridPoint2> exposed, int width, int height) {
 		maze[i][j] = PATH;
 
 		if (getCell(i - 1, j, maze, width, height) == UNEXPOSED) {
 			maze[i - 1][j] = UNDETERMINED;
-			exposed.add(new Point(i - 1, j));
+			exposed.add(new GridPoint2(i - 1, j));
 		}
 
 		if (getCell(i + 1, j, maze, width, height) == UNEXPOSED) {
 			maze[i + 1][j] = UNDETERMINED;
-			exposed.add(new Point(i + 1, j));
+			exposed.add(new GridPoint2(i + 1, j));
 		}
 
 		if (getCell(i, j - 1, maze, width, height) == UNEXPOSED) {
 			maze[i][j - 1] = UNDETERMINED;
-			exposed.add(new Point(i, j - 1));
+			exposed.add(new GridPoint2(i, j - 1));
 		}
 		if (getCell(i, j + 1, maze, width, height) == UNEXPOSED) {
 			maze[i][j + 1] = UNDETERMINED;
-			exposed.add(new Point(i, j + 1));
+			exposed.add(new GridPoint2(i, j + 1));
 		}
 	}
 

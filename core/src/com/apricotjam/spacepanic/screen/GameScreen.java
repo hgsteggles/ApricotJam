@@ -1,32 +1,43 @@
 package com.apricotjam.spacepanic.screen;
 
+import java.util.Random;
+
 import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.Audio;
-import com.apricotjam.spacepanic.art.MiscArt;
-import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.SoundComponent;
+import com.apricotjam.spacepanic.components.TextureComponent;
+import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.helmet.HelmetScreenComponent;
 import com.apricotjam.spacepanic.components.map.MapScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
-import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.gameelements.GameStats;
 import com.apricotjam.spacepanic.gameelements.Resource;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.misc.EntityUtil;
-import com.apricotjam.spacepanic.systems.*;
+import com.apricotjam.spacepanic.systems.AnimatedShaderSystem;
+import com.apricotjam.spacepanic.systems.AnimationSystem;
+import com.apricotjam.spacepanic.systems.ClickSystem;
+import com.apricotjam.spacepanic.systems.LineSystem;
+import com.apricotjam.spacepanic.systems.MovementSystem;
+import com.apricotjam.spacepanic.systems.ScrollSystem;
+import com.apricotjam.spacepanic.systems.ShaderLightingSystem;
+import com.apricotjam.spacepanic.systems.SoundSystem;
+import com.apricotjam.spacepanic.systems.TickerSystem;
+import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.apricotjam.spacepanic.systems.helmet.HelmetSystem;
 import com.apricotjam.spacepanic.systems.map.MapSystem;
 import com.apricotjam.spacepanic.systems.pipes.PipeSystem;
 import com.apricotjam.spacepanic.systems.pipes.PuzzleDifficulty;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-
-import java.awt.*;
-import java.util.Random;
 
 public class GameScreen extends BasicScreen {
 
@@ -52,7 +63,7 @@ public class GameScreen extends BasicScreen {
 	private Entity pipeSystemEntity;
 	private Entity backgroundEntity;
 
-	private Point backgroundHome;
+	private GridPoint2 backgroundHome;
 
 	private HelmetSystem helmetSystem;
 
@@ -90,7 +101,7 @@ public class GameScreen extends BasicScreen {
 		this.backgroundEntity = EntityUtil.clone(background);
 		add(this.backgroundEntity);
 		TextureRegion region = ComponentMappers.texture.get(this.backgroundEntity).region;
-		backgroundHome = new Point(region.getRegionX(), region.getRegionY());
+		backgroundHome = new GridPoint2(region.getRegionX(), region.getRegionY());
 		setBackgroundPosition();
 
 		alterResource(Resource.DEMISTER, 0);

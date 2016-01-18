@@ -1,11 +1,11 @@
 package com.apricotjam.spacepanic.systems.map;
 
+import java.util.ArrayList;
+
 import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.gameelements.Resource;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.RandomXS128;
-
-import java.awt.*;
-import java.util.ArrayList;
 
 public class ResourceGenerator {
 	private static final float[] CUMULATIVE_RESOURCE_PROB = new float[4];
@@ -33,7 +33,7 @@ public class ResourceGenerator {
 		Resource[][] resources = new Resource[Patch.PATCH_WIDTH][Patch.PATCH_HEIGHT];
 		setRandomState(x, y);
 
-		ArrayList<Point> potentialLocations = new ArrayList<Point>();
+		ArrayList<GridPoint2> potentialLocations = new ArrayList<GridPoint2>();
 		for (int i = 0; i < Patch.PATCH_WIDTH; i++) {
 			for (int j = 0; j < Patch.PATCH_HEIGHT; j++) {
 				resources[i][j] = null;
@@ -43,20 +43,20 @@ public class ResourceGenerator {
 					}
 				}*/
 				if (maze[i][j] == MazeGenerator.PATH) {
-					potentialLocations.add(new Point(i, j));
+					potentialLocations.add(new GridPoint2(i, j));
 				}
 			}
 		}
 
 		int nResources = rng.nextInt(GameParameters.MAX_RESOURCES_PER_PATCH + 1);
 		if (potentialLocations.size() < nResources) {
-			for (Point p : potentialLocations) {
+			for (GridPoint2 p : potentialLocations) {
 				resources[p.x][p.y] = rollResource();
 			}
 		} else {
 			for (int i = 0; i < nResources; i++) {
 				int choice = rng.nextInt(potentialLocations.size());
-				Point p = potentialLocations.get(choice);
+				GridPoint2 p = potentialLocations.get(choice);
 				resources[p.x][p.y] = rollResource();
 				potentialLocations.remove(p);
 			}
@@ -75,16 +75,16 @@ public class ResourceGenerator {
 			}
 		}
 
-		Point centre = new Point(Patch.PATCH_WIDTH / 2, Patch.PATCH_HEIGHT / 2);
-		ArrayList<Point> resourceLocations = new ArrayList<Point>();
-		resourceLocations.add(new Point(centre.x + 2, centre.y + 2));
-		resourceLocations.add(new Point(centre.x + 2, centre.y - 2));
-		resourceLocations.add(new Point(centre.x - 2, centre.y + 2));
-		resourceLocations.add(new Point(centre.x - 2, centre.y - 2));
+		GridPoint2 centre = new GridPoint2(Patch.PATCH_WIDTH / 2, Patch.PATCH_HEIGHT / 2);
+		ArrayList<GridPoint2> resourceLocations = new ArrayList<GridPoint2>();
+		resourceLocations.add(new GridPoint2(centre.x + 2, centre.y + 2));
+		resourceLocations.add(new GridPoint2(centre.x + 2, centre.y - 2));
+		resourceLocations.add(new GridPoint2(centre.x - 2, centre.y + 2));
+		resourceLocations.add(new GridPoint2(centre.x - 2, centre.y - 2));
 
 		for (Resource r: Resource.values()) {
 			int choice = rng.nextInt(resourceLocations.size());
-			Point p = resourceLocations.get(choice);
+			GridPoint2 p = resourceLocations.get(choice);
 			resources[p.x][p.y] = r;
 			resourceLocations.remove(p);
 		}

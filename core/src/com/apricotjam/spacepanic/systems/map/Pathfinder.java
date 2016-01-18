@@ -1,17 +1,18 @@
 package com.apricotjam.spacepanic.systems.map;
 
-import java.awt.*;
 import java.util.ArrayList;
+
+import com.badlogic.gdx.math.GridPoint2;
 
 public class Pathfinder {
 
 	private class TreeNode {
-		public Point pos;
+		public GridPoint2 pos;
 		public int distance;
 		public TreeNode par = null;
 		public ArrayList<TreeNode> children = new ArrayList<TreeNode>();
 
-		public TreeNode(Point pos, int distance) {
+		public TreeNode(GridPoint2 pos, int distance) {
 			this.pos = pos;
 			this.distance = distance;
 		}
@@ -24,11 +25,11 @@ public class Pathfinder {
 	private int height;
 	private int maxDistance;
 
-	public void setOffset(Point offset) {
+	public void setOffset(GridPoint2 offset) {
 		this.offset = offset;
 	}
 
-	private Point offset = new Point();
+	private GridPoint2 offset = new GridPoint2();
 
 	public Pathfinder(int width, int height, int maxDistance) {
 		this.width = width;
@@ -36,13 +37,13 @@ public class Pathfinder {
 		this.maxDistance = maxDistance;
 	}
 
-	public ArrayList<Point> calculatePath(int[][] maze, Point offsetStart, Point offestEnd) {
-		Point start = new Point(offsetStart.x - offset.x, offsetStart.y - offset.y);
-		Point end = new Point(offestEnd.x - offset.x, offestEnd.y - offset.y);
+	public ArrayList<GridPoint2> calculatePath(int[][] maze, GridPoint2 offsetStart, GridPoint2 offestEnd) {
+		GridPoint2 start = new GridPoint2(offsetStart.x - offset.x, offsetStart.y - offset.y);
+		GridPoint2 end = new GridPoint2(offestEnd.x - offset.x, offestEnd.y - offset.y);
 		if (!pathable(maze, end.x, end.y)) {
-			return new ArrayList<Point>();
+			return new ArrayList<GridPoint2>();
 		}
-		TreeNode root = new TreeNode(new Point(end.x, end.y), 0);
+		TreeNode root = new TreeNode(new GridPoint2(end.x, end.y), 0);
 		boolean[][] visited = new boolean[width][height];
 		ArrayList<TreeNode> toCheck = new ArrayList<TreeNode>();
 		addNeighbours(root, maze, visited, toCheck);
@@ -56,7 +57,7 @@ public class Pathfinder {
 			}
 			toCheck.remove(nextNode);
 		}
-		return new ArrayList<Point>();
+		return new ArrayList<GridPoint2>();
 	}
 
 	private void addNeighbours(TreeNode node, int[][] maze, boolean[][] visited, ArrayList<TreeNode> toCheck) {
@@ -67,25 +68,25 @@ public class Pathfinder {
 				continue;
 			}
 			if (pathable(maze, x, y) && !visited[x][y]) {
-				TreeNode newNode = addNode(node, new Point(x, y));
+				TreeNode newNode = addNode(node, new GridPoint2(x, y));
 				toCheck.add(newNode);
 				visited[x][y] = true;
 			}
 		}
 	}
 
-	private TreeNode addNode(TreeNode par, Point childPoint) {
+	private TreeNode addNode(TreeNode par, GridPoint2 childPoint) {
 		TreeNode child = new TreeNode(childPoint, par.distance + 1);
 		par.children.add(child);
 		child.par = par;
 		return child;
 	}
 
-	private ArrayList<Point> getPath(TreeNode node) {
-		ArrayList<Point> path = new ArrayList<Point>();
+	private ArrayList<GridPoint2> getPath(TreeNode node) {
+		ArrayList<GridPoint2> path = new ArrayList<GridPoint2>();
 		TreeNode inode = node;
 		while (inode.par != null) {
-			path.add(new Point(inode.par.pos.x + offset.x, inode.par.pos.y + offset.y));
+			path.add(new GridPoint2(inode.par.pos.x + offset.x, inode.par.pos.y + offset.y));
 			inode = inode.par;
 		}
 		return path;

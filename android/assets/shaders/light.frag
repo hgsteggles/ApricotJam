@@ -1,11 +1,5 @@
-#ifdef GL_ES
-#define LOWP lowp
-precision mediump float;
-#else
-#define LOWP 
-#endif
 //attributes from vertex shader
-varying LOWP vec4 vColor;
+varying vec4 vColor;
 varying vec2 vTexCoord;
 
 //our texture samplers
@@ -15,8 +9,8 @@ uniform sampler2D u_normals;   //normal map
 //values used for shading algorithm...
 uniform vec2 resolution;         //resolution of screen
 uniform vec3 LightPos;           //light position, normalized
-uniform LOWP vec4 LightColor;    //light RGBA -- alpha is intensity
-uniform LOWP vec4 AmbientColor;  //ambient RGBA -- alpha is intensity 
+uniform vec4 LightColor;    //light RGBA -- alpha is intensity
+uniform vec4 AmbientColor;  //ambient RGBA -- alpha is intensity 
 uniform vec3 Falloff;            //attenuation coefficients
 
 void main() {

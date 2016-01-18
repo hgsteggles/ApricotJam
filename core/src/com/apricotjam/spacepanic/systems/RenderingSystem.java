@@ -3,6 +3,10 @@ package com.apricotjam.spacepanic.systems;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
@@ -296,6 +300,54 @@ public class RenderingSystem extends EntitySystem {
 		public int compare(Entity e1, Entity e2) {
 			return (int) Math.signum(ComponentMappers.transform.get(e1).getTotalZ() - ComponentMappers.transform.get(e2).getTotalZ());
 		}
+
+		@Override
+		public Comparator<Entity> reversed() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Comparator<Entity> thenComparing(Comparator<? super Entity> other) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <U> Comparator<Entity> thenComparing(
+				Function<? super Entity, ? extends U> keyExtractor,
+				Comparator<? super U> keyComparator) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <U extends Comparable<? super U>> Comparator<Entity> thenComparing(
+				Function<? super Entity, ? extends U> keyExtractor) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Comparator<Entity> thenComparingInt(
+				ToIntFunction<? super Entity> keyExtractor) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Comparator<Entity> thenComparingLong(
+				ToLongFunction<? super Entity> keyExtractor) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Comparator<Entity> thenComparingDouble(
+				ToDoubleFunction<? super Entity> keyExtractor) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
 	private static class DepthFBOComparator implements Comparator<Entity> {
@@ -308,6 +360,54 @@ public class RenderingSystem extends EntitySystem {
 			} else {
 				return id1.compareTo(id2);
 			}
+		}
+
+		@Override
+		public Comparator<Entity> reversed() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Comparator<Entity> thenComparing(Comparator<? super Entity> other) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <U> Comparator<Entity> thenComparing(
+				Function<? super Entity, ? extends U> keyExtractor,
+				Comparator<? super U> keyComparator) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <U extends Comparable<? super U>> Comparator<Entity> thenComparing(
+				Function<? super Entity, ? extends U> keyExtractor) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Comparator<Entity> thenComparingInt(
+				ToIntFunction<? super Entity> keyExtractor) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Comparator<Entity> thenComparingLong(
+				ToLongFunction<? super Entity> keyExtractor) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Comparator<Entity> thenComparingDouble(
+				ToDoubleFunction<? super Entity> keyExtractor) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

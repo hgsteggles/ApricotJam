@@ -1,14 +1,14 @@
 package com.apricotjam.spacepanic.systems.map;
 
+import java.util.ArrayList;
+
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.LineComponent;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-
-import java.awt.*;
-import java.util.ArrayList;
 
 public class Path {
 
@@ -34,12 +34,12 @@ public class Path {
 		}
 	}
 
-	public boolean calculateNew(Engine engine, Point start, Point end) {
+	public boolean calculateNew(Engine engine, GridPoint2 start, GridPoint2 end) {
 		pathfinder.setOffset(patchConveyor.getOffset());
-		ArrayList<Point> newPath = pathfinder.calculatePath(patchConveyor.getFullMaze(), start, end);
+		ArrayList<GridPoint2> newPath = pathfinder.calculatePath(patchConveyor.getFullMaze(), start, end);
 		if (newPath.size() > 0) {
 			path.clear();
-			for (Point p : newPath) {
+			for (GridPoint2 p : newPath) {
 				path.add(new Vector2(p.x, p.y));
 			}
 			removeFromEngine(engine);

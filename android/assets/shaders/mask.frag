@@ -1,11 +1,5 @@
-#ifdef GL_ES
-#define LOWP lowp
-precision mediump float;
-#else
-#define LOWP 
-#endif
 //attributes from vertex shader
-varying LOWP vec4 v_color;
+varying vec4 v_color;
 varying vec2 v_texCoords;
 
 //our texture samplers
