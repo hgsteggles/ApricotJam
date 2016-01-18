@@ -9,5 +9,6 @@ public class BitmapFontComponent implements Component {
 	public String string = "";
 	public Color color = new Color(Color.WHITE);
 	public boolean centering = false;
+	public float scale = 1f;
 	public GlyphLayout layout = null;
 }

@@ -113,9 +113,10 @@ public class MenuScreen extends BasicScreen {
 		Entity entity = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "retroSmall";
+		fontComp.font = "retro";
 		fontComp.string = "High Score: " + GameSettings.generateScoreString(GameSettings.getHighScore());
 		fontComp.color.set(0.2f, 1.0f, 0.2f, 1f);
+		fontComp.scale = 0.5f;
 		fontComp.centering = false;
 		entity.add(fontComp);
 		

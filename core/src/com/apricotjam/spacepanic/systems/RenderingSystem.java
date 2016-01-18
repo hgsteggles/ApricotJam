@@ -3,6 +3,10 @@ package com.apricotjam.spacepanic.systems;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
@@ -242,6 +246,8 @@ public class RenderingSystem extends EntitySystem {
 			BitmapFont font = MiscArt.fonts.get(bitmap.font);
 
 			font.setColor(bitmap.color);
+			font.getData().setScale(bitmap.scale);
+			
 			Vector2 pospixel = new Vector2(totalTransform.position.x * WORLD_TO_PIXELS, totalTransform.position.y * WORLD_TO_PIXELS);
 			GlyphLayout layout = new GlyphLayout(font, bitmap.string);
 			if (!bitmap.centering) {
