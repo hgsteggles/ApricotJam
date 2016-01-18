@@ -48,8 +48,6 @@ public class RenderingSystem extends EntitySystem {
 	private SortedEntityList fboRenderQueue, fbo2RenderQueue;
 	private SortedEntityList screenRenderQueue;
 
-	private int shader_calls_per_frame = 0;
-
 	public RenderingSystem(SpriteBatch batch, Camera worldCamera) {
 		super();
 		
@@ -102,8 +100,6 @@ public class RenderingSystem extends EntitySystem {
 		//Create FBO index
 		HashMap<String, Entity> fboIndex = new HashMap<String, Entity>();
 
-		shader_calls_per_frame = 0;
-
 		for (Entity entity : fboList) {
 			FBO_Component fboComp = ComponentMappers.fbo.get(entity);
 			fboIndex.put(fboComp.FBO_ID, entity);
@@ -152,8 +148,6 @@ public class RenderingSystem extends EntitySystem {
 			render(entity, batch);
 		}
 		batch.end();
-
-		System.out.println(shader_calls_per_frame);
 	}
 
 	private void startFBO(String id, HashMap<String, Entity> fboIndex) {
@@ -178,7 +172,6 @@ public class RenderingSystem extends EntitySystem {
 			ShaderComponent shaderComp = ComponentMappers.shader.get(entity);
 
 			spriteBatch.setShader(shaderComp.shader);
-			shader_calls_per_frame++;
 
 			if (ComponentMappers.shadertime.has(entity)) {
 				ShaderTimeComponent shaderTimeComp = ComponentMappers.shadertime.get(entity);
