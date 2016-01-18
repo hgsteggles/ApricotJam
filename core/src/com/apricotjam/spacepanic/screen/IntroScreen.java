@@ -206,7 +206,7 @@ public class IntroScreen extends BasicScreen {
 		clickComp.clicker = new ClickInterface() {
 			@Override
 			public void onClick(Entity entity) {
-				spacePanic.setScreen(new GameScreen(spacePanic, background));
+				startGame();
 			}
 		};
 		entity.add(clickComp);
@@ -462,7 +462,7 @@ public class IntroScreen extends BasicScreen {
 			
 			@Override
 			public void endTween(Entity e) {
-				spacePanic.setScreen(new GameScreen(spacePanic, background));
+				startGame();
 			}
 		};
 		tweenComp.tweenSpecs.add(tweenSpec);
@@ -471,9 +471,13 @@ public class IntroScreen extends BasicScreen {
 		return entity;
 	}
 
+	private void startGame() {
+		ComponentMappers.tween.get(background).tweenSpecs.clear();
+		spacePanic.setScreen(new GameScreen(spacePanic, background));
+	}
+
 	@Override
 	public void backPressed() {
-		// TODO Auto-generated method stub
-		
+		startGame();
 	}
 }
