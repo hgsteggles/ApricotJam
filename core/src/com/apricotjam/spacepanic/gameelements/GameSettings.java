@@ -6,7 +6,7 @@ import com.badlogic.gdx.Preferences;
 
 public class GameSettings {
 
-	private static Preferences options = Gdx.app.getPreferences("game.options");
+	private static Preferences options = Gdx.app.getPreferences("untethered.options");
 
 	private GameSettings() {
 	}
