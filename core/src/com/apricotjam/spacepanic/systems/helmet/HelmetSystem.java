@@ -94,7 +94,7 @@ public class HelmetSystem extends EntitySystem {
 
 		SoundComponent soundComp = new SoundComponent();
 		soundComp.sound = Audio.sounds.get("breathing");
-		soundComp.volume = 0.05f;
+		soundComp.volume = 0.075f;
 		soundComp.pan = -0.3f;
 		soundComp.duration = -1.0f;
 		soundComp.loop = true;
