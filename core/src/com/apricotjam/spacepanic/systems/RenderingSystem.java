@@ -3,10 +3,6 @@ package com.apricotjam.spacepanic.systems;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 
 import com.apricotjam.spacepanic.SpacePanic;
 import com.apricotjam.spacepanic.art.MiscArt;
@@ -51,6 +47,8 @@ public class RenderingSystem extends EntitySystem {
 	private ImmutableArray<Entity> fboList;
 	private SortedEntityList fboRenderQueue, fbo2RenderQueue;
 	private SortedEntityList screenRenderQueue;
+
+	private int shader_calls_per_frame = 0;
 
 	public RenderingSystem(SpriteBatch batch, Camera worldCamera) {
 		super();
@@ -104,6 +102,8 @@ public class RenderingSystem extends EntitySystem {
 		//Create FBO index
 		HashMap<String, Entity> fboIndex = new HashMap<String, Entity>();
 
+		shader_calls_per_frame = 0;
+
 		for (Entity entity : fboList) {
 			FBO_Component fboComp = ComponentMappers.fbo.get(entity);
 			fboIndex.put(fboComp.FBO_ID, entity);
@@ -152,6 +152,8 @@ public class RenderingSystem extends EntitySystem {
 			render(entity, batch);
 		}
 		batch.end();
+
+		System.out.println(shader_calls_per_frame);
 	}
 
 	private void startFBO(String id, HashMap<String, Entity> fboIndex) {
@@ -176,6 +178,7 @@ public class RenderingSystem extends EntitySystem {
 			ShaderComponent shaderComp = ComponentMappers.shader.get(entity);
 
 			spriteBatch.setShader(shaderComp.shader);
+			shader_calls_per_frame++;
 
 			if (ComponentMappers.shadertime.has(entity)) {
 				ShaderTimeComponent shaderTimeComp = ComponentMappers.shadertime.get(entity);
@@ -291,62 +294,16 @@ public class RenderingSystem extends EntitySystem {
 			
 			particleComp.effect.draw(spriteBatch);
 		}
-		
-		spriteBatch.setShader(null);
+
+		if (ComponentMappers.shader.has(entity)) {
+			spriteBatch.setShader(null);
+		}
 	}
 
 	private static class DepthComparator implements Comparator<Entity> {
 		@Override
 		public int compare(Entity e1, Entity e2) {
 			return (int) Math.signum(ComponentMappers.transform.get(e1).getTotalZ() - ComponentMappers.transform.get(e2).getTotalZ());
-		}
-
-		@Override
-		public Comparator<Entity> reversed() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Comparator<Entity> thenComparing(Comparator<? super Entity> other) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <U> Comparator<Entity> thenComparing(
-				Function<? super Entity, ? extends U> keyExtractor,
-				Comparator<? super U> keyComparator) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <U extends Comparable<? super U>> Comparator<Entity> thenComparing(
-				Function<? super Entity, ? extends U> keyExtractor) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Comparator<Entity> thenComparingInt(
-				ToIntFunction<? super Entity> keyExtractor) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Comparator<Entity> thenComparingLong(
-				ToLongFunction<? super Entity> keyExtractor) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Comparator<Entity> thenComparingDouble(
-				ToDoubleFunction<? super Entity> keyExtractor) {
-			// TODO Auto-generated method stub
-			return null;
 		}
 	}
 
@@ -360,54 +317,6 @@ public class RenderingSystem extends EntitySystem {
 			} else {
 				return id1.compareTo(id2);
 			}
-		}
-
-		@Override
-		public Comparator<Entity> reversed() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Comparator<Entity> thenComparing(Comparator<? super Entity> other) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <U> Comparator<Entity> thenComparing(
-				Function<? super Entity, ? extends U> keyExtractor,
-				Comparator<? super U> keyComparator) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <U extends Comparable<? super U>> Comparator<Entity> thenComparing(
-				Function<? super Entity, ? extends U> keyExtractor) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Comparator<Entity> thenComparingInt(
-				ToIntFunction<? super Entity> keyExtractor) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Comparator<Entity> thenComparingLong(
-				ToLongFunction<? super Entity> keyExtractor) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Comparator<Entity> thenComparingDouble(
-				ToDoubleFunction<? super Entity> keyExtractor) {
-			// TODO Auto-generated method stub
-			return null;
 		}
 	}
 }
