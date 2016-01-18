@@ -36,7 +36,7 @@ public class PipeWorld {
 	private RandomXS128 rng = new RandomXS128(0);
 
 	private Entity masterEntity;
-	private Entity timer;
+	private Entity abortButton;
 
 	private Array<Entity> entryPipes = new Array<Entity>();
 	private Array<Entity> exitPipes = new Array<Entity>();
@@ -150,6 +150,14 @@ public class PipeWorld {
 		addToEngine(engine, createCapsulePart(false));
 		addToEngine(engine, createCapsuleLights(true, pipeScreenComp.resource));
 		addToEngine(engine, createCapsuleLights(false, pipeScreenComp.resource));
+		
+		// Create abort button.
+		abortButton = createAbortButton();
+		addToEngine(engine, abortButton);
+	}
+	
+	public Entity getAbortButton() {
+		return abortButton;
 	}
 
 	public Array<Entity> getAllPipeEntities() {
@@ -250,10 +258,30 @@ public class PipeWorld {
 		return generator.getExitPoints();
 	}
 
-	public Entity getTimer() {
-		return timer;
-	}
+	private Entity createAbortButton() {
+		Entity entity = new Entity();
+		TextureComponent textureComp = new TextureComponent();
+		textureComp.region = PipeGameArt.abortRegion;
+		textureComp.size.set(1.5f, 0.75f);
+		textureComp.color.set(1.0f, 0.3f, 0.3f, 1.0f);
+		entity.add(textureComp);
 
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.set(0, gridLength - 1.5f, 0);
+		transComp.parent = ComponentMappers.transform.get(masterEntity);
+		entity.add(transComp);
+		
+		ShaderComponent shaderComp = new ShaderComponent();
+		shaderComp.shader = Shaders.manager.get("light");
+		entity.add(shaderComp);
+		
+		ClickComponent clickComp = new ClickComponent();
+		clickComp.shape = new Rectangle().setSize(textureComp.size.x, textureComp.size.y).setCenter(0, 0);
+		entity.add(clickComp);
+		
+		return entity;
+	}
+	
 	private Entity createCapsulePart(boolean isLeft) {
 		Entity entity = new Entity();
 
