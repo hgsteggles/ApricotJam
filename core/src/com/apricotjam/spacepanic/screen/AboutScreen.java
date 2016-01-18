@@ -34,10 +34,10 @@ public class AboutScreen extends BasicScreen {
 	private static final float TITLE_Y = WORLD_HEIGHT * 5.0f / 6.0f;
 	private static final float TITLE_TIME = 1.0f;
 
-	private static final float CREDITS_X = WORLD_WIDTH / 2.0f + 1.0f;
+	private static final float CREDITS_X = WORLD_WIDTH / 2.0f - 1.0f;
 	private static final float CREDITS_Y = WORLD_HEIGHT / 2.0f - 1.65f;
-	private static final float CREDITS_SPACING = 0.6f;
-	private static final float LINK_X = WORLD_WIDTH / 2.0f + 5.8f;
+	private static final float CREDITS_SPACING = 0.3f;
+	private static final float LINK_X = WORLD_WIDTH / 2.0f + 3.8f;
 	private static final float BACK_X = 1.5f;
 	private static final float BACK_Y = WORLD_HEIGHT - 0.5f;
 
@@ -51,6 +51,7 @@ public class AboutScreen extends BasicScreen {
 	private static final ArrayList<Credit> CREDITS = new ArrayList<Credit>();
 	static {
 		CREDITS.add(new Credit("Russ MacCharles (PCGS)", "Art", "FACEBOOK", "https://facebook.com/pcgamestudio"));
+		CREDITS.add(new Credit("Marc Evans", "Apricot Jam logo", "", ""));
 		CREDITS.add(new Credit("Jacob Close", "Code", "GITHUB", "https://github.com/drumber-1"));
 		CREDITS.add(new Credit("Harry Steggles", "Code", "GITHUB", "https://github.com/ridoncules"));
 		CREDITS.add(new Credit("Rory Hebblethwaite", "Music", "SOUNDCLOUD", "https://soundcloud.com/rjhmusic-1"));
@@ -110,9 +111,9 @@ public class AboutScreen extends BasicScreen {
 	}
 
 	public void addCredit(final Credit credit, int n) {
-		String fullText = credit.name + "-" + credit.credit;
-		float offset = (fullText.length() - (credit.name.length() * 2.0f)) / 5.0f;
-		Entity text = createText(CREDITS_X + offset, CREDITS_Y - (n * CREDITS_SPACING), fullText);
+		String fullText = credit.name + " - " + credit.credit;
+		float offset = (fullText.length() - (credit.name.length() * 2.0f)) / 10.0f;
+		Entity text = createText(CREDITS_X + offset, CREDITS_Y - (n * CREDITS_SPACING), fullText, true);
 		add(text);
 		if (credit.linkUrl != "") {
 			MenuButton link = new MenuButton(LINK_X, CREDITS_Y - (n * CREDITS_SPACING), credit.linkText, new ClickInterface() {
@@ -120,7 +121,7 @@ public class AboutScreen extends BasicScreen {
 				public void onClick(Entity entity) {
 					Gdx.net.openURI(credit.linkUrl);
 				}
-			});
+			}, true);
 			link.addToEngine(engine);
 		}
 	}

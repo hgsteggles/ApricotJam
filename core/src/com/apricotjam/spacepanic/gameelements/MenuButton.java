@@ -12,16 +12,20 @@ public class MenuButton {
 	private Entity ninepatch, bitmapfont;
 
 	public MenuButton(float x, float y, String text, ClickInterface clickInterface) {
-		this(x, y, 1.0f, text.length() / 2.3f, 0.6f, text, clickInterface); //2.5 gives exactly text width, 2.3 allows for a little padding
+		this(x, y, 1.0f, text.length() / 2.3f, 0.6f, text, clickInterface, false); //2.5 gives exactly text width, 2.3 allows for a little padding
+	}
+
+	public MenuButton(float x, float y, String text, ClickInterface clickInterface, boolean small) {
+		this(x, y, 1.0f, text.length() / 4.6f, 0.3f, text, clickInterface, small);
 	}
 
 	public MenuButton(float x, float y, float width, String text, ClickInterface clickInterface) {
-		this(x, y, 1.0f, width, 0.6f, text, clickInterface);
+		this(x, y, 1.0f, width, 0.6f, text, clickInterface, false);
 	}
 
-	public MenuButton(float x, float y, float z, float w, float h, String text, ClickInterface clickInterface) {
+	public MenuButton(float x, float y, float z, float w, float h, String text, ClickInterface clickInterface, boolean small) {
 		ninepatch = createButton(x, y, z, w, h);
-		bitmapfont = createText(x, y, z, w, h, text, clickInterface);
+		bitmapfont = createText(x, y, z, w, h, text, clickInterface, small);
 	}
 
 	public Entity getBorderEntity() {
@@ -32,11 +36,15 @@ public class MenuButton {
 		return bitmapfont;
 	}
 
-	private Entity createText(float x, float y, float z, float w, float h, String text, ClickInterface clickInterface) {
+	private Entity createText(float x, float y, float z, float w, float h, String text, ClickInterface clickInterface, boolean small) {
 		Entity entity = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
-		fontComp.font = "retro";
+		if (small) {
+			fontComp.font = "retroSmall";
+		} else {
+			fontComp.font = "retro";
+		}
 		fontComp.string = text;
 		fontComp.color = new Color(Color.WHITE);
 		fontComp.centering = true;
