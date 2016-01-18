@@ -1027,3 +1027,37 @@ explosion
   orig: 100, 100
   offset: 0, 0
   index: -1
+
+art9.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+apricot
+  rotate: false
+  xy: 2, 53
+  size: 238, 49
+  orig: 238, 49
+  offset: 0, 0
+  index: -1
+fullLogo
+  rotate: false
+  xy: 2, 104
+  size: 512, 128
+  orig: 512, 128
+  offset: 0, 0
+  index: -1
+jam
+  rotate: false
+  xy: 2, 2
+  size: 115, 49
+  orig: 115, 49
+  offset: 0, 0
+  index: -1
+toast
+  rotate: false
+  xy: 516, 105
+  size: 128, 127
+  orig: 128, 127
+  offset: 0, 0
+  index: -1

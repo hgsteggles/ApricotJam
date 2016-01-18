@@ -28,7 +28,7 @@ public class MiscArt {
 	public static TextureRegion playerRegion;
 	public static TextureRegion playerMoveRegion;
 	
-	private static Skin skin = new Skin();;
+	private static Skin skin = new Skin();
 
 	public static void load(TextureAtlas atlas) {
 		title = atlas.findRegion("title");
