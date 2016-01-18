@@ -47,6 +47,7 @@ public class TitleScreen extends BasicScreen {
 
 	@Override
 	public void backPressed() {
+		spacePanic.exit();
 	}
 
 	public Entity createClickEntity() {

@@ -33,6 +33,8 @@ public class SpacePanic extends ApplicationAdapter {
 
 	@Override
 	public void create() {
+		Gdx.input.setCatchBackKey(true);
+
 		PuzzleDifficulty.load();
 		Art.load();
 		Audio.load();
