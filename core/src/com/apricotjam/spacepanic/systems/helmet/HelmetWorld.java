@@ -44,8 +44,8 @@ public class HelmetWorld {
 	public void build(Engine engine) {
 
 		// Create FBOs.
-		engine.addEntity(createLED_FBO2());
-		engine.addEntity(createLED_FBO1());
+		//engine.addEntity(createLED_FBO2());
+		//engine.addEntity(createLED_FBO1());
 
 		// Create helmet.
 		engine.addEntity(createHelmet());
@@ -689,7 +689,7 @@ public class HelmetWorld {
 		fontComp.color.set(color);
 		entity.add(fontComp);
 
-		entity.add(Shaders.generateFBOItemComponent("led-fb1"));
+		//entity.add(Shaders.generateFBOItemComponent("led-fb1"));
 
 		ShaderComponent shaderComp = new ShaderComponent();
 		shaderComp.shader = Shaders.manager.get("mask");
