@@ -655,6 +655,7 @@ public class GameScreen extends BasicScreen {
 
 	@Override
 	public void backPressed() {
+		helmetSystem.killBreathing();
 		spacePanic.setScreen(new MenuScreen(spacePanic, backgroundEntity));
 	}
 }
