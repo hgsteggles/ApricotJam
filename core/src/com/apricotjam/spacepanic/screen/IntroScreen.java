@@ -469,6 +469,8 @@ public class IntroScreen extends BasicScreen {
 	}
 
 	private void startGame() {
+		ComponentMappers.movement.get(background).rotationalVelocity = 0f;
+		ComponentMappers.scroll.get(background).speed.x = 0f;
 		ComponentMappers.tween.get(background).tweenSpecs.clear();
 		spacePanic.setScreen(new GameScreen(spacePanic, background));
 	}
