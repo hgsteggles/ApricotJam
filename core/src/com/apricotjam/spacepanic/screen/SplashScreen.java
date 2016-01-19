@@ -1,9 +1,14 @@
 package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.art.PipeGameArt;
 import com.apricotjam.spacepanic.art.SplashArt;
-import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.components.ClickComponent;
+import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.TextureComponent;
+import com.apricotjam.spacepanic.components.TransformComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
 import com.apricotjam.spacepanic.interfaces.TweenInterface;
 import com.apricotjam.spacepanic.systems.ClickSystem;
@@ -33,11 +38,31 @@ public class SplashScreen extends BasicScreen {
 
 		add(createClickEntity());
 
+		add(createBG());
 		add(createToast());
 		add(createApricot());
 		add(createJam());
 
 		add(createTimerEntity());
+	}
+	
+	private Entity createBG() {
+		Entity entity = new Entity();
+		
+		TextureComponent texComp = new TextureComponent();
+		texComp.region = PipeGameArt.whitePixel;
+		texComp.size.x = 2f*BasicScreen.WORLD_WIDTH;
+		texComp.size.y = 2f*BasicScreen.WORLD_HEIGHT;
+		texComp.color.set(0f, 0f, 0f, 1f);
+		entity.add(texComp);
+		
+		TransformComponent transComp = new TransformComponent();
+		transComp.position.x = BasicScreen.WORLD_WIDTH/2f;
+		transComp.position.y = BasicScreen.WORLD_HEIGHT/2f;
+		transComp.position.z = -1000;
+		entity.add(transComp);
+		
+		return entity;
 	}
 
 	public Entity createToast() {

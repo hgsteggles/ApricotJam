@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.art.Assets;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
@@ -239,9 +239,11 @@ public class RenderingSystem extends EntitySystem {
 			BitmapFontComponent bitmap = ComponentMappers.bitmapfont.get(entity);
 			TransformComponent t = ComponentMappers.transform.get(entity);
 			TransformComponent totalTransform = t.getTotalTransform();
-			BitmapFont font = MiscArt.fonts.get(bitmap.font);
+			BitmapFont font = Assets.fonts.get(bitmap.font);
 
 			font.setColor(bitmap.color);
+			font.getData().setScale(bitmap.scale);
+			
 			Vector2 pospixel = new Vector2(totalTransform.position.x * WORLD_TO_PIXELS, totalTransform.position.y * WORLD_TO_PIXELS);
 			GlyphLayout layout = new GlyphLayout(font, bitmap.string);
 			if (!bitmap.centering) {

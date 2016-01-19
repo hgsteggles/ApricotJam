@@ -509,67 +509,6 @@ public class ShaderManager {
 	}
 
 	/**
-	 * Add new shader to ShaderManager
-	 *
-	 * @param fh
-	 */
-	@Deprecated
-	public void add(FileHandle fh) {
-		String key = fh.nameWithoutExtension();
-		String frag = null, vert = null;
-		String vertPath = null, fragPath = null;
-		if (fh.extension().endsWith("frag")) {
-			fh = fixPath(fh);
-			frag = fh.readString("utf-8");
-			fragPath = fh.path();
-			FileHandle fh2 = Gdx.files.internal(fh.parent().path() + "/" + key + ".vert");
-			if (fh2.exists()) {
-				vert = fh2.readString("utf-8");
-				vertPath = fh2.path();
-			}
-		} else if (fh.extension().endsWith("vert")) {
-			fh = fixPath(fh);
-			vert = fh.readString("utf-8");
-			vertPath = fh.path();
-			FileHandle fh2 = Gdx.files.internal(fh.parent().path() + "/" + key + ".frag");
-			if (fh2.exists()) {
-				frag = fh2.readString("utf-8");
-				fragPath = fh2.path();
-			}
-		}
-		if (frag == null || vert == null) {
-			return;
-		}
-		frag = appendGLESPrecisions(frag);
-		vert = appendGLESPrecisions(vert);
-		sourcesVert.put(key, vert);
-		sourcesFrag.put(key, frag);
-		ShaderProgram sp = new ShaderProgram(vert, frag);
-		if (!sp.isCompiled()) {
-			Gdx.app.log("ShaderManager", "Error while loading shader '" + key + "':\n" + sp.getLog());
-			Gdx.app.log("ShaderManager", "--------------------------------");
-			Gdx.app.log("ShaderManager", "Vertex shader source: \n" + vert);
-			Gdx.app.log("ShaderManager", "--------------------------------");
-			Gdx.app.log("ShaderManager", "Fragment shader source: \n" + frag);
-			Gdx.app.log("ShaderManager", "--------------------------------");
-			return;
-		}
-		shaders.put(key, sp);
-		shaderPaths.put(key, vertPath + ";" + fragPath);
-		Gdx.app.log("ShaderManager", "Shader '" + key + "' loaded");
-	}
-
-	/**
-	 * Add new shader to ShaderManager
-	 *
-	 * @param filePath
-	 */
-	@Deprecated
-	public void add(String filePath) {
-		add(Gdx.files.internal(filePath));
-	}
-
-	/**
 	 * Adds new shader to ShaderManager.
 	 *
 	 * @param key - shader identifier

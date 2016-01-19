@@ -14,7 +14,7 @@ public class PuzzleDifficulty {
 	static public Array<Integer> npipes;
 	static public int ndifficulties;
 
-	static public void load() {
+	static public void create() {
 		gridSize = new Array<Integer>();
 		turnOffs = new Array<Integer>();
 		npipes = new Array<Integer>();

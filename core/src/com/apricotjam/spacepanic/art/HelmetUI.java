@@ -33,7 +33,7 @@ public class HelmetUI {
 
 	static public ObjectMap<Resource, Color> resourceColors = new ObjectMap<Resource, Color>();
 
-	static public void load(TextureAtlas atlas) {
+	static public void create(TextureAtlas atlas) {
 		fullOverlay = atlas.findRegion("mainOverlay");
 
 		base = atlas.findRegion("helmetBase");

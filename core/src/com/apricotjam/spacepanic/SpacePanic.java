@@ -1,8 +1,6 @@
 package com.apricotjam.spacepanic;
 
-import com.apricotjam.spacepanic.art.Art;
-import com.apricotjam.spacepanic.art.Audio;
-import com.apricotjam.spacepanic.art.Particles;
+import com.apricotjam.spacepanic.art.Assets;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.input.InputManager;
@@ -12,6 +10,7 @@ import com.apricotjam.spacepanic.screen.BufferScreen;
 import com.apricotjam.spacepanic.systems.pipes.PuzzleDifficulty;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.RandomXS128;
@@ -26,6 +25,8 @@ public class SpacePanic extends ApplicationAdapter {
 	private float frame_time = 1.0f / 30f;
 	private int nprints = (int)(6f / frame_time);
 
+	private AssetManager manager;
+	
 	private BasicScreen screen;
 
 	private Music soundtrack;
@@ -34,20 +35,16 @@ public class SpacePanic extends ApplicationAdapter {
 	public void create() {
 		Gdx.input.setCatchBackKey(true);
 
-		PuzzleDifficulty.load();
-		Art.load();
-		Audio.load();
+		PuzzleDifficulty.create();
+		InputManager.create();		
 		Shaders.load();
-		Particles.load(Art.atlas);
-		InputManager.create();
+		
+		manager = new AssetManager();
+		Assets.load(manager);
+		manager.finishLoading();
+		Assets.done(manager);
+		
 		setScreen(new BufferScreen(this));
-
-		soundtrack = Audio.music.get("soundtrack");
-		soundtrack.setLooping(true);
-		soundtrack.play();
-		if (!GameSettings.isSoundOn()) {
-			soundtrack.setVolume(0.0f);
-		}
 	}
 
 	@Override
@@ -62,10 +59,8 @@ public class SpacePanic extends ApplicationAdapter {
 			screen.render(deltatime);
 			InputManager.reset();
 
-			if (!GameSettings.isSoundOn()) {
-				soundtrack.setVolume(0.0f);
-			} else {
-				soundtrack.setVolume(1.0f);
+			if (soundtrack != null) {
+				soundtrack.setVolume(GameSettings.isSoundOn() ? 1.0f : 0.0f);
 			}
 
 			if (video && nprints > 0) {
@@ -84,9 +79,8 @@ public class SpacePanic extends ApplicationAdapter {
 		if (screen != null) {
 			screen.dispose();
 		}
-		Art.dispose();
-		Audio.dispose();
 		Shaders.dispose();
+		manager.dispose();
 	}
 
 	@Override
@@ -100,7 +94,7 @@ public class SpacePanic extends ApplicationAdapter {
 	public void resume() {
 		if (screen != null) {
 			screen.resume();
-		}
+		}	
 	}
 
 	@Override
@@ -124,5 +118,18 @@ public class SpacePanic extends ApplicationAdapter {
 
 	public void exit() {
 		Gdx.app.exit();
+	}
+	
+	public void startSoundtrack() {
+		soundtrack = manager.get("sounds/soundtrack.ogg", Music.class);
+		soundtrack.setLooping(true);
+		soundtrack.play();
+		if (!GameSettings.isSoundOn()) {
+			soundtrack.setVolume(0.0f);
+		}
+	}
+	
+	public AssetManager getAssetManager() {
+		return manager;
 	}
 }
