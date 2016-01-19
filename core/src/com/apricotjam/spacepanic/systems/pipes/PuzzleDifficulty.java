@@ -1,5 +1,6 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
+import com.apricotjam.spacepanic.platform.PuzzleSelector;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -13,12 +14,15 @@ public class PuzzleDifficulty {
 	static public Array<Integer> turnOffs;
 	static public Array<Integer> npipes;
 	static public int ndifficulties;
+	
+	static public int maxGridSize;
 
-	static public void create() {
+	static public void create(PuzzleSelector selector) {
 		gridSize = new Array<Integer>();
 		turnOffs = new Array<Integer>();
 		npipes = new Array<Integer>();
 		ndifficulties = 0;
+		maxGridSize = 0;
 		
 		FileHandle file = Gdx.files.internal("config/puzzle-difficulty.txt");
 
@@ -33,11 +37,12 @@ public class PuzzleDifficulty {
 				int np = Integer.parseInt(values[2]);
 				int sols = Integer.parseInt(values[3]);
 
-				if (sols > 1) {
+				if (selector.valid(gs, to, np, sols)) {
 					gridSize.add(gs);
 					turnOffs.add(to);
 					npipes.add(np);
 					ndifficulties += 1;
+					maxGridSize = Math.max(maxGridSize, gs);
 				}
 			}
 			br.close();

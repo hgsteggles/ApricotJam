@@ -51,7 +51,7 @@ public class Assets {
 		
 		sounds.put("alarm", manager.get("sounds/alarm.ogg", Sound.class));
 		sounds.put("breathing", manager.get("sounds/breathing.wav", Sound.class));
-		sounds.put("soundtrack", manager.get("sounds/fluid-fill.wav", Sound.class));
+		sounds.put("fluid-fill", manager.get("sounds/fluid-fill.wav", Sound.class));
 		
 		music.put("soundtrack", manager.get("sounds/soundtrack.ogg", Music.class));
 		

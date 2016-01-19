@@ -5,6 +5,7 @@ import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.input.InputManager;
 import com.apricotjam.spacepanic.misc.ScreenshotFactory;
+import com.apricotjam.spacepanic.platform.PlatformImplementations;
 import com.apricotjam.spacepanic.screen.BasicScreen;
 import com.apricotjam.spacepanic.screen.BufferScreen;
 import com.apricotjam.spacepanic.systems.pipes.PuzzleDifficulty;
@@ -14,11 +15,13 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.RandomXS128;
+import com.sun.media.jfxmediaimpl.platform.Platform;
 
 public class SpacePanic extends ApplicationAdapter {
 	static public final int WIDTH = 1280;
 	static public final int HEIGHT = 720;
 	static public RandomXS128 rng = new RandomXS128(0);
+	static public PlatformImplementations platformImps;
 
 	private boolean video = false;
 	private float accum = 0;
@@ -30,12 +33,16 @@ public class SpacePanic extends ApplicationAdapter {
 	private BasicScreen screen;
 
 	private Music soundtrack;
+	
+	public SpacePanic(PlatformImplementations platformImps) {
+		this.platformImps = platformImps;
+	}
 
 	@Override
 	public void create() {
 		Gdx.input.setCatchBackKey(true);
 
-		PuzzleDifficulty.create();
+		PuzzleDifficulty.create(platformImps.puzzleSelector);
 		InputManager.create();		
 		Shaders.load();
 		

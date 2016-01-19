@@ -267,7 +267,7 @@ public class PipeWorld {
 		entity.add(textureComp);
 
 		TransformComponent transComp = new TransformComponent();
-		transComp.position.set(0, gridLength - 1.5f, 0);
+		transComp.position.set(0, gridLength/2f + 0.5f, 0);
 		transComp.parent = ComponentMappers.transform.get(masterEntity);
 		entity.add(transComp);
 		

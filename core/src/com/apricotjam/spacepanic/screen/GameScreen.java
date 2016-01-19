@@ -52,7 +52,7 @@ public class GameScreen extends BasicScreen {
 	public static float PIPE_X = BasicScreen.WORLD_WIDTH / 2.0f;
 	public static float PIPE_Y = BasicScreen.WORLD_HEIGHT / 2.0f + 0.3f;
 	public static float PIPE_SCALE_SMALL = 0.1f;
-	public static float PIPE_SCALE_LARGE = 1.0f;
+	public static float PIPE_SCALE_LARGE = 1.0f*6f/PuzzleDifficulty.maxGridSize;
 	private final float HELMET_TWEEN_DURATION = 3f;
 	private final float HELMET_MAX_SCALE = 2f;
 
