@@ -40,10 +40,9 @@ public class MenuButton {
 		Entity entity = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
 		if (small) {
-			fontComp.font = "retroSmall";
-		} else {
-			fontComp.font = "retro";
+			fontComp.scale = 0.5f;
 		}
 		fontComp.string = text;
 		fontComp.color = new Color(Color.WHITE);

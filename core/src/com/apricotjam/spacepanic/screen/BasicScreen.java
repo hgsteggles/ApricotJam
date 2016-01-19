@@ -101,13 +101,12 @@ public abstract class BasicScreen implements Screen {
 		Entity entity = new Entity();
 
 		BitmapFontComponent fontComp = new BitmapFontComponent();
+		fontComp.font = "retro";
 		if (small) {
-			fontComp.font = "retroSmall";
-		} else {
-			fontComp.font = "retro";
+			fontComp.scale = 0.5f;
 		}
 		fontComp.string = text;
-		fontComp.color = Color.WHITE;
+		fontComp.color.set(Color.WHITE);
 		fontComp.centering = true;
 
 		TransformComponent transComp = new TransformComponent();
