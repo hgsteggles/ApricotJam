@@ -1,6 +1,7 @@
 package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
+import com.apricotjam.spacepanic.art.Assets;
 import com.apricotjam.spacepanic.art.MapArt;
 import com.apricotjam.spacepanic.art.MiscArt;
 import com.apricotjam.spacepanic.art.Particles;
@@ -9,7 +10,6 @@ import com.apricotjam.spacepanic.components.ClickComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.MovementComponent;
 import com.apricotjam.spacepanic.components.ParticleEffectComponent;
-import com.apricotjam.spacepanic.components.ScrollComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
 import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.components.TweenComponent;
@@ -31,10 +31,7 @@ import com.apricotjam.spacepanic.systems.SoundSystem;
 import com.apricotjam.spacepanic.systems.TickerSystem;
 import com.apricotjam.spacepanic.systems.TweenSystem;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
@@ -113,9 +110,9 @@ public class IntroScreen extends BasicScreen {
 				add(createWindow(shipTransComp));
 				add(createPlayer(shipTransComp));
 				
-				add(createBurner(shipTransComp, 0f, -2.5f, -1f, 3f));
-				add(createBurner(shipTransComp, -2.5f, -4f, -1f, 1f));
-				add(createBurner(shipTransComp, 2.5f, -4f, -1f, 1f));
+				add(createBurner(shipTransComp, 0f, -2.5f, -1f, 0.03f));
+				add(createBurner(shipTransComp, -2.5f, -4f, -1f, 0.01f));
+				add(createBurner(shipTransComp, 2.5f, -4f, -1f, 0.01f));
 				
 				add(createExplosion(shipTransComp, -2.5f, 1f, 3f, 0.5f));
 			}
@@ -383,7 +380,7 @@ public class IntroScreen extends BasicScreen {
 		entity.add(transComp);
 		
 		ParticleEffectComponent particleComp = new ParticleEffectComponent();
-		particleComp.effect = new ParticleEffect(Particles.effects.get("burner"));
+		particleComp.effect = new ParticleEffect(Assets.particles.get("burner"));
 		particleComp.effect.scaleEffect(scale);
 		TransformComponent totalTrans = transComp.getTotalTransform();
 		particleComp.effect.setPosition(totalTrans.position.x, totalTrans.position.y);
@@ -402,7 +399,7 @@ public class IntroScreen extends BasicScreen {
 		entity.add(transComp);
 		
 		ParticleEffectComponent particleComp = new ParticleEffectComponent();
-		particleComp.effect = new ParticleEffect(Particles.effects.get("explosion"));
+		particleComp.effect = new ParticleEffect(Assets.particles.get("explosion"));
 		particleComp.effect.scaleEffect(0.01f*scale);
 		TransformComponent totalTrans = transComp.getTotalTransform();
 		particleComp.effect.setPosition(totalTrans.position.x, totalTrans.position.y);

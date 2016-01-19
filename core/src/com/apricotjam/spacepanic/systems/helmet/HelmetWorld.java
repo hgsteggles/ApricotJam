@@ -544,7 +544,7 @@ public class HelmetWorld {
 		fontComp.string = text;
 		fontComp.color.set(1f, 1f, 0f, 1f);
 		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
-		layout.setText(MiscArt.fonts.get(fontComp.font), text);
+		layout.setText(Assets.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
 		entity.add(fontComp);
 
@@ -594,7 +594,7 @@ public class HelmetWorld {
 		fontComp.string = text;
 		fontComp.color.set(1f, 0f, 0f, 1f);
 		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
-		layout.setText(MiscArt.fonts.get(fontComp.font), text);
+		layout.setText(Assets.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
 		entity.add(fontComp);
 
@@ -639,7 +639,7 @@ public class HelmetWorld {
 		fontComp.string = text;
 		fontComp.color.set(0f, 1f, 0f, 1f);
 		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
-		layout.setText(MiscArt.fonts.get(fontComp.font), text);
+		layout.setText(Assets.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
 		entity.add(fontComp);
 
@@ -683,7 +683,7 @@ public class HelmetWorld {
 		fontComp.centering = true;
 		fontComp.string = text;
 		GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
-		layout.setText(MiscArt.fonts.get(fontComp.font), text);
+		layout.setText(Assets.fonts.get(fontComp.font), text);
 		fontComp.layout = layout;
 		float width = layout.width * BasicScreen.WORLD_WIDTH / SpacePanic.WIDTH;// contains the width of the current set text
 		fontComp.color.set(color);

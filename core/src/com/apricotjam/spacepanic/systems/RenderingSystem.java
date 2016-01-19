@@ -3,13 +3,9 @@ package com.apricotjam.spacepanic.systems;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.MiscArt;
+import com.apricotjam.spacepanic.art.Assets;
 import com.apricotjam.spacepanic.art.Shaders;
 import com.apricotjam.spacepanic.components.BitmapFontComponent;
 import com.apricotjam.spacepanic.components.ComponentMappers;
@@ -243,7 +239,7 @@ public class RenderingSystem extends EntitySystem {
 			BitmapFontComponent bitmap = ComponentMappers.bitmapfont.get(entity);
 			TransformComponent t = ComponentMappers.transform.get(entity);
 			TransformComponent totalTransform = t.getTotalTransform();
-			BitmapFont font = MiscArt.fonts.get(bitmap.font);
+			BitmapFont font = Assets.fonts.get(bitmap.font);
 
 			font.setColor(bitmap.color);
 			font.getData().setScale(bitmap.scale);

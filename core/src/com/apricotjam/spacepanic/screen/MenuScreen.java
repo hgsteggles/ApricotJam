@@ -1,8 +1,10 @@
 package com.apricotjam.spacepanic.screen;
 
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.MiscArt;
-import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.art.Assets;
+import com.apricotjam.spacepanic.components.BitmapFontComponent;
+import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.TransformComponent;
 import com.apricotjam.spacepanic.gameelements.GameSettings;
 import com.apricotjam.spacepanic.gameelements.MenuButton;
 import com.apricotjam.spacepanic.interfaces.ClickInterface;
@@ -120,7 +122,7 @@ public class MenuScreen extends BasicScreen {
 		fontComp.centering = false;
 		entity.add(fontComp);
 		
-		GlyphLayout layout = new GlyphLayout(MiscArt.fonts.get(fontComp.font), fontComp.string);
+		GlyphLayout layout = new GlyphLayout(Assets.fonts.get(fontComp.font), fontComp.string);
 
 		TransformComponent transComp = new TransformComponent();
 		transComp.position.x = 0.01f*BasicScreen.WORLD_WIDTH;

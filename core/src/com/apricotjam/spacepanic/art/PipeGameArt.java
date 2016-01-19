@@ -22,7 +22,7 @@ public class PipeGameArt {
 
 	public static TextureRegion whitePixel;
 
-	public static void load(TextureAtlas atlas) {
+	public static void create(TextureAtlas atlas) {
 		// Load fluid filling sound.
 		// Load led bg.
 		whitePixel = atlas.findRegion("white_pixel");
@@ -134,9 +134,6 @@ public class PipeGameArt {
 				}
 			}
 		}
-	}
-
-	public static void dipose() {
 	}
 
 	public static class RotatedRegionData {

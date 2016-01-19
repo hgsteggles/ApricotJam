@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.apricotjam.spacepanic.GameParameters;
 import com.apricotjam.spacepanic.SpacePanic;
-import com.apricotjam.spacepanic.art.Audio;
+import com.apricotjam.spacepanic.art.Assets;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.SoundComponent;
 import com.apricotjam.spacepanic.components.TextureComponent;
@@ -612,7 +612,7 @@ public class GameScreen extends BasicScreen {
 		Entity entity = new Entity();
 
 		SoundComponent soundComp = new SoundComponent();
-		soundComp.sound = Audio.sounds.get("alarm");
+		soundComp.sound = Assets.sounds.get("alarm");
 		soundComp.volume = 0.5f;
 		soundComp.duration = 1.0f;
 		entity.add(soundComp);

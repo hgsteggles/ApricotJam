@@ -1,10 +1,13 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
-import shaders.DiffuseShader;
-
 import com.apricotjam.spacepanic.GameParameters;
-import com.apricotjam.spacepanic.art.Audio;
-import com.apricotjam.spacepanic.components.*;
+import com.apricotjam.spacepanic.art.Assets;
+import com.apricotjam.spacepanic.components.ClickComponent;
+import com.apricotjam.spacepanic.components.ComponentMappers;
+import com.apricotjam.spacepanic.components.SoundComponent;
+import com.apricotjam.spacepanic.components.StateComponent;
+import com.apricotjam.spacepanic.components.TweenComponent;
+import com.apricotjam.spacepanic.components.TweenSpec;
 import com.apricotjam.spacepanic.components.pipe.PipeFluidComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeScreenComponent;
 import com.apricotjam.spacepanic.components.pipe.PipeTileComponent;
@@ -231,7 +234,7 @@ public class PipeSystem extends EntitySystem {
 		Entity entity = new Entity();
 
 		SoundComponent soundComp = new SoundComponent();
-		soundComp.sound = Audio.sounds.get("fluid-fill");
+		soundComp.sound = Assets.sounds.get("fluid-fill");
 		soundComp.volume = 0.0f;
 		soundComp.pan = -0.3f;
 		soundComp.duration = duration;

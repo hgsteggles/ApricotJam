@@ -1,6 +1,6 @@
 package com.apricotjam.spacepanic.systems.helmet;
 
-import com.apricotjam.spacepanic.art.Audio;
+import com.apricotjam.spacepanic.art.Assets;
 import com.apricotjam.spacepanic.components.ComponentMappers;
 import com.apricotjam.spacepanic.components.ShaderSpreadComponent;
 import com.apricotjam.spacepanic.components.SoundComponent;
@@ -13,6 +13,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -93,7 +94,7 @@ public class HelmetSystem extends EntitySystem {
 		Entity entity = new Entity();
 
 		SoundComponent soundComp = new SoundComponent();
-		soundComp.sound = Audio.sounds.get("breathing");
+		soundComp.sound = Assets.sounds.get("breathing");
 		soundComp.volume = 0.075f;
 		soundComp.pan = -0.3f;
 		soundComp.duration = -1.0f;

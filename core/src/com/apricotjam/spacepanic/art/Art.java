@@ -7,24 +7,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 
 public class Art {
-
-	public static TextureAtlas atlas;
-
-	public static void load() {
-		Art.atlas = new TextureAtlas(Gdx.files.internal("atlas/art.atlas"));
-
-		HelmetUI.load(atlas);
-		MapArt.load(atlas);
-		MiscArt.load(atlas);
-		PipeGameArt.load(atlas);
-		SplashArt.load(atlas);
-	}
-
-	public static void dispose() {
-		PipeGameArt.dipose();
-		atlas.dispose();
-	}
-
 	public static Texture loadTexture(String name) {
 		return new Texture(Gdx.files.internal(name));
 	}

@@ -9,7 +9,7 @@ public class SplashArt {
 	public static AtlasRegion jam;
 	public static AtlasRegion toast;
 
-	public static void load(TextureAtlas atlas) {
+	public static void create(TextureAtlas atlas) {
 		logo = atlas.findRegion("fullLogo");
 		apricot = atlas.findRegion("apricot");
 		jam = atlas.findRegion("jam");
