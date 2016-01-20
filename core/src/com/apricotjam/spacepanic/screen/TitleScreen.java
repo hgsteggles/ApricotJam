@@ -43,6 +43,8 @@ public class TitleScreen extends BasicScreen {
 		add(this.background);
 
 		add(createClickEntity());
+
+		spacePanic.startSoundtrack();
 	}
 
 	@Override
