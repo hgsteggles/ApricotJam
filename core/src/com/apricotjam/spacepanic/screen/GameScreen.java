@@ -67,8 +67,6 @@ public class GameScreen extends BasicScreen {
 
 	private HelmetSystem helmetSystem;
 
-	private Random rng = new Random();
-
 	private PipeSystem pipeSystem = null;
 
 	private float currDifficulty = 0;
@@ -200,8 +198,8 @@ public class GameScreen extends BasicScreen {
 
 			currDifficulty += GameParameters.PUZZLE_DIFFICULTY_INC;
 
-			while (currDifficulty >= PuzzleDifficulty.ndifficulties) {
-				currDifficulty -= PuzzleDifficulty.gridSize.size;
+			if (currDifficulty >= PuzzleDifficulty.ndifficulties) {
+				currDifficulty = PuzzleDifficulty.ndifficulties/2f;
 			}
 
 			if (badPipes) {
@@ -645,11 +643,6 @@ public class GameScreen extends BasicScreen {
 	}
 
 	private int getPipeDifficulty(Resource resource) {
-		/*
-		int diff = GameParameters.RESOURCE_MIN_PIPE_DIFFICULTY.get(resource)
-				+ rng.nextInt(GameParameters.RESOURCE_SPREAD_PIPE_DIFFICULTY.get(resource));
-		diff = Math.min(diff, 25);
-		*/
 		return Math.min((int)currDifficulty, PuzzleDifficulty.ndifficulties - 1);
 	}
 

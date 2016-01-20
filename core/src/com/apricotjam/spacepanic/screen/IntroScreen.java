@@ -37,8 +37,6 @@ import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Rectangle;
 
 public class IntroScreen extends BasicScreen {
-	private RandomXS128 rng = new RandomXS128(0);
-	
 	private final float TIME_UNTIL_SHIP = 1f;
 	private final float SHIP_DURATION = 6f;
 	private final float TRAIL_TIME = 3.1f;
@@ -61,9 +59,6 @@ public class IntroScreen extends BasicScreen {
 	public IntroScreen(SpacePanic spacePanic, Entity background) {
 		super(spacePanic);
 		
-		for (int ir = 0; ir < 10; ++ir)
-			rng.setSeed(rng.nextLong());
-
 		this.background = EntityUtil.clone(background);
 		addBackgroundTween(this.background);
 		add(this.background);

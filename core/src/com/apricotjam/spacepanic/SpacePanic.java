@@ -19,7 +19,7 @@ import com.badlogic.gdx.math.RandomXS128;
 public class SpacePanic extends ApplicationAdapter {
 	static public final int WIDTH = 1280;
 	static public final int HEIGHT = 720;
-	static public RandomXS128 rng = new RandomXS128(0);
+	static public RandomXS128 rng = new RandomXS128(System.nanoTime());
 	static public PlatformImplementations platformImps;
 
 	private boolean video = false;

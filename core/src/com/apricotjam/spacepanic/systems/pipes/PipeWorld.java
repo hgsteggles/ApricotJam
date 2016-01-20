@@ -33,7 +33,6 @@ public class PipeWorld {
 	static public final Array<GridPoint2> GridDeltas = createGridDeltas();
 
 	private PipePuzzleGenerator generator;
-	private RandomXS128 rng = new RandomXS128(0);
 
 	private Entity masterEntity;
 	private Entity abortButton;
@@ -71,7 +70,7 @@ public class PipeWorld {
 			for (int j = 0; j < gridLength; ++j) {
 				Entity pipe = createPipe(maskGrid[i][j], i, j, true);
 
-				if (rng.nextBoolean()) {
+				if (SpacePanic.rng.nextBoolean()) {
 					rotateTile(pipe);
 				} else {
 					rotateTile(pipe);

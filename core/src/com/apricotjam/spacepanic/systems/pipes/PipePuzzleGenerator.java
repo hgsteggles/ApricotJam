@@ -1,11 +1,10 @@
 package com.apricotjam.spacepanic.systems.pipes;
 
+import com.apricotjam.spacepanic.SpacePanic;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
 
 public class PipePuzzleGenerator {
-	private static RandomXS128 rng = new RandomXS128(0);
 	private byte[][] maskGrid;
 	private byte[] randomMasks = createRandomMasks();
 
@@ -73,7 +72,7 @@ public class PipePuzzleGenerator {
 		for (int i = 0; i < gridLength; ++i) {
 			for (int j = 0; j < gridLength; ++j) {
 				if (maskGrid[i][j] == 0) {
-					maskGrid[i][j] = randomMasks[rng.nextInt(randomMasks.length)];
+					maskGrid[i][j] = randomMasks[SpacePanic.rng.nextInt(randomMasks.length)];
 				}
 			}
 		}
