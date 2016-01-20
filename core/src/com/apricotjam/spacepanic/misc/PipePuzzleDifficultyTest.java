@@ -46,22 +46,22 @@ public class PipePuzzleDifficultyTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		for (int igrid = 4; igrid < 7; ++igrid) {
-			for (int idiff = 0; idiff < 10 * igrid; ++idiff) {
-				PuzzleGenerator gen = new PuzzleGenerator(igrid);
-				Array<Float> turnOffFractions = new Array<Float>();
-				float total = 0f;
-				int npipes = 1 + (int) (idiff / 10f);
-				for (int i = 0; i < npipes - 1; ++i) {
-					turnOffFractions.add(1.0f / npipes);
-					total += (1.0f / npipes);
+			for (int ipipe = 1; ipipe <= 4; ++ipipe) {
+				for (int itoff = 0; itoff < 30; ++itoff) {
+					PuzzleGenerator gen = new PuzzleGenerator(igrid);
+					Array<Float> turnOffFractions = new Array<Float>();
+					float total = 0f;
+					for (int i = 0; i < ipipe - 1; ++i) {
+						turnOffFractions.add(1.0f / ipipe);
+						total += (1.0f / ipipe);
+					}
+					turnOffFractions.add(1.0f - total);
+					gen.generatePuzzle(itoff, ipipe, turnOffFractions);
 				}
-				turnOffFractions.add(1.0f - total);
-				gen.generatePuzzle(idiff % 10, npipes, turnOffFractions);
 			}
 		}
-
 
 		writer.close();
 		writer = null;
@@ -170,7 +170,7 @@ public class PipePuzzleDifficultyTest {
 				ends.add(new GridPoint2(grid_length, grid_length - 2));
 			}
 
-			int totalTurnOffCounter = Math.min(difficulty, 9);
+			int totalTurnOffCounter = Math.max(difficulty, 0);
 			int currTurnOffTotal = 0;
 			for (int i = 0; i < npipes - 1; ++i) {
 				turnOffCounters.add((int) (totalTurnOffCounter * turnOffFractions.get(i)));
