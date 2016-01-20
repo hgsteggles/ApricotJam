@@ -15,7 +15,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.RandomXS128;
-import com.sun.media.jfxmediaimpl.platform.Platform;
 
 public class SpacePanic extends ApplicationAdapter {
 	static public final int WIDTH = 1280;
