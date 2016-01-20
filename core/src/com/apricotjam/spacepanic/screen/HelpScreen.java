@@ -50,7 +50,7 @@ public class HelpScreen extends BasicScreen {
 
 	private static final ArrayList<ResourceLine> RESOURCE_LINES = new ArrayList<ResourceLine>();
 	static {
-		RESOURCE_LINES.add(new ResourceLine(Resource.OXYGEN, "Oxygen", "You need to breath!", "You will die without it", ""));
+		RESOURCE_LINES.add(new ResourceLine(Resource.OXYGEN, "Oxygen", "You need to breathe!", "You will die without it", ""));
 		RESOURCE_LINES.add(new ResourceLine(Resource.DEMISTER, "Demister", "Keep that visor clean!", "Your visor will fog up as this", "runs out"));
 		RESOURCE_LINES.add(new ResourceLine(Resource.PIPE_CLEANER, "Pipe Cleaner", "A good astronaut has clean pipes!", "Resource gain is reduced when", "pipe cleaner is empty"));
 		RESOURCE_LINES.add(new ResourceLine(Resource.PLUTONIUM, "Plutonium", "Powers your long range scanner!", "Will allow you to see further", " into the asteroid field"));
