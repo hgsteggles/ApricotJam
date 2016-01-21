@@ -34,7 +34,7 @@ public class SpacePanic extends ApplicationAdapter {
 	private Music soundtrack;
 	
 	public SpacePanic(PlatformImplementations platformImps) {
-		this.platformImps = platformImps;
+		SpacePanic.platformImps = platformImps;
 	}
 
 	@Override

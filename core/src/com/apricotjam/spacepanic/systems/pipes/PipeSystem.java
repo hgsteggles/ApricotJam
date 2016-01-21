@@ -139,7 +139,7 @@ public class PipeSystem extends EntitySystem {
 						currPipe = currPipeTileComp.neighbours[currExitDirection];
 						if (currPipe == null) {
 							break;
-						} else if (currPipe == world.getExitPipes().get(ipipe)) {
+						} else if (world.isExitPipe(currPipe)) {
 							isCurrPipeSolved = true;
 							break;
 						} else {

@@ -162,6 +162,30 @@ public class PipeWorld {
 	public Array<Entity> getAllPipeEntities() {
 		return allEntities;
 	}
+	
+	public Array<Entity> getEntryPipes() {
+		return entryPipes;
+	}
+
+	public Array<Entity> getExitPipes() {
+		return exitPipes;
+	}
+
+	public Array<GridPoint2> getEntryPoints() {
+		return generator.getEntryPoints();
+	}
+
+	public Array<GridPoint2> getExitPoints() {
+		return generator.getExitPoints();
+	}
+	
+	public boolean isExitPipe(Entity e) {
+		for (Entity exit : exitPipes) {
+			if (e == exit)
+				return true;
+		}
+		return false;
+	}
 
 	private void addToEngine(Engine engine, Entity entity) {
 		allEntities.add(entity);
@@ -239,22 +263,6 @@ public class PipeWorld {
 				parentPipeTileComp.neighbours[1] = pipeGrid[0][starts.get(istart).y];
 			}
 		}
-	}
-
-	public Array<Entity> getEntryPipes() {
-		return entryPipes;
-	}
-
-	public Array<Entity> getExitPipes() {
-		return exitPipes;
-	}
-
-	public Array<GridPoint2> getEntryPoints() {
-		return generator.getEntryPoints();
-	}
-
-	public Array<GridPoint2> getExitPoints() {
-		return generator.getExitPoints();
 	}
 
 	private Entity createAbortButton() {
