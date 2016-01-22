@@ -43,7 +43,7 @@ float srdnoise(in vec2 P, in float rot, out vec2 grad) {
   vec2 v0 = P - P0;
 
   // Pick (+x, +y) orFRAG (+y, +x) increment sequence
-  vec2 i1 = (v0.x > v0.y) ? vec2(1.0, 0.0) : vec2 (0.0, 1.0);
+  vec2 i1 = (v0.x > v0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
 
   // Determine the offsets for the other two corners
   vec2 v1 = v0 - i1 + G2;
